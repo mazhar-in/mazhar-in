@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Architecting Sub-Second KaTeX Quiz Engines: Zero-Latency Physics CBT | Syed Mazhar Ali</title>
+  <meta name="description" content="How we eliminated DOM reflow bottlenecks and achieved 60fps scrolling across 180+ math-heavy questions in a JEE Advanced computer-based testing engine.">
+  <meta name="author" content="Syed Mazhar Ali">
+  <link rel="canonical" href="https://mazhar.in/building-sub-second-katex-quiz-engines/">
+
+  <!-- OpenGraph / Twitter Cards -->
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="Architecting Sub-Second KaTeX Quiz Engines: Zero-Latency Physics CBT">
+  <meta property="og:description" content="How we eliminated DOM reflow bottlenecks and achieved 60fps scrolling across 180+ math-heavy questions in a JEE Advanced computer-based testing engine.">
+  <meta property="og:url" content="https://mazhar.in/building-sub-second-katex-quiz-engines/">
+  <meta property="og:site_name" content="mazhar.in">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:creator" content="@mazharin">
+
+  <!-- Stylesheet -->
+  <link rel="stylesheet" href="../assets/css/style.css">
+
+  <!-- KaTeX CDN for Mathematical Physics Rendering -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css" crossorigin="anonymous">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js" crossorigin="anonymous"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js" crossorigin="anonymous"
+          onload="renderMathInElement(document.body, {
+            delimiters: [
+              {left: '$$', right: '$$', display: true},
+              {left: '$', right: '$', display: false},
+              {left: '\\(', right: '\\)', display: false},
+              {left: '\\[', right: '\\]', display: true}
+            ],
+            throwOnError: false
+          });"></script>
+
+  <!-- Schema.org Structured Data: BlogPosting -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    "headline": "Architecting Sub-Second KaTeX Quiz Engines: Zero-Latency Physics CBT",
+    "description": "How we eliminated DOM reflow bottlenecks and achieved 60fps scrolling across 180+ math-heavy questions in a JEE Advanced computer-based testing engine.",
+    "author": {
+      "@type": "Person",
+      "name": "Syed Mazhar Ali",
+      "url": "https://mazhar.in"
+    },
+    "datePublished": "2026-08-28",
+    "url": "https://mazhar.in/building-sub-second-katex-quiz-engines/",
+    "keywords": "EdTech, WebDev, Performance, KaTeX, JavaScript"
+  }
+  </script>
+</head>
+<body>
+
+  <!-- Site Navigation Header -->
+  <header class="site-header">
+    <div class="container header-inner">
+      <a href="../index.html" class="site-logo">
+        <span class="logo-badge">M</span>
+        <span>mazhar<span style="color: var(--accent-cyan)">.in</span></span>
+      </a>
+
+      <nav>
+        <ul class="nav-menu">
+          <li><a href="../index.html#about" class="nav-link">About</a></li>
+          <li><a href="../index.html#focus" class="nav-link">Dual Core</a></li>
+          <li><a href="../index.html#projects" class="nav-link">Projects</a></li>
+          <li><a href="../blog/index.html" class="nav-link active">Blog</a></li>
+          <li><a href="../index.html#contact" class="nav-link">Contact</a></li>
+        </ul>
+      </nav>
+
+      <div class="header-actions">
+        <button class="theme-toggle-btn" id="themeToggleBtn" aria-label="Toggle dark/light theme">
+          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+        </button>
+        <a href="../index.html#projects" class="btn-cta">
+          <span>Explore Projects</span>
+          <span style="font-size: 1.1em">↓</span>
+        </a>
+        <button class="mobile-nav-toggle" aria-label="Toggle Navigation Menu">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Post Main Content -->
+  <main class="container-prose">
+    <article>
+      <header class="post-header">
+        <a href="../blog/index.html" class="post-back-link">
+          <span>←</span> Back to All Articles
+        </a>
+
+        <div class="post-meta">
+          <span>📅 August 28, 2026</span>
+          <span>•</span>
+          <span>⏱️ 5 min read</span>
+          <span>•</span>
+          <div class="article-tags-wrap" style="display: inline-flex;">
+            <span class="tag-badge">#EdTech</span> <span class="tag-badge">#WebDev</span> <span class="tag-badge">#Performance</span> <span class="tag-badge">#KaTeX</span> <span class="tag-badge">#JavaScript</span>
+          </div>
+        </div>
+
+        <h1 class="post-title">Architecting Sub-Second KaTeX Quiz Engines: Zero-Latency Physics CBT</h1>
+        <p class="post-lead">How we eliminated DOM reflow bottlenecks and achieved 60fps scrolling across 180+ math-heavy questions in a JEE Advanced computer-based testing engine.</p>
+      </header>
+
+      <!-- Markdown Rendered Body -->
+      <div class="prose">
+        <p>When building computer-based test (CBT) engines for national-level competitive examinations like JEE Advanced or NEET, raw execution speed is not a luxury—it is an accessibility and fairness requirement.</p>
+
+<p>A standard 3-hour mock examination features 180 comprehensive questions spanning physics, chemistry, and mathematics. Each question contains complex mathematical notation, vector expressions, matrix determinants, and inline Greek superscripts:</p>
+
+<div class="math-block">$$
+\oint_{\partial \Sigma} \vec{B} \cdot d\vec{\ell} = \mu_0 \left( I_{\text{enc}} + \varepsilon_0 \frac{d\Phi_E}{dt} \right)
+$$</div>
+
+<p>If an exam interface stutters while a candidate navigates questions, mental focus breaks. Here is the architectural blueprint we implemented to render hundreds of dynamic LaTeX equations with zero perceived latency.</p>
+
+<hr style="border:0; border-top: 1px solid var(--border-subtle); margin: 2.5rem 0;">
+
+<h2>1. The Bottleneck: Unconstrained DOM Ingestion</h2>
+
+<p>In early prototypes, standard Markdown-to-HTML engines would run <code>renderMathInElement(document.body)</code> on every question transition.</p>
+
+<p>This approach is fatal for performance due to <strong>Cumulative Layout Shift (CLS)</strong> and <strong>Forced Synchronous Layouts</strong>:</p>
+
+<pre><code class="language-text">[Fetch Question Payload] 
+       ↓ 
+[Raw String Injection into innerHTML] 
+       ↓ 
+[Global KaTeX Walker parses 1,000+ nodes] 
+       ↓ 
+[Forced Recalculate Style &amp; Reflow] ---&gt; 280ms dropped frames!</code></pre>
+
+<p>When 50 candidate equations are evaluated on every click, the browser thread locks up for 200–300ms, causing noticeable cursor lag and battery drain on low-spec client machines.</p>
+
+<hr style="border:0; border-top: 1px solid var(--border-subtle); margin: 2.5rem 0;">
+
+<h2>2. Solution: Worker-Thread Precompilation & AST Memoization</h2>
+
+<p>KaTeX has a massive advantage over MathJax: <strong>KaTeX is synchronous and can generate pure HTML strings directly on a Web Worker without touching the DOM</strong>.</p>
+
+<h3>Implementation Pattern</h3>
+
+<p>Instead of passing unparsed LaTeX strings to the main thread:</p>
+
+<pre><code class="language-javascript">// worker-katex.js
+importScripts(&#x27;https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js&#x27;);
+
+self.onmessage = function(e) {
+  const { questionId, rawLatexSegments } = e.data;
+  
+  const renderedHtml = rawLatexSegments.map(item =&gt; {
+    return {
+      id: item.id,
+      html: katex.renderToString(item.formula, {
+        displayMode: item.isBlock,
+        throwOnError: false
+      })
+    };
+  });
+
+  self.postMessage({ questionId, renderedHtml });
+};</code></pre>
+
+<p>By offloading string tokenization and tree creation to a dedicated background worker, the main thread remains completely idle (0ms layout freeze).</p>
+
+<hr style="border:0; border-top: 1px solid var(--border-subtle); margin: 2.5rem 0;">
+
+<h2>3. Virtualized DOM Node Pooling</h2>
+
+<p>In an interactive CBT palette containing 180 questions, keeping all questions active in the live DOM tree inflates memory consumption to over 150MB:</p>
+
+<ul><li><strong>Naïve Approach</strong>: 180 DOM nodes $\times$ 40 KaTeX sub-elements = 7,200 active elements.</li><li><strong>Virtualized Windowing</strong>: Only <strong>3 active question slides</strong> reside in the DOM at any given moment:</li></ul>
+<ol><li>Slide $N-1$ (Pre-rendered for instantaneous swipe back)</li><li>Slide $N$ (Active question in view)</li><li>Slide $N+1$ (Pre-rendered for immediate forward progression)</li></ol>
+
+<p>When the student navigates from Question 14 to Question 15, Question 13 is recycled into a dormant memory cache, maintaining an unwavering 60 frames per second.</p>
+
+<pre><code class="language-text">[ Buffer Slide N-1 ] &lt;--- [ Active Slide N ] ---&gt; [ Buffer Slide N+1 ]
+      (Cached)                 (Rendered)               (Pre-warmed)</code></pre>
+
+<hr style="border:0; border-top: 1px solid var(--border-subtle); margin: 2.5rem 0;">
+
+<h2>4. Offline First: IndexedDB Blob Caching</h2>
+
+<p>Physics diagrams and question payloads are structured as content-addressable blobs:</p>
+
+<div class="math-block">$$
+\text{Hash} = \text{SHA-256}(\text{Question Markdown} + \text{Diagram SVG})
+$$</div>
+
+<p>Upon test initialization, the entire test bundle is cached into IndexedDB:</p>
+
+<pre><code class="language-javascript">async function loadOfflineTest(testId) {
+  const db = await openDatabase(&#x27;smaphysics_cbt&#x27;, 1);
+  const cachedTest = await db.get(&#x27;tests&#x27;, testId);
+  
+  if (cachedTest) {
+    console.log(&#x27;[CBT Engine] Initialized in 12ms from local cache.&#x27;);
+    return cachedTest;
+  }
+  
+  const response = await fetch(`/api/tests/${testId}.json`);
+  const freshData = await response.json();
+  await db.put(&#x27;tests&#x27;, freshData, testId);
+  return freshData;
+}</code></pre>
+
+<p>Even if the examination center loses internet connectivity during the test, the test continues uninterrupted, and candidate responses are queued in <code>localStorage</code> until the network recovers.</p>
+
+<hr style="border:0; border-top: 1px solid var(--border-subtle); margin: 2.5rem 0;">
+
+<h2>Conclusion</h2>
+
+<p>Speed in educational tools is not just an aesthetic consideration—it directly impacts learner confidence and exam outcomes. Combining pure vanilla JavaScript, Web Worker pre-compilation, and KaTeX produces an educational client that is instantaneous, fault-tolerant, and accessible on any device.</p>
+      </div>
+    </article>
+
+    <!-- Post Navigation & Next Steps -->
+    <div style="margin-top: 4rem; padding-top: 2rem; border-top: 1px solid var(--border-subtle); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+      <a href="../blog/index.html" class="btn-secondary">
+        <span>← All Articles</span>
+      </a>
+      <a href="../index.html#projects" class="btn-cta">
+        <span>Explore All Projects ↓</span>
+      </a>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <h4>mazhar<span style="color: var(--accent-cyan)">.in</span></h4>
+          <p>Syed Mazhar Ali — Senior Physics Trainer &amp; Education Tools Developer. Deconstructing mechanics &amp; electrodynamics for competitive aspirants; engineering high-speed testing engines and software.</p>
+        </div>
+        <div class="footer-links-col">
+          <h5>Running Projects</h5>
+          <ul>
+            <li><a href="https://tests.smaphysics.com/" target="_blank" rel="noopener noreferrer">SMA Test Portal ↗</a></li>
+            <li><a href="https://daily-practice-sheets-dpps.smaphysics.com/" target="_blank" rel="noopener noreferrer">Physics Worksheet Vault ↗</a></li>
+            <li><a href="https://anokhiada.com/" target="_blank" rel="noopener noreferrer">Anokhi Ada Store ↗</a></li>
+            <li><a href="../index.html#about">Interactive Physics Simulator</a></li>
+            <li><a href="../blog/index.html">Technical Blog Archive</a></li>
+          </ul>
+        </div>
+        <div class="footer-links-col">
+          <h5>Connect</h5>
+          <ul>
+            <li><a href="https://github.com/mazhar-in" target="_blank" rel="noopener noreferrer">GitHub (@mazhar-in)</a></li>
+            <li><a href="https://x.com/mazharin" target="_blank" rel="noopener noreferrer">X / Twitter (@mazharin)</a></li>
+            <li><a href="https://www.youtube.com/syedmazharali" target="_blank" rel="noopener noreferrer">YouTube (@syedmazharali)</a></li>
+            <li><a href="https://instagram.com/mazharin" target="_blank" rel="noopener noreferrer">Instagram (@mazharin)</a></li>
+            <li><a href="mailto:contact@mazhar.in">contact@mazhar.in</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <span>Designed &amp; Engineered by Syed Mazhar Ali</span>
+        <span>© 2026 mazhar.in • Pure Static Architecture</span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Core Scripts -->
+  <script src="../assets/js/main.js"></script>
+</body>
+</html>

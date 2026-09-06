@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Blog & Physics Engineering Log | Syed Mazhar Ali</title>
+  <meta name="description" content="Technical essays, physics problem deconstructions, KaTeX exam engines, and edtech software architecture by Syed Mazhar Ali.">
+  <meta name="author" content="Syed Mazhar Ali">
+  <link rel="canonical" href="https://mazhar.in/blog/">
+
+  <!-- OpenGraph / Twitter Cards -->
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Blog & Physics Engineering Log | Syed Mazhar Ali">
+  <meta property="og:description" content="Technical essays, physics problem deconstructions, and edtech software architecture.">
+  <meta property="og:url" content="https://mazhar.in/blog/">
+  <meta property="og:site_name" content="mazhar.in">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:creator" content="@mazharin">
+
+  <!-- Stylesheet -->
+  <link rel="stylesheet" href="../assets/css/style.css">
+</head>
+<body>
+
+  <!-- Header -->
+  <header class="site-header">
+    <div class="container header-inner">
+      <a href="../index.html" class="site-logo">
+        <span class="logo-badge">M</span>
+        <span>mazhar<span style="color: var(--accent-cyan)">.in</span></span>
+      </a>
+
+      <nav>
+        <ul class="nav-menu">
+          <li><a href="../index.html#about" class="nav-link">About</a></li>
+          <li><a href="../index.html#focus" class="nav-link">Dual Core</a></li>
+          <li><a href="../index.html#projects" class="nav-link">Projects</a></li>
+          <li><a href="index.html" class="nav-link active">Blog</a></li>
+          <li><a href="../index.html#contact" class="nav-link">Contact</a></li>
+        </ul>
+      </nav>
+
+      <div class="header-actions">
+        <button class="theme-toggle-btn" id="themeToggleBtn" aria-label="Toggle dark/light theme">
+          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+        </button>
+        <a href="../index.html#projects" class="btn-cta">
+          <span>Explore Projects</span>
+          <span style="font-size: 1.1em">↓</span>
+        </a>
+        <button class="mobile-nav-toggle" aria-label="Toggle Navigation Menu">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Blog Index Main -->
+  <main class="container" style="padding-top: 4rem; padding-bottom: 5rem;">
+    <div style="max-width: 760px; margin-bottom: 3.5rem;">
+      <span class="section-kicker">Technical Essays & Physics Insights</span>
+      <h1 style="margin-bottom: 1rem;">Physics & Engineering Log</h1>
+      <p style="font-size: 1.15rem; color: var(--text-secondary); line-height: 1.65;">
+        Deep-dive technical articles dissecting advanced classical mechanics, electrodynamics problem decomposition for JEE Advanced, and the architecture of ultra-low latency educational software.
+      </p>
+    </div>
+
+    <!-- Articles List Generated Statically -->
+    <div class="articles-list" id="articlesList">
+      {{articles_list}}
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <h4>mazhar<span style="color: var(--accent-cyan)">.in</span></h4>
+          <p>Syed Mazhar Ali — Senior Physics Trainer &amp; Education Tools Developer. Deconstructing mechanics &amp; electrodynamics for competitive aspirants; engineering high-speed testing engines and software.</p>
+        </div>
+        <div class="footer-links-col">
+          <h5>Running Projects</h5>
+          <ul>
+            <li><a href="https://tests.smaphysics.com/" target="_blank" rel="noopener noreferrer">SMA Test Portal ↗</a></li>
+            <li><a href="https://daily-practice-sheets-dpps.smaphysics.com/" target="_blank" rel="noopener noreferrer">Physics Worksheet Vault ↗</a></li>
+            <li><a href="https://anokhiada.com/" target="_blank" rel="noopener noreferrer">Anokhi Ada Store ↗</a></li>
+            <li><a href="../index.html#about">Interactive Physics Simulator</a></li>
+            <li><a href="index.html">Technical Blog Archive</a></li>
+          </ul>
+        </div>
+        <div class="footer-links-col">
+          <h5>Connect</h5>
+          <ul>
+            <li><a href="https://github.com/mazhar-in" target="_blank" rel="noopener noreferrer">GitHub (@mazhar-in)</a></li>
+            <li><a href="https://x.com/mazharin" target="_blank" rel="noopener noreferrer">X / Twitter (@mazharin)</a></li>
+            <li><a href="https://www.youtube.com/syedmazharali" target="_blank" rel="noopener noreferrer">YouTube (@syedmazharali)</a></li>
+            <li><a href="https://instagram.com/mazharin" target="_blank" rel="noopener noreferrer">Instagram (@mazharin)</a></li>
+            <li><a href="mailto:contact@mazhar.in">contact@mazhar.in</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <span>Designed &amp; Engineered by Syed Mazhar Ali</span>
+        <span>© 2026 mazhar.in • Pure Static Architecture</span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="../assets/js/main.js"></script>
+</body>
+</html>

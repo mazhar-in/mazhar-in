@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Deconstructing Rotational Dynamics: The Subtle Art of Angular Momentum &amp; Non-Inertial Rolling | Syed Mazhar Ali</title>
+  <meta name="description" content="A deep dive into decomposing complex planar rigid body motion, navigating instantaneous centers of rotation (ICOR), and avoiding the classical non-inertial torque pitfalls.">
+  <meta name="author" content="Syed Mazhar Ali">
+  <link rel="canonical" href="https://mazhar.in/deconstructing-rotational-dynamics/">
+
+  <!-- OpenGraph / Twitter Cards -->
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="Deconstructing Rotational Dynamics: The Subtle Art of Angular Momentum &amp; Non-Inertial Rolling">
+  <meta property="og:description" content="A deep dive into decomposing complex planar rigid body motion, navigating instantaneous centers of rotation (ICOR), and avoiding the classical non-inertial torque pitfalls.">
+  <meta property="og:url" content="https://mazhar.in/deconstructing-rotational-dynamics/">
+  <meta property="og:site_name" content="mazhar.in">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:creator" content="@mazharin">
+
+  <!-- Stylesheet -->
+  <link rel="stylesheet" href="../assets/css/style.css">
+
+  <!-- KaTeX CDN for Mathematical Physics Rendering -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css" crossorigin="anonymous">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js" crossorigin="anonymous"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js" crossorigin="anonymous"
+          onload="renderMathInElement(document.body, {
+            delimiters: [
+              {left: '$$', right: '$$', display: true},
+              {left: '$', right: '$', display: false},
+              {left: '\\(', right: '\\)', display: false},
+              {left: '\\[', right: '\\]', display: true}
+            ],
+            throwOnError: false
+          });"></script>
+
+  <!-- Schema.org Structured Data: BlogPosting -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    "headline": "Deconstructing Rotational Dynamics: The Subtle Art of Angular Momentum &amp; Non-Inertial Rolling",
+    "description": "A deep dive into decomposing complex planar rigid body motion, navigating instantaneous centers of rotation (ICOR), and avoiding the classical non-inertial torque pitfalls.",
+    "author": {
+      "@type": "Person",
+      "name": "Syed Mazhar Ali",
+      "url": "https://mazhar.in"
+    },
+    "datePublished": "2026-08-14",
+    "url": "https://mazhar.in/deconstructing-rotational-dynamics/",
+    "keywords": "Physics, Mechanics, JEE Advanced, Calculus"
+  }
+  </script>
+</head>
+<body>
+
+  <!-- Site Navigation Header -->
+  <header class="site-header">
+    <div class="container header-inner">
+      <a href="../index.html" class="site-logo">
+        <span class="logo-badge">M</span>
+        <span>mazhar<span style="color: var(--accent-cyan)">.in</span></span>
+      </a>
+
+      <nav>
+        <ul class="nav-menu">
+          <li><a href="../index.html#about" class="nav-link">About</a></li>
+          <li><a href="../index.html#focus" class="nav-link">Dual Core</a></li>
+          <li><a href="../index.html#projects" class="nav-link">Projects</a></li>
+          <li><a href="../blog/index.html" class="nav-link active">Blog</a></li>
+          <li><a href="../index.html#contact" class="nav-link">Contact</a></li>
+        </ul>
+      </nav>
+
+      <div class="header-actions">
+        <button class="theme-toggle-btn" id="themeToggleBtn" aria-label="Toggle dark/light theme">
+          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+        </button>
+        <a href="../index.html#projects" class="btn-cta">
+          <span>Explore Projects</span>
+          <span style="font-size: 1.1em">↓</span>
+        </a>
+        <button class="mobile-nav-toggle" aria-label="Toggle Navigation Menu">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Post Main Content -->
+  <main class="container-prose">
+    <article>
+      <header class="post-header">
+        <a href="../blog/index.html" class="post-back-link">
+          <span>←</span> Back to All Articles
+        </a>
+
+        <div class="post-meta">
+          <span>📅 August 14, 2026</span>
+          <span>•</span>
+          <span>⏱️ 7 min read</span>
+          <span>•</span>
+          <div class="article-tags-wrap" style="display: inline-flex;">
+            <span class="tag-badge">#Physics</span> <span class="tag-badge">#Mechanics</span> <span class="tag-badge">#JEE Advanced</span> <span class="tag-badge">#Calculus</span>
+          </div>
+        </div>
+
+        <h1 class="post-title">Deconstructing Rotational Dynamics: The Subtle Art of Angular Momentum &amp; Non-Inertial Rolling</h1>
+        <p class="post-lead">A deep dive into decomposing complex planar rigid body motion, navigating instantaneous centers of rotation (ICOR), and avoiding the classical non-inertial torque pitfalls.</p>
+      </header>
+
+      <!-- Markdown Rendered Body -->
+      <div class="prose">
+        <p>Rotational mechanics represents the ultimate litmus test for competitive physics aspirants. Unlike translational kinematics—where Newton's second law $\vec{F}_{\text{net}} = m\vec{a}$ provides an intuitive vector relation—rotational dynamics demands strict bookkeeping of coordinate origins, non-inertial reference frames, and angular momentum conservation.</p>
+
+<p>In this paper, we deconstruct the core analytical frameworks necessary to solve high-order planar rigid body problems without falling into the common trap of misidentifying instantaneous torque axes.</p>
+
+<hr style="border:0; border-top: 1px solid var(--border-subtle); margin: 2.5rem 0;">
+
+<h2>1. The Anatomy of Angular Momentum Decomposition</h2>
+
+<p>For any arbitrary system of particles or a continuous rigid body of total mass $M$, the total angular momentum $\vec{L}$ measured with respect to an arbitrary origin $O$ splits into two decoupled components:</p>
+
+<div class="math-block">$$
+\vec{L}_O = \vec{r}_{\text{cm}/O} \times M\vec{v}_{\text{cm}} + \sum_{i} \vec{r}'_i \times m_i \vec{v}'_i
+$$</div>
+
+<p>Where:</p>
+<ul><li>$\vec{r}_{\text{cm}/O}$ is the position vector of the center of mass relative to $O$.</li><li>$\vec{v}_{\text{cm}}$ is the velocity of the center of mass in the lab frame.</li><li>$\vec{r}'_i$ and $\vec{v}'_i$ denote positions and velocities evaluated strictly in the Center of Mass (CM) frame.</li></ul>
+
+<p>For planar rigid body dynamics where rotation occurs perpendicular to the plane of motion:</p>
+
+<div class="math-block">$$
+\vec{L}_O = \vec{r}_{\text{cm}/O} \times M\vec{v}_{\text{cm}} + I_{\text{cm}} \vec{\omega}
+$$</div>
+
+<blockquote><p><strong>Key Takeaway</strong>: The term $I_{\text{cm}} \vec{\omega}$ remains invariant regardless of the chosen origin $O$. Only the orbital term $\vec{r}_{\text{cm}/O} \times M\vec{v}_{\text{cm}}$ shifts when you choose a different reference origin.</p></blockquote>
+
+<hr style="border:0; border-top: 1px solid var(--border-subtle); margin: 2.5rem 0;">
+
+<h2>2. When Does $\vec{\tau}_P = \frac{d\vec{L}_P}{dt}$ Actually Hold?</h2>
+
+<p>One of the most frequent errors in competitive physics is applying the torque equation $\vec{\tau}_P = I_P \vec{\alpha}$ about an arbitrary accelerating point $P$.</p>
+
+<p>Let $P$ be an arbitrary reference point moving with acceleration $\vec{a}_P$ relative to an inertial frame. The generalized angular momentum rate equation is:</p>
+
+<div class="math-block">$$
+\vec{\tau}_P^{\text{ext}} = \frac{d\vec{L}_P}{dt} + \vec{v}_P \times M\vec{v}_{\text{cm}}
+$$</div>
+
+<p>Taking the time derivative yields the torque relation about point $P$:</p>
+
+<div class="math-block">$$
+\vec{\tau}_P^{\text{ext}} = I_{\text{cm}}\vec{\alpha} + \vec{r}_{\text{cm}/P} \times M(\vec{a}_{\text{cm}} - \vec{a}_P)
+$$</div>
+
+<p>Therefore, $\vec{\tau}_P^{\text{ext}} = I_P \vec{\alpha}$ is strictly valid <strong>if and only if</strong> one of the following three criteria is satisfied:</p>
+<ol><li><strong>$P$ is an inertial fixed point</strong> ($\vec{a}_P = \mathbf{0}$).</li><li><strong>$P$ is the center of mass</strong> of the body ($\vec{r}_{\text{cm}/P} = \mathbf{0}$).</li><li><strong>$\vec{a}_P$ is directed towards or away from the center of mass</strong>, making $\vec{r}_{\text{cm}/P} \parallel \vec{a}_P$.</li></ol>
+
+<pre><code class="language-text">           [ Pivot / Origin O ]
+                   |
+                   |  r_cm/O
+                   v
+             ( Center of Mass )
+                /          \
+            v_cm            \omega (spin)</code></pre>
+
+<hr style="border:0; border-top: 1px solid var(--border-subtle); margin: 2.5rem 0;">
+
+<h2>3. Rolling Without Slipping on Accelerating Boundaries</h2>
+
+<p>Consider a cylindrical shell or solid cylinder of mass $M$ and radius $R$ placed on a rough horizontal plank that accelerates with acceleration $\vec{a}_0$.</p>
+
+<p>The kinematic constraint for pure rolling at the contact point $C$ dictates:</p>
+
+<div class="math-block">$$
+\vec{v}_{\text{contact}} = \vec{v}_{\text{plank}}
+$$</div>
+
+<div class="math-block">$$
+\vec{a}_{\text{contact, tangential}} = \vec{a}_{\text{plank, tangential}}
+$$</div>
+
+<p>Expressing the contact point kinematics relative to the cylinder's center of mass:</p>
+
+<div class="math-block">$$
+\vec{a}_C = \vec{a}_{\text{cm}} + \vec{\alpha} \times \vec{r}_{C/\text{cm}} - \omega^2 \vec{r}_{C/\text{cm}}
+$$</div>
+
+<p>In the horizontal direction (taking rightwards as positive):</p>
+
+<div class="math-block">$$
+a_{\text{cm}} - \alpha R = a_0 \implies a_{\text{cm}} = a_0 + \alpha R
+$$</div>
+
+<h3>Energy Partitioning in Rolling</h3>
+
+<div class="math-block">$$
+K = \frac{1}{2} M v_{\text{cm}}^2 + \frac{1}{2} I_{\text{cm}} \omega^2
+$$</div>
+
+<p>For a body with radius of gyration $k$ satisfying pure rolling ($v_{\text{cm}} = \omega R$):</p>
+
+<div class="math-block">$$
+K = \frac{1}{2} M v_{\text{cm}}^2 \left(1 + \frac{k^2}{R^2}\right)
+$$</div>
+
+<div style="overflow-x:auto; margin: 1.75rem 0;"><table style="width:100%; border-collapse: collapse; border: 1px solid var(--border-subtle); background: var(--bg-glass-card); border-radius: var(--radius-md);"><thead><tr style="border-bottom: 2px solid var(--border-medium); background: var(--bg-tertiary);"><th style="padding: 0.75rem 1rem; text-align: left; font-family: var(--font-mono); font-size: 0.85rem; color: var(--text-primary);">Rigid Geometry</th><th style="padding: 0.75rem 1rem; text-align: left; font-family: var(--font-mono); font-size: 0.85rem; color: var(--text-primary);">$k^2/R^2$</th><th style="padding: 0.75rem 1rem; text-align: left; font-family: var(--font-mono); font-size: 0.85rem; color: var(--text-primary);">Translation %</th><th style="padding: 0.75rem 1rem; text-align: left; font-family: var(--font-mono); font-size: 0.85rem; color: var(--text-primary);">Rotation %</th></tr></thead><tbody><tr style="border-bottom: 1px solid var(--border-subtle);"><td style="padding: 0.65rem 1rem; font-size: 0.9rem; color: var(--text-secondary);">Thin Ring / Hoop</td><td style="padding: 0.65rem 1rem; font-size: 0.9rem; color: var(--text-secondary);">$1.00$</td><td style="padding: 0.65rem 1rem; font-size: 0.9rem; color: var(--text-secondary);">$50.0\%$</td><td style="padding: 0.65rem 1rem; font-size: 0.9rem; color: var(--text-secondary);">$50.0\%$</td></tr><tr style="border-bottom: 1px solid var(--border-subtle);"><td style="padding: 0.65rem 1rem; font-size: 0.9rem; color: var(--text-secondary);">Solid Cylinder / Disk</td><td style="padding: 0.65rem 1rem; font-size: 0.9rem; color: var(--text-secondary);">$0.50$</td><td style="padding: 0.65rem 1rem; font-size: 0.9rem; color: var(--text-secondary);">$66.7\%$</td><td style="padding: 0.65rem 1rem; font-size: 0.9rem; color: var(--text-secondary);">$33.3\%$</td></tr><tr style="border-bottom: 1px solid var(--border-subtle);"><td style="padding: 0.65rem 1rem; font-size: 0.9rem; color: var(--text-secondary);">Solid Sphere</td><td style="padding: 0.65rem 1rem; font-size: 0.9rem; color: var(--text-secondary);">$0.40$</td><td style="padding: 0.65rem 1rem; font-size: 0.9rem; color: var(--text-secondary);">$71.4\%$</td><td style="padding: 0.65rem 1rem; font-size: 0.9rem; color: var(--text-secondary);">$28.6\%$</td></tr><tr style="border-bottom: 1px solid var(--border-subtle);"><td style="padding: 0.65rem 1rem; font-size: 0.9rem; color: var(--text-secondary);">Spherical Shell</td><td style="padding: 0.65rem 1rem; font-size: 0.9rem; color: var(--text-secondary);">$0.67$</td><td style="padding: 0.65rem 1rem; font-size: 0.9rem; color: var(--text-secondary);">$60.0\%$</td><td style="padding: 0.65rem 1rem; font-size: 0.9rem; color: var(--text-secondary);">$40.0\%$</td></tr></tbody></table></div>
+
+<hr style="border:0; border-top: 1px solid var(--border-subtle); margin: 2.5rem 0;">
+
+<h2>4. Analytical Problem-Solving Heuristic</h2>
+
+<p>When approaching any non-standard JEE Advanced rotational mechanics problem:</p>
+
+<ol><li><strong>Draw the Free-Body Diagram with Spatial Precision</strong>: Do not draw forces emanating from the center of mass unless they are field forces (gravity). Normal forces and friction must stem exactly from their contact interfaces.</li><li><strong>Apply Linear Momentum</strong>:</li></ol>
+
+<div class="math-block">$$
+\sum \vec{F}_{\text{ext}} = M \vec{a}_{\text{cm}}
+$$</div>
+
+<ol><li><strong>Select Your Torque Pivot Carefully</strong>: Always default to the Center of Mass ($P = \text{CM}$) to completely eliminate fictitious pseudo-torques, or use the Instantaneous Center of Zero Velocity (ICOR) only when energy conservation is applicable.</li><li><strong>Enforce Kinematic Constraint Equations</strong>: Connect $a_{\text{cm}}$ and $\alpha$ using the non-slip boundary condition.</li></ol>
+
+<p>Mastering these four steps elevates mechanics from guesswork to deterministic mathematical analysis.</p>
+      </div>
+    </article>
+
+    <!-- Post Navigation & Next Steps -->
+    <div style="margin-top: 4rem; padding-top: 2rem; border-top: 1px solid var(--border-subtle); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+      <a href="../blog/index.html" class="btn-secondary">
+        <span>← All Articles</span>
+      </a>
+      <a href="../index.html#projects" class="btn-cta">
+        <span>Explore All Projects ↓</span>
+      </a>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <h4>mazhar<span style="color: var(--accent-cyan)">.in</span></h4>
+          <p>Syed Mazhar Ali — Senior Physics Trainer &amp; Education Tools Developer. Deconstructing mechanics &amp; electrodynamics for competitive aspirants; engineering high-speed testing engines and software.</p>
+        </div>
+        <div class="footer-links-col">
+          <h5>Running Projects</h5>
+          <ul>
+            <li><a href="https://tests.smaphysics.com/" target="_blank" rel="noopener noreferrer">SMA Test Portal ↗</a></li>
+            <li><a href="https://daily-practice-sheets-dpps.smaphysics.com/" target="_blank" rel="noopener noreferrer">Physics Worksheet Vault ↗</a></li>
+            <li><a href="https://anokhiada.com/" target="_blank" rel="noopener noreferrer">Anokhi Ada Store ↗</a></li>
+            <li><a href="../index.html#about">Interactive Physics Simulator</a></li>
+            <li><a href="../blog/index.html">Technical Blog Archive</a></li>
+          </ul>
+        </div>
+        <div class="footer-links-col">
+          <h5>Connect</h5>
+          <ul>
+            <li><a href="https://github.com/mazhar-in" target="_blank" rel="noopener noreferrer">GitHub (@mazhar-in)</a></li>
+            <li><a href="https://x.com/mazharin" target="_blank" rel="noopener noreferrer">X / Twitter (@mazharin)</a></li>
+            <li><a href="https://www.youtube.com/syedmazharali" target="_blank" rel="noopener noreferrer">YouTube (@syedmazharali)</a></li>
+            <li><a href="https://instagram.com/mazharin" target="_blank" rel="noopener noreferrer">Instagram (@mazharin)</a></li>
+            <li><a href="mailto:contact@mazhar.in">contact@mazhar.in</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <span>Designed &amp; Engineered by Syed Mazhar Ali</span>
+        <span>© 2026 mazhar.in • Pure Static Architecture</span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Core Scripts -->
+  <script src="../assets/js/main.js"></script>
+</body>
+</html>
