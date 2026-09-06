@@ -60,22 +60,34 @@
     // Mobile Navigation Toggle
     const mobileNavToggle = document.querySelector('.mobile-nav-toggle');
     const navMenu = document.querySelector('.nav-menu');
+    const hamburgerIcon = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>';
+    const closeIcon = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>';
+
     if (mobileNavToggle && navMenu) {
-      mobileNavToggle.addEventListener('click', () => {
-        navMenu.classList.toggle('open');
-        const isOpen = navMenu.classList.contains('open');
+      function closeNav() {
+        navMenu.classList.remove('open');
+        mobileNavToggle.setAttribute('aria-expanded', 'false');
+        mobileNavToggle.innerHTML = hamburgerIcon;
+      }
+
+      mobileNavToggle.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const isOpen = navMenu.classList.toggle('open');
         mobileNavToggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+        mobileNavToggle.innerHTML = isOpen ? closeIcon : hamburgerIcon;
       });
 
-      // Close mobile menu when clicking outside or on a link
-      document.addEventListener('click', e => {
+      // Close mobile menu when clicking outside
+      document.addEventListener('click', (e) => {
         if (!navMenu.contains(e.target) && !mobileNavToggle.contains(e.target)) {
-          navMenu.classList.remove('open');
+          closeNav();
         }
       });
+
+      // Close mobile menu when clicking any nav link
       navMenu.querySelectorAll('a').forEach(link => {
         link.addEventListener('click', () => {
-          navMenu.classList.remove('open');
+          closeNav();
         });
       });
     }
