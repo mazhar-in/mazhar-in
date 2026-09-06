@@ -64,4 +64,32 @@ $$
 python build.py
 ```
 
-This compiles your post into `blog/<slug>.html`, regenerates `blog/index.html`, and updates the Latest Articles section on the homepage (`index.html`).
+This compiles your post into `blog/<slug>.html`, regenerates `<slug>/index.html` (preserving root permalinks), `blog/index.html`, and updates the Latest Articles section on the homepage (`index.html`).
+
+---
+
+## Deploying on Render via GitHub
+
+### Step 1: Create a GitHub Repository & Push
+1. Create a new repository on your GitHub account: [github.com/new](https://github.com/new) (e.g. named `mazhar-in` or `mazhar.in`).
+2. Add the remote and push the `main` branch from your local terminal:
+```bash
+git remote add origin https://github.com/mazhar-in/<YOUR_REPO_NAME>.git
+git push -u origin main
+```
+
+### Step 2: Deploy on Render
+1. Log in to [dashboard.render.com](https://dashboard.render.com/).
+2. Click **New +** → **Static Site**.
+3. Connect your GitHub repository (`mazhar-in/<YOUR_REPO_NAME>`).
+4. Configure the build settings (or Render will automatically detect `render.yaml`):
+   - **Name**: `mazhar-in`
+   - **Branch**: `main`
+   - **Build Command**: `python build.py`
+   - **Publish Directory**: `.`
+5. Click **Create Static Site**. Render will run `python build.py` and deploy your site to an `onrender.com` URL within seconds.
+
+### Step 3: Add Custom Domain (`mazhar.in`)
+1. In your Render Static Site dashboard, go to **Settings** → **Custom Domains**.
+2. Add `mazhar.in` and `www.mazhar.in`.
+3. Update your DNS records (at your domain registrar or Cloudflare) with the CNAME / ALIAS records provided by Render. Render will automatically issue free, renewing SSL certificates!
