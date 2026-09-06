@@ -83,17 +83,33 @@ This compiles your post into:
 
 ---
 
-## Deploying on Render via GitHub
+## Option 1: Deploying on GitHub Pages (Recommended)
 
-### Step 1: Push Changes to GitHub
-Commit and push changes from your local repository:
-```bash
-git add .
-git commit -m "Update content"
-git push origin main
-```
+This repository includes a native GitHub Actions workflow (`.github/workflows/deploy.yml`), `CNAME`, and `.nojekyll` file.
 
-### Step 2: Render Static Site Configuration
+### Step 1: Enable GitHub Pages in Repository Settings
+1. Go to: **[github.com/mazhar-in/mazhar-in/settings/pages](https://github.com/mazhar-in/mazhar-in/settings/pages)**
+2. Under **Build and deployment** → **Source**, select:
+   👉 **GitHub Actions**
+3. That's it! GitHub Actions will automatically run `python build.py` and deploy your site to `https://mazhar.in` on every git push.
+
+### Step 2: Configure Custom Domain DNS (for `mazhar.in`)
+In your domain registrar / DNS provider (e.g. Cloudflare, Namecheap, Hostinger), add the official GitHub Pages DNS records:
+- **Apex domain (`mazhar.in`)**: Add 4 `A` records pointing to GitHub's IPs:
+  - `185.199.108.153`
+  - `185.199.109.153`
+  - `185.199.110.153`
+  - `185.199.111.153`
+- **Subdomain (`www.mazhar.in`)**: Add a `CNAME` record:
+  - Name: `www`
+  - Target: `mazhar-in.github.io`
+- On GitHub Pages settings, check **Enforce HTTPS**.
+
+---
+
+## Option 2: Deploying on Render via GitHub
+
+### Step 1: Render Static Site Configuration
 When configuring on [dashboard.render.com](https://dashboard.render.com/):
 - **Service Type**: Static Site (or Blueprint using `render.yaml`)
 - **Repository**: `mazhar-in/mazhar-in`
@@ -103,5 +119,5 @@ When configuring on [dashboard.render.com](https://dashboard.render.com/):
 
 Render will automatically run `python build.py` on every `git push` and deploy your site to the global CDN in seconds.
 
-### Step 3: Custom Domain (`mazhar.in`)
+### Step 2: Custom Domain on Render
 In Render **Settings** → **Custom Domains**, add `mazhar.in` and `www.mazhar.in`. Point your DNS records to the Render target host.
