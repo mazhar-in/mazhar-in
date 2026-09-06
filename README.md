@@ -1,95 +1,50 @@
-# mazhar.in — Static Personal Website & Blog
+# Syed Mazhar Ali
 
-A high-performance, strictly static personal portfolio and technical blog for **Syed Mazhar Ali** (`mazhar.in`), Senior Physics Trainer & Education Tools Developer.
+### Senior Physics Trainer & Education Tools Developer
 
-## Architecture Highlights
-- **Strictly Static**: Pure HTML5, modern CSS custom properties (Inter + JetBrains Mono), and vanilla JavaScript.
-- **Zero Build Dependencies**: Runs on standard Python 3.13 (`python build.py`) with **zero external libraries** or package installs (`no node_modules`, `no pip install`).
-- **Mathematical Physics Ready**: KaTeX integrated via CDN with automatic inline (`$...$`) and block (`$$...$$`) LaTeX equation rendering.
-- **Interactive Mechanics Engine**: Embedded client-side canvas simulator running real-time non-linear dynamics and vector telemetry.
-- **Dark & Light Mode**: Automated system preference detection with manual override persisted to `localStorage`.
-- **SEO & Social**: Structured data (`Person` and `BlogPosting` JSON-LD), OpenGraph, and Twitter Cards.
+> *Teaching high-order physics. Engineering the tools that teach it.*
+
+Deconstructing mechanics, electrodynamics, and calculus-driven physics for competitive JEE Advanced and NEET aspirants by day; architecting procedural testing engines, canvas visualizers, and educational software by night.
 
 ---
 
-## Directory Structure
+## 🚀 Active Projects & Running Platforms
+
+- **[SMA Test Portal](https://tests.smaphysics.com/)** (`tests.smaphysics.com`)  
+  High-throughput online computer-based test (CBT) examination runner mirroring NTA JEE Main, Advanced, and NEET test environments. Features real-time state tracking, sub-millisecond question switching, and instant KaTeX formula evaluation.
+
+- **[Physics Worksheet Vault](https://daily-practice-sheets-dpps.smaphysics.com/)** (`daily-practice-sheets-dpps.smaphysics.com`)  
+  Categorized archive of Daily Practice Problems (DPP) and physics worksheets covering classical mechanics, electrodynamics, optics, and modern physics with step-by-step analytical solutions.
+
+- **[Anokhi Ada](https://anokhiada.com/)** (`anokhiada.com`)  
+  Modern commercial e-commerce storefront for hair accessories, jewelry, and craft supplies in India with mobile-first cart operations, inventory management, and fast checkout flows.
+
+- **[mazhar.in](https://mazhar.in/)**  
+  Personal portfolio, interactive canvas mechanics simulation engine, and technical blog covering calculus-driven physics derivations and educational software architecture.
+
+---
+
+## 🛠️ Technical Capabilities & Focus
+
 ```
-mazhar.in/
-├── index.html                   # Landing page, dual-core showcase, projects, blog preview
-├── build.py                     # Standalone Python 3 static site & blog compiler
-├── blog/
-│   ├── index.html               # Article directory
-│   ├── deconstructing-rotational-dynamics.html
-│   └── building-sub-second-katex-quiz-engines.html
-├── content/
-│   └── posts/                   # Source Markdown (.md) posts
-│       ├── deconstructing-rotational-dynamics.md
-│       └── building-sub-second-katex-quiz-engines.md
-├── templates/
-│   ├── post_template.html       # Single blog post template with KaTeX CDN
-│   └── blog_index_template.html # Article archive layout
-└── assets/
-    ├── css/
-    │   └── style.css            # Complete design system & custom properties
-    └── js/
-        ├── main.js              # Theme manager, mobile navigation, code copying
-        └── physics-sim.js       # Live HTML5 canvas physics simulation
+Physics Pedagogy    : Classical Mechanics, Rotational Dynamics, Electrodynamics, Calculus
+Frontend & Web      : HTML5 Canvas, Vanilla JavaScript, CSS Custom Properties, Web Workers
+Math Typesetting    : KaTeX, LaTeX, MathML, AST Precompilation
+Backend & Automation: Python 3, Algorithmic Problem Synthesis, PDF Generation (WeasyPrint)
+Architecture        : Pure Static Systems, Zero-Latency CBT Engines, IndexedDB Offline Caching
 ```
 
 ---
 
-## Publishing New Blog Posts
+## 🌐 Connect & Social
 
-1. Create a new markdown file in `content/posts/<slug>.md`.
-2. Include YAML frontmatter at the top:
-```markdown
----
-title: "Your Article Title"
-date: "2026-09-10"
-tags: ["Physics", "Electrodynamics", "JEE Advanced"]
-description: "Brief summary of the article for previews and meta tags."
-slug: "your-article-slug"
-reading_time: "6 min read"
----
-
-Your markdown content here with inline math like $E = mc^2$ and block equations:
-
-$$
-\oint \vec{B} \cdot d\vec{\ell} = \mu_0 I_{\text{enc}}
-$$
-```
-
-3. Run the static compiler:
-```bash
-python build.py
-```
-
-This compiles your post into `blog/<slug>.html`, regenerates `<slug>/index.html` (preserving root permalinks), `blog/index.html`, and updates the Latest Articles section on the homepage (`index.html`).
+- 🌐 **Website**: [mazhar.in](https://mazhar.in/)
+- 📺 **YouTube**: [@syedmazharali](https://www.youtube.com/syedmazharali)
+- 𝕏 **(Twitter)**: [@mazharin](https://x.com/mazharin)
+- 📸 **Instagram**: [@mazharin](https://instagram.com/mazharin)
+- 💻 **GitHub**: [@mazhar-in](https://github.com/mazhar-in)
+- ✉️ **Email**: [contact@mazhar.in](mailto:contact@mazhar.in)
 
 ---
 
-## Deploying on Render via GitHub
-
-### Step 1: Create a GitHub Repository & Push
-1. Create a new repository on your GitHub account: [github.com/new](https://github.com/new) (e.g. named `mazhar-in` or `mazhar.in`).
-2. Add the remote and push the `main` branch from your local terminal:
-```bash
-git remote add origin https://github.com/mazhar-in/<YOUR_REPO_NAME>.git
-git push -u origin main
-```
-
-### Step 2: Deploy on Render
-1. Log in to [dashboard.render.com](https://dashboard.render.com/).
-2. Click **New +** → **Static Site**.
-3. Connect your GitHub repository (`mazhar-in/<YOUR_REPO_NAME>`).
-4. Configure the build settings (or Render will automatically detect `render.yaml`):
-   - **Name**: `mazhar-in`
-   - **Branch**: `main`
-   - **Build Command**: `python build.py`
-   - **Publish Directory**: `.`
-5. Click **Create Static Site**. Render will run `python build.py` and deploy your site to an `onrender.com` URL within seconds.
-
-### Step 3: Add Custom Domain (`mazhar.in`)
-1. In your Render Static Site dashboard, go to **Settings** → **Custom Domains**.
-2. Add `mazhar.in` and `www.mazhar.in`.
-3. Update your DNS records (at your domain registrar or Cloudflare) with the CNAME / ALIAS records provided by Render. Render will automatically issue free, renewing SSL certificates!
+<sub>Looking for website build and deployment instructions? See [SETUP.md](SETUP.md).</sub>
