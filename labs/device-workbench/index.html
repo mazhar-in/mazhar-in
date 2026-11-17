@@ -1,0 +1,618 @@
+<!DOCTYPE html>
+<html lang="en" class="dark" id="html-root">
+<head>
+  <title>Multi-Viewport Device Simulator & Layout Workbench | Mazhar's Lab</title>
+  <meta name="description" content="Tactile viewport and device simulator workbench for previewing interactive web apps across mobile, tablet, and desktop viewports.">
+  <link rel="canonical" href="https://mazhar.in/labs/device-workbench/">
+  <meta name="lab-category" content="Oddities & Uncategorized">
+  <meta name="lab-status" content="Living Prototype">
+  <meta name="lab-hook" content="LockInRank layout preview & multi-viewport responsive device simulator.">
+  <meta name="lab-tech" content="SVG, Tailwind, JavaScript">
+  <meta name="lab-tags" content="Viewport, Device Simulator, Dev Tool, Responsive">
+  <!-- Open Graph / SEO -->
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Multi-Viewport Device Simulator & Layout Workbench | Mazhar's Lab">
+  <meta property="og:description" content="Tactile viewport and device simulator workbench for previewing interactive web apps across mobile, tablet, and desktop viewports.">
+  <meta property="og:url" content="https://mazhar.in/labs/device-workbench/">
+  <!-- Schema.org WebApplication -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "Multi-Viewport Device Simulator & Layout Workbench | Mazhar's Lab",
+    "description": "Tactile viewport and device simulator workbench for previewing interactive web apps across mobile, tablet, and desktop viewports.",
+    "url": "https://mazhar.in/labs/device-workbench/",
+    "applicationCategory": "EducationalApplication",
+    "author": {
+      "@type": "Person",
+      "name": "Syed Mazhar Ali",
+      "url": "https://mazhar.in"
+    }
+  }
+  </script>
+
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Multi-Viewport Device Simulator & Layout Workbench | Mazhar's Lab</title>
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  
+  <!-- Tailwind CSS & Technical Fonts -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+            mono: ['JetBrains Mono', 'monospace'],
+          },
+          colors: {
+            surface: {
+              950: '#070A10',
+              900: '#0E131F',
+              850: '#131A2B',
+              800: '#1C263B',
+              700: '#2A3753'
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    .grid-pattern-dark {
+      background-size: 32px 32px;
+      background-image:
+        linear-gradient(to right, rgba(255, 255, 255, 0.025) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(255, 255, 255, 0.025) 1px, transparent 1px);
+    }
+    .grid-pattern-light {
+      background-size: 32px 32px;
+      background-image:
+        linear-gradient(to right, rgba(0, 0, 0, 0.05) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(0, 0, 0, 0.05) 1px, transparent 1px);
+    }
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: #2A3753; border-radius: 2px; }
+    ::-webkit-scrollbar-thumb:hover { background: #06B6D4; }
+
+    /* Simulated Device Chassis Styles */
+    .frame-desktop {
+      width: 100%;
+      max-width: 100%;
+      transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .frame-tablet {
+      width: 768px;
+      max-width: 100%;
+      border-left: 2px solid #06B6D4;
+      border-right: 2px solid #06B6D4;
+      box-shadow: 0 10px 40px -10px rgba(0,0,0,0.5);
+      transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .frame-mobile {
+      width: 390px;
+      max-width: 100%;
+      border-left: 2px solid #06B6D4;
+      border-right: 2px solid #06B6D4;
+      box-shadow: 0 10px 40px -10px rgba(6, 182, 212, 0.3);
+      transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+  </style>
+</head>
+
+<body id="body-node" class="bg-slate-200 dark:bg-[#03060B] text-slate-800 dark:text-slate-200 font-sans min-h-screen flex flex-col antialiased transition-colors duration-200">
+
+  <!-- ======================================================== -->
+  <!-- PREVIEW CONTROL TOOLBAR (ONLY ACTIVE IN PREVIEW MODE)   -->
+  <!-- ======================================================== -->
+  <aside id="preview-toolbar" class="bg-slate-900 border-b-2 border-cyan-500 px-3 sm:px-6 py-2.5 sticky top-0 z-[100] shadow-xl text-white">
+    <div class="max-w-[1400px] mx-auto flex flex-wrap items-center justify-between gap-3 text-xs font-mono">
+      
+      <!-- Left: Option Switcher Tabs -->
+      <div class="flex items-center gap-1.5">
+        <span class="text-slate-400 font-bold uppercase text-[10px] hidden sm:inline">Layout Options:</span>
+        <a href="option-1.html" class="px-2.5 py-1 rounded bg-cyan-500 text-slate-950 font-bold transition flex items-center gap-1">
+          <span>01</span> <span>Split-Cockpit</span>
+        </a>
+        <a href="option-2.html" class="px-2.5 py-1 rounded bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold transition flex items-center gap-1">
+          <span>02</span> <span>Multi-Pane</span>
+        </a>
+        <a href="option-3.html" class="px-2.5 py-1 rounded bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold transition flex items-center gap-1">
+          <span>03</span> <span>Impeccable Style</span>
+        </a>
+      </div>
+
+      <!-- Center: Device Viewport Switcher -->
+      <div class="flex items-center gap-1 bg-slate-950 p-1 rounded border border-slate-800">
+        <span class="text-[10px] text-slate-400 px-2 uppercase font-bold hidden sm:inline">Device Viewport:</span>
+        <button id="btn-device-desktop" onclick="setDeviceViewport('desktop')" class="px-2.5 py-1 rounded bg-cyan-500 text-slate-950 font-bold transition flex items-center gap-1">
+          <span>🖥</span> <span>Desktop</span>
+        </button>
+        <button id="btn-device-tablet" onclick="setDeviceViewport('tablet')" class="px-2.5 py-1 rounded text-slate-400 hover:text-white transition flex items-center gap-1">
+          <span>📟</span> <span>Tablet (768)</span>
+        </button>
+        <button id="btn-device-mobile" onclick="setDeviceViewport('mobile')" class="px-2.5 py-1 rounded text-slate-400 hover:text-white transition flex items-center gap-1">
+          <span>📱</span> <span>Mobile (390)</span>
+        </button>
+      </div>
+
+      <!-- Right: Color Appearance Switcher -->
+      <div class="flex items-center gap-1 bg-slate-950 p-1 rounded border border-slate-800">
+        <span class="text-[10px] text-slate-400 px-2 uppercase font-bold hidden sm:inline">Appearance:</span>
+        <button id="btn-theme-auto" onclick="setThemeMode('auto')" class="px-2.5 py-1 rounded text-slate-400 hover:text-white transition text-[11px]">
+          🌓 Auto
+        </button>
+        <button id="btn-theme-dark" onclick="setThemeMode('dark')" class="px-2.5 py-1 rounded bg-slate-800 text-cyan-300 font-bold transition text-[11px]">
+          🌙 Dark
+        </button>
+        <button id="btn-theme-light" onclick="setThemeMode('light')" class="px-2.5 py-1 rounded text-slate-400 hover:text-white transition text-[11px]">
+          ☀️ Light
+        </button>
+      </div>
+
+      <!-- Live Dimension Badge -->
+      <div class="hidden lg:flex items-center gap-1.5 text-slate-400 text-[11px]">
+        <span>Chassis:</span>
+        <span id="label-viewport-dimension" class="text-emerald-400 font-bold">Full Screen (100%)</span>
+      </div>
+
+    </div>
+  </aside>
+
+  <!-- ======================================================== -->
+  <!-- MAIN SIMULATED FRAME CONTAINER                           -->
+  <!-- ======================================================== -->
+  <div class="flex-grow flex justify-center w-full bg-slate-200 dark:bg-[#03060B] transition-colors duration-200">
+    <div id="simulated-viewport" class="frame-desktop flex flex-col min-h-full bg-white dark:bg-surface-950 border-x border-slate-300 dark:border-surface-800 transition-all duration-300 grid-pattern-dark shadow-2xl">
+
+      <!-- 1. TOP HARDWARE & TELEMETRY BAND -->
+      <div class="bg-slate-100 dark:bg-[#05080E] border-b border-slate-200 dark:border-surface-800/80 px-4 py-1.5 text-[11px] font-mono text-slate-600 dark:text-slate-400 flex flex-wrap items-center justify-between gap-2 transition-colors">
+        <div class="flex items-center gap-3">
+          <span class="flex items-center gap-1.5 text-emerald-600 dark:text-emerald-400 font-semibold">
+            <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+            <span id="telemetry-device-label">[DEVICE: AUTO-DETECTED]</span>
+          </span>
+          <span class="text-slate-400 dark:text-slate-600">|</span>
+          <span>NTA ENGINE: <span class="text-slate-800 dark:text-slate-300 font-semibold">v2.4-CBT</span></span>
+          <span class="text-slate-400 dark:text-slate-600 hidden sm:inline">|</span>
+          <span class="hidden sm:inline">STORAGE: <span class="text-cyan-700 dark:text-cyan-400 font-semibold">100% PRIVATE</span></span>
+        </div>
+        <div class="flex items-center gap-3 text-slate-600 dark:text-slate-400">
+          <span class="hidden md:inline">LATENCY: <span class="text-emerald-600 dark:text-emerald-400 font-semibold">0.0ms</span></span>
+          <span class="text-slate-400 dark:text-slate-600 hidden md:inline">|</span>
+          <span>AUTH: <span class="text-slate-900 dark:text-slate-200 font-semibold">ZERO-LOGIN</span></span>
+        </div>
+      </div>
+
+      <!-- 2. WORKSTATION HEADER -->
+      <header class="border-b border-slate-200 dark:border-surface-800 bg-white/95 dark:bg-surface-950/95 sticky top-0 z-40 backdrop-blur-sm transition-colors">
+        <div class="max-w-[1400px] mx-auto px-4 sm:px-6 h-14 flex items-center justify-between">
+          
+          <!-- Brand & Coordinates -->
+          <div class="flex items-center gap-3 sm:gap-4">
+            <a href="/" class="flex items-center gap-2.5 group">
+              <div class="w-7 h-7 flex items-center justify-center bg-slate-100 dark:bg-surface-900 border border-slate-300 dark:border-surface-700 rounded group-hover:border-cyan-500 transition">
+                <svg class="w-4 h-4" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M24 52V24H52" stroke="#06B6D4" stroke-width="10" stroke-linecap="square"/>
+                  <path d="M76 48V76H48" stroke="#06B6D4" stroke-width="10" stroke-linecap="square"/>
+                  <path d="M34 66L66 34" stroke="#10B981" stroke-width="10" stroke-linecap="square"/>
+                  <path d="M50 34H66V50" stroke="#10B981" stroke-width="10" stroke-linecap="square"/>
+                </svg>
+              </div>
+              <div class="font-mono text-sm sm:text-base font-bold tracking-tight text-slate-900 dark:text-white">
+                lockin<span class="text-cyan-600 dark:text-cyan-400">rank</span>
+                <span class="text-slate-400 text-xs font-normal ml-1.5 hidden sm:inline">// workbench</span>
+              </div>
+            </a>
+          </div>
+
+          <!-- Quick Directory Access -->
+          <nav class="flex items-center gap-1 font-mono text-xs">
+            <a href="/jee/" class="px-2 sm:px-2.5 py-1 rounded text-cyan-700 dark:text-cyan-400 hover:bg-slate-100 dark:hover:bg-surface-900 transition font-semibold">/jee</a>
+            <a href="/neet/" class="px-2 sm:px-2.5 py-1 rounded text-emerald-700 dark:text-emerald-400 hover:bg-slate-100 dark:hover:bg-surface-900 transition font-semibold">/neet</a>
+            <a href="/lab/" class="px-2 sm:px-2.5 py-1 rounded text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-surface-900 transition">/lab</a>
+            <a href="/about/" class="px-2 sm:px-2.5 py-1 rounded text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition">/about</a>
+          </nav>
+
+        </div>
+      </header>
+
+      <!-- 3. MAIN WORKBENCH VIEWPORT (SPLIT-PANE COCKPIT) -->
+      <main class="flex-grow max-w-[1400px] w-full mx-auto px-4 sm:px-6 py-6 space-y-6">
+
+        <!-- SPLIT-PANE CONTAINER -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+
+          <!-- LEFT COLUMN: COMMAND & ENGINE SPEC (5 COLS) -->
+          <section class="lg:col-span-5 space-y-5">
+            
+            <!-- Mission Terminal Box -->
+            <div class="bg-white dark:bg-surface-900 border border-slate-200 dark:border-surface-800 rounded-md border-t-2 border-t-cyan-500 p-5 sm:p-6 space-y-4 shadow-sm transition-colors">
+              <div class="flex items-center justify-between text-xs font-mono">
+                <span class="text-cyan-700 dark:text-cyan-400 font-bold">[ENGINEERING_BRIEF]</span>
+                <span class="text-slate-400 dark:text-slate-500">ID: NTA-EXEC</span>
+              </div>
+
+              <h1 class="text-2xl sm:text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white leading-tight font-sans">
+                Precision Exam Workbench.<br>
+                <span class="text-cyan-600 dark:text-cyan-400">Zero Commercial Fluff.</span>
+              </h1>
+
+              <p class="text-xs sm:text-sm text-slate-600 dark:text-slate-300 leading-relaxed font-normal">
+                Engineered for serious JEE and NEET aspirants. No phone number capture, zero gamified confetti, and no cloud latency. Practice authentic NTA timed papers with client-side execution.
+              </p>
+
+              <!-- Core Mechanical Pillars -->
+              <div class="border-t border-slate-200 dark:border-surface-800 pt-4 space-y-2 text-xs font-mono">
+                <div class="flex items-start gap-2 text-slate-700 dark:text-slate-300">
+                  <span class="text-emerald-600 dark:text-emerald-400 font-bold">&gt;</span>
+                  <div><strong class="text-slate-900 dark:text-white">Split-JSON Security:</strong> Solutions remain detached from your device until final test submission.</div>
+                </div>
+                <div class="flex items-start gap-2 text-slate-700 dark:text-slate-300">
+                  <span class="text-cyan-600 dark:text-cyan-400 font-bold">&gt;</span>
+                  <div><strong class="text-slate-900 dark:text-white">Authentic NTA Palettes:</strong> Not Visited, Not Answered, Answered, Marked for Review.</div>
+                </div>
+                <div class="flex items-start gap-2 text-slate-700 dark:text-slate-300">
+                  <span class="text-amber-600 dark:text-amber-400 font-bold">&gt;</span>
+                  <div><strong class="text-slate-900 dark:text-white">Native KaTeX:</strong> Instant mathematical equations with zero scanned JPEG artifacts.</div>
+                </div>
+              </div>
+
+              <!-- Quick Engine Launch Buttons -->
+              <div class="pt-2 grid grid-cols-2 gap-2 font-mono text-xs">
+                <a href="/jee/" class="py-2.5 px-3 rounded bg-cyan-600 dark:bg-cyan-500 hover:bg-cyan-500 dark:hover:bg-cyan-400 text-white dark:text-surface-950 font-bold text-center transition uppercase tracking-wider">
+                  Launch JEE &rarr;
+                </a>
+                <a href="/neet/" class="py-2.5 px-3 rounded bg-emerald-600 dark:bg-emerald-500 hover:bg-emerald-500 dark:hover:bg-emerald-400 text-white dark:text-surface-950 font-bold text-center transition uppercase tracking-wider">
+                  Launch NEET &rarr;
+                </a>
+              </div>
+            </div>
+
+            <!-- Telemetry & Grounding Card -->
+            <div class="bg-white dark:bg-surface-900 border border-slate-200 dark:border-surface-800 rounded-md border-t-2 border-t-emerald-500 p-4 space-y-3 font-mono text-xs shadow-sm transition-colors">
+              <div class="flex justify-between items-center text-slate-500 dark:text-slate-400">
+                <span>// ARCHITECT_GROUNDING</span>
+                <span class="text-emerald-600 dark:text-emerald-400 font-bold">[VERIFIED]</span>
+              </div>
+              <p class="text-slate-600 dark:text-slate-300 text-[11px] leading-relaxed">
+                "Built out of direct frustration with predatory ed-tech paywalls, phone-number tracking, and sluggish web apps. LockInRank will remain 100% free, private, and distraction-free."
+              </p>
+              <div class="text-[11px] text-slate-500 dark:text-slate-500 pt-2 border-t border-slate-200 dark:border-surface-800 flex justify-between">
+                <span class="font-bold text-slate-800 dark:text-slate-300">Syed Mazhar Ali</span>
+                <span>JEE Physics Mentor &amp; Architect</span>
+              </div>
+            </div>
+
+          </section>
+
+          <!-- RIGHT COLUMN: DENSE TESTING DIRECTORY & LEDGER (7 COLS) -->
+          <section class="lg:col-span-7 space-y-4">
+            
+            <!-- Ledger Header & Filter Strip -->
+            <div class="bg-white dark:bg-surface-900 border border-slate-200 dark:border-surface-800 rounded-md p-3 flex flex-wrap items-center justify-between gap-3 shadow-sm transition-colors">
+              <div class="flex items-center gap-2 font-mono text-xs">
+                <span class="text-slate-900 dark:text-white font-bold">// ASSESSMENT_DIRECTORY</span>
+                <span id="active-filter-label" class="text-slate-500 text-[11px]">[FILTER: ALL PAPERS]</span>
+              </div>
+
+              <!-- Filter Pills -->
+              <div class="flex items-center gap-1 font-mono text-[11px]">
+                <button onclick="filterLedger('all')" id="flt-all" class="px-2.5 py-1 rounded bg-cyan-600 dark:bg-cyan-500 text-white dark:text-surface-950 font-bold transition">ALL</button>
+                <button onclick="filterLedger('jee')" id="flt-jee" class="px-2.5 py-1 rounded text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-surface-800 transition">JEE</button>
+                <button onclick="filterLedger('neet')" id="flt-neet" class="px-2.5 py-1 rounded text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-surface-800 transition">NEET</button>
+                <button onclick="filterLedger('lab')" id="flt-lab" class="px-2.5 py-1 rounded text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-surface-800 transition">LAB</button>
+              </div>
+            </div>
+
+            <!-- High-Density Data Table / Directory Rows -->
+            <div class="bg-white dark:bg-surface-900 border border-slate-200 dark:border-surface-800 rounded-md overflow-hidden shadow-sm transition-colors">
+              <div class="overflow-x-auto">
+                <table class="w-full text-left text-xs font-mono">
+                  <thead class="bg-slate-100 dark:bg-surface-950 text-slate-600 dark:text-slate-400 text-[11px] border-b border-slate-200 dark:border-surface-800 transition-colors">
+                    <tr>
+                      <th class="py-2.5 px-3">CODE</th>
+                      <th class="py-2.5 px-3">ASSESSMENT / CHAPTER</th>
+                      <th class="py-2.5 px-3">SPECS</th>
+                      <th class="py-2.5 px-3">SCHEME</th>
+                      <th class="py-2.5 px-3 text-right">ACTION</th>
+                    </tr>
+                  </thead>
+                  <tbody id="ledger-tbody" class="divide-y divide-slate-200 dark:divide-surface-800/80 text-slate-700 dark:text-slate-300 transition-colors">
+
+                    <!-- Row 1: JEE PST-01 -->
+                    <tr data-category="jee" class="hover:bg-slate-50 dark:hover:bg-surface-850/60 transition group">
+                      <td class="py-3 px-3">
+                        <span class="text-cyan-700 dark:text-cyan-400 font-bold">JEE-PST-01</span>
+                      </td>
+                      <td class="py-3 px-3">
+                        <div class="text-slate-900 dark:text-white font-bold font-sans text-xs group-hover:text-cyan-600 dark:group-hover:text-cyan-400 transition">
+                          Predictive Full Mock PST-01
+                        </div>
+                        <div class="text-slate-500 text-[11px]">Physics &bull; Chemistry &bull; Mathematics</div>
+                      </td>
+                      <td class="py-3 px-3 text-slate-600 dark:text-slate-400">
+                        <div class="font-semibold text-slate-900 dark:text-slate-200">75 Qs</div>
+                        <div class="text-[10px] text-slate-400 dark:text-slate-500">180 Mins</div>
+                      </td>
+                      <td class="py-3 px-3">
+                        <span class="text-emerald-700 dark:text-emerald-400 font-bold">+4 / -1</span>
+                      </td>
+                      <td class="py-3 px-3 text-right">
+                        <a href="/jee/test-series.html" class="inline-block px-3 py-1.5 rounded bg-slate-100 dark:bg-surface-800 hover:bg-cyan-600 hover:text-white dark:hover:bg-cyan-500 dark:hover:text-surface-950 text-cyan-700 dark:text-cyan-400 font-bold text-[11px] border border-cyan-500/40 transition">
+                          [START]
+                        </a>
+                      </td>
+                    </tr>
+
+                    <!-- Row 2: NEET Mock Test -->
+                    <tr data-category="neet" class="hover:bg-slate-50 dark:hover:bg-surface-850/60 transition group">
+                      <td class="py-3 px-3">
+                        <span class="text-emerald-700 dark:text-emerald-400 font-bold">NEET-CH-01</span>
+                      </td>
+                      <td class="py-3 px-3">
+                        <div class="text-slate-900 dark:text-white font-bold font-sans text-xs group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition">
+                          The Living World (NCERT Core CBT)
+                        </div>
+                        <div class="text-slate-500 text-[11px]">Botany &bull; Line-by-Line NCERT Target</div>
+                      </td>
+                      <td class="py-3 px-3 text-slate-600 dark:text-slate-400">
+                        <div class="font-semibold text-slate-900 dark:text-slate-200">45 Qs</div>
+                        <div class="text-[10px] text-slate-400 dark:text-slate-500">60 Mins</div>
+                      </td>
+                      <td class="py-3 px-3">
+                        <span class="text-emerald-700 dark:text-emerald-400 font-bold">+4 / -1</span>
+                      </td>
+                      <td class="py-3 px-3 text-right">
+                        <a href="/neet/test/?id=neet-bio-01-the-living-world" class="inline-block px-3 py-1.5 rounded bg-slate-100 dark:bg-surface-800 hover:bg-emerald-600 hover:text-white dark:hover:bg-emerald-500 dark:hover:text-surface-950 text-emerald-700 dark:text-emerald-400 font-bold text-[11px] border border-emerald-500/40 transition">
+                          [START]
+                        </a>
+                      </td>
+                    </tr>
+
+                    <!-- Row 3: Physics Lab -->
+                    <tr data-category="lab" class="hover:bg-slate-50 dark:hover:bg-surface-850/60 transition group">
+                      <td class="py-3 px-3">
+                        <span class="text-amber-700 dark:text-amber-400 font-bold">LAB-SIM-01</span>
+                      </td>
+                      <td class="py-3 px-3">
+                        <div class="text-slate-900 dark:text-white font-bold font-sans text-xs group-hover:text-amber-600 dark:group-hover:text-amber-400 transition">
+                          Vernier Calliper &amp; Screw Gauge
+                        </div>
+                        <div class="text-slate-500 text-[11px]">Experimental Skills &bull; Zero Error Mechanics</div>
+                      </td>
+                      <td class="py-3 px-3 text-slate-600 dark:text-slate-400">
+                        <div class="font-semibold text-slate-900 dark:text-slate-200">60 FPS</div>
+                        <div class="text-[10px] text-slate-400 dark:text-slate-500">Canvas 2D</div>
+                      </td>
+                      <td class="py-3 px-3">
+                        <span class="text-slate-600 dark:text-slate-400">Interactive</span>
+                      </td>
+                      <td class="py-3 px-3 text-right">
+                        <a href="/lab/visualizer.html?lab=vernier" class="inline-block px-3 py-1.5 rounded bg-slate-100 dark:bg-surface-800 hover:bg-amber-600 hover:text-white dark:hover:bg-amber-500 dark:hover:text-surface-950 text-amber-700 dark:text-amber-400 font-bold text-[11px] border border-amber-500/40 transition">
+                          [LAUNCH]
+                        </a>
+                      </td>
+                    </tr>
+
+                    <!-- Row 4: NEET DPP -->
+                    <tr data-category="neet" class="hover:bg-slate-50 dark:hover:bg-surface-850/60 transition group">
+                      <td class="py-3 px-3">
+                        <span class="text-purple-700 dark:text-purple-400 font-bold">NEET-DPP-04</span>
+                      </td>
+                      <td class="py-3 px-3">
+                        <div class="text-slate-900 dark:text-white font-bold font-sans text-xs group-hover:text-purple-600 dark:group-hover:text-purple-400 transition">
+                          Chemical Bonding &amp; Molecular Structure
+                        </div>
+                        <div class="text-slate-500 text-[11px]">Chemistry &bull; VSEPR &amp; Hybridization Drill</div>
+                      </td>
+                      <td class="py-3 px-3 text-slate-600 dark:text-slate-400">
+                        <div class="font-semibold text-slate-900 dark:text-slate-200">25 Qs</div>
+                        <div class="text-[10px] text-slate-400 dark:text-slate-500">40 Mins</div>
+                      </td>
+                      <td class="py-3 px-3">
+                        <span class="text-emerald-700 dark:text-emerald-400 font-bold">+4 / -1</span>
+                      </td>
+                      <td class="py-3 px-3 text-right">
+                        <a href="/neet/dpp.html?chapter=Chemical%20Bonding%20and%20Molecular%20Structure&dpp=1" class="inline-block px-3 py-1.5 rounded bg-slate-100 dark:bg-surface-800 hover:bg-purple-600 hover:text-white dark:hover:bg-purple-500 dark:hover:text-surface-950 text-purple-700 dark:text-purple-400 font-bold text-[11px] border border-purple-500/40 transition">
+                          [SOLVE]
+                        </a>
+                      </td>
+                    </tr>
+
+                    <!-- Row 5: Wheatstone Bridge Lab -->
+                    <tr data-category="lab" class="hover:bg-slate-50 dark:hover:bg-surface-850/60 transition group">
+                      <td class="py-3 px-3">
+                        <span class="text-amber-700 dark:text-amber-400 font-bold">LAB-SIM-02</span>
+                      </td>
+                      <td class="py-3 px-3">
+                        <div class="text-slate-900 dark:text-white font-bold font-sans text-xs group-hover:text-amber-600 dark:group-hover:text-amber-400 transition">
+                          Wheatstone Bridge &amp; Metre Wire
+                        </div>
+                        <div class="text-slate-500 text-[11px]">Current Electricity &bull; Null Deflection Galvanometer</div>
+                      </td>
+                      <td class="py-3 px-3 text-slate-600 dark:text-slate-400">
+                        <div class="font-semibold text-slate-900 dark:text-slate-200">Real-Time</div>
+                        <div class="text-[10px] text-slate-400 dark:text-slate-500">SVG Vectors</div>
+                      </td>
+                      <td class="py-3 px-3">
+                        <span class="text-slate-600 dark:text-slate-400">Interactive</span>
+                      </td>
+                      <td class="py-3 px-3 text-right">
+                        <a href="/lab/visualizer.html?lab=wheatstone" class="inline-block px-3 py-1.5 rounded bg-slate-100 dark:bg-surface-800 hover:bg-amber-600 hover:text-white dark:hover:bg-amber-500 dark:hover:text-surface-950 text-amber-700 dark:text-amber-400 font-bold text-[11px] border border-amber-500/40 transition">
+                          [LAUNCH]
+                        </a>
+                      </td>
+                    </tr>
+
+                  </tbody>
+                </table>
+              </div>
+
+              <!-- Ledger Footer -->
+              <div class="bg-slate-100 dark:bg-surface-950/80 px-4 py-2 text-[11px] font-mono text-slate-500 border-t border-slate-200 dark:border-surface-800 flex items-center justify-between transition-colors">
+                <span>Displaying active verified testing ledger</span>
+                <a href="/jee/" class="text-cyan-700 dark:text-cyan-400 hover:underline font-semibold">View archive &rarr;</a>
+              </div>
+            </div>
+
+          </section>
+
+        </div>
+
+      </main>
+
+      <!-- 4. TECHNICAL FOOTER -->
+      <footer class="border-t border-slate-200 dark:border-surface-800 bg-slate-100 dark:bg-[#05080E] py-4 text-xs font-mono text-slate-600 dark:text-slate-500 transition-colors">
+        <div class="max-w-[1400px] mx-auto px-4 sm:px-6 flex flex-col sm:flex-row items-center justify-between gap-3">
+          <div>
+            &copy; 2026 lockinrank.com &bull; Engineered by <span class="text-slate-900 dark:text-slate-300 font-bold">Syed Mazhar Ali</span> &bull; Pure practice. Zero noise.
+          </div>
+          <div class="flex items-center gap-3">
+            <a href="/jee/" class="hover:text-cyan-700 dark:hover:text-cyan-400 transition font-semibold">/jee</a>
+            <a href="/neet/" class="hover:text-emerald-700 dark:hover:text-emerald-400 transition font-semibold">/neet</a>
+            <a href="/lab/" class="hover:text-amber-700 dark:hover:text-amber-400 transition font-semibold">/lab</a>
+            <span class="text-slate-400 dark:text-slate-700">|</span>
+            <span class="text-emerald-700 dark:text-emerald-400 font-bold">[DEVICE SIMULATOR ACTIVE]</span>
+          </div>
+        </div>
+      </footer>
+
+    </div>
+  </div>
+
+  <!-- ======================================================== -->
+  <!-- PREVIEW INTERACTION LOGIC (DEVICE & THEME SWITCHER)       -->
+  <!-- ======================================================== -->
+  <script>
+    let currentViewport = 'desktop';
+    let currentTheme = 'dark';
+
+    // 1. Auto-detect real device on initial load
+    function autoDetectDeviceAndTheme() {
+      const screenW = window.innerWidth;
+      const isMobile = screenW < 768;
+      const isTablet = screenW >= 768 && screenW < 1024;
+      
+      const devName = isMobile ? 'Mobile Phone' : (isTablet ? 'Tablet' : 'Desktop Workstation');
+      document.getElementById('telemetry-device-label').textContent = `[HARDWARE: ${devName.toUpperCase()}]`;
+
+      // Check if user's OS prefers dark or light
+      const isSystemDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+      // Default to dark or system
+      setThemeMode('dark');
+    }
+
+    // 2. Set Device Viewport Mode
+    function setDeviceViewport(mode) {
+      currentViewport = mode;
+      const viewportEl = document.getElementById('simulated-viewport');
+      const labelEl = document.getElementById('label-viewport-dimension');
+
+      // Reset button states
+      document.getElementById('btn-device-desktop').className = 'px-2.5 py-1 rounded text-slate-400 hover:text-white transition flex items-center gap-1';
+      document.getElementById('btn-device-tablet').className = 'px-2.5 py-1 rounded text-slate-400 hover:text-white transition flex items-center gap-1';
+      document.getElementById('btn-device-mobile').className = 'px-2.5 py-1 rounded text-slate-400 hover:text-white transition flex items-center gap-1';
+
+      const isDark = document.getElementById('html-root').classList.contains('dark');
+      const patternClass = isDark ? 'grid-pattern-dark' : 'grid-pattern-light';
+
+      if (mode === 'desktop') {
+        viewportEl.className = `frame-desktop flex flex-col min-h-full bg-white dark:bg-surface-950 border-x border-slate-300 dark:border-surface-800 transition-all duration-300 ${patternClass} shadow-2xl`;
+        document.getElementById('btn-device-desktop').className = 'px-2.5 py-1 rounded bg-cyan-500 text-slate-950 font-bold transition flex items-center gap-1';
+        labelEl.textContent = 'Full Screen (100%)';
+      } else if (mode === 'tablet') {
+        viewportEl.className = `frame-tablet flex flex-col min-h-full bg-white dark:bg-surface-950 border-x-2 border-cyan-500 transition-all duration-300 ${patternClass} my-4 rounded-lg overflow-hidden shadow-2xl`;
+        document.getElementById('btn-device-tablet').className = 'px-2.5 py-1 rounded bg-cyan-500 text-slate-950 font-bold transition flex items-center gap-1';
+        labelEl.textContent = 'Tablet (768px)';
+      } else if (mode === 'mobile') {
+        viewportEl.className = `frame-mobile flex flex-col min-h-full bg-white dark:bg-surface-950 border-x-2 border-cyan-500 transition-all duration-300 ${patternClass} my-4 rounded-xl overflow-hidden shadow-2xl`;
+        document.getElementById('btn-device-mobile').className = 'px-2.5 py-1 rounded bg-cyan-500 text-slate-950 font-bold transition flex items-center gap-1';
+        labelEl.textContent = 'Mobile Phone (390px)';
+      }
+    }
+
+    // 3. Set Theme Mode
+    function setThemeMode(theme) {
+      currentTheme = theme;
+      
+      document.getElementById('btn-theme-auto').className = 'px-2.5 py-1 rounded text-slate-400 hover:text-white transition text-[11px]';
+      document.getElementById('btn-theme-dark').className = 'px-2.5 py-1 rounded text-slate-400 hover:text-white transition text-[11px]';
+      document.getElementById('btn-theme-light').className = 'px-2.5 py-1 rounded text-slate-400 hover:text-white transition text-[11px]';
+
+      if (theme === 'auto') {
+        document.getElementById('btn-theme-auto').className = 'px-2.5 py-1 rounded bg-cyan-500 text-slate-950 font-bold transition text-[11px]';
+      } else if (theme === 'dark') {
+        document.getElementById('btn-theme-dark').className = 'px-2.5 py-1 rounded bg-cyan-500 text-slate-950 font-bold transition text-[11px]';
+      } else if (theme === 'light') {
+        document.getElementById('btn-theme-light').className = 'px-2.5 py-1 rounded bg-amber-400 text-slate-950 font-bold transition text-[11px]';
+      }
+
+      applyTheme(theme);
+    }
+
+    function applyTheme(theme) {
+      const html = document.getElementById('html-root');
+      const viewportEl = document.getElementById('simulated-viewport');
+      const isSystemDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+      
+      const shouldBeDark = theme === 'dark' || (theme === 'auto' && isSystemDark);
+
+      if (shouldBeDark) {
+        html.classList.add('dark');
+        viewportEl.classList.remove('grid-pattern-light');
+        viewportEl.classList.add('grid-pattern-dark');
+      } else {
+        html.classList.remove('dark');
+        viewportEl.classList.remove('grid-pattern-dark');
+        viewportEl.classList.add('grid-pattern-light');
+      }
+    }
+
+    // 4. Ledger Filtering
+    function filterLedger(category) {
+      const rows = document.querySelectorAll('#ledger-tbody tr');
+      const buttons = {
+        all: document.getElementById('flt-all'),
+        jee: document.getElementById('flt-jee'),
+        neet: document.getElementById('flt-neet'),
+        lab: document.getElementById('flt-lab'),
+      };
+
+      const isDark = document.getElementById('html-root').classList.contains('dark');
+      const inactiveClass = 'px-2.5 py-1 rounded text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-surface-800 transition';
+      const activeClass = 'px-2.5 py-1 rounded bg-cyan-600 dark:bg-cyan-500 text-white dark:text-surface-950 font-bold transition';
+
+      Object.values(buttons).forEach(btn => {
+        btn.className = inactiveClass;
+      });
+
+      if (buttons[category]) {
+        buttons[category].className = activeClass;
+      }
+
+      document.getElementById('active-filter-label').textContent = `[FILTER: ${category.toUpperCase()}]`;
+
+      rows.forEach(r => {
+        if (category === 'all' || r.getAttribute('data-category') === category) {
+          r.classList.remove('hidden');
+        } else {
+          r.classList.add('hidden');
+        }
+      });
+    }
+
+    // Initialize on load
+    window.addEventListener('DOMContentLoaded', autoDetectDeviceAndTheme);
+  </script>
+
+</body>
+</html>

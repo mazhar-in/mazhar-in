@@ -1,0 +1,2848 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>PowerCraft: The Power Rule Crucible | Mazhar's Lab</title>
+  <meta name="description" content="Fast-paced differential calculus game loop and polynomial crafting engine exploring dynamic derivative reflexes.">
+  <link rel="canonical" href="https://mazhar.in/labs/powercraft/">
+  <meta name="lab-category" content="Calculus & Math Machines">
+  <meta name="lab-status" content="Living Prototype">
+  <meta name="lab-hook" content="The power rule crucible: rapid differential calculus game loop and polynomial crafting.">
+  <meta name="lab-tech" content="Canvas, KaTeX, Audio / TTS">
+  <meta name="lab-tags" content="Calculus, Derivatives, Power Rule, Math Game">
+  <!-- Open Graph / SEO -->
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="PowerCraft: The Power Rule Crucible | Mazhar's Lab">
+  <meta property="og:description" content="Fast-paced differential calculus game loop and polynomial crafting engine exploring dynamic derivative reflexes.">
+  <meta property="og:url" content="https://mazhar.in/labs/powercraft/">
+  <!-- Schema.org WebApplication -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "PowerCraft: The Power Rule Crucible | Mazhar's Lab",
+    "description": "Fast-paced differential calculus game loop and polynomial crafting engine exploring dynamic derivative reflexes.",
+    "url": "https://mazhar.in/labs/powercraft/",
+    "applicationCategory": "EducationalApplication",
+    "author": {
+      "@type": "Person",
+      "name": "Syed Mazhar Ali",
+      "url": "https://mazhar.in"
+    }
+  }
+  </script>
+
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>PowerCraft: The Power Rule Crucible | Mazhar's Lab</title>
+  
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- KaTeX core CSS & JS -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+  <!-- KaTeX Auto-Render Extension for complete, seamless LaTeX parsing -->
+  <script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+
+  <!-- Canvas Confetti for celebrations -->
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js"></script>
+
+  <style>
+    :root {
+      --bg-space: #030712;
+      --bg-card: rgba(15, 23, 42, 0.9);
+      --bg-card-hover: rgba(30, 41, 59, 0.95);
+      --border-subtle: rgba(255, 255, 255, 0.08);
+      --border-glow: rgba(6, 182, 212, 0.35);
+      
+      --cyan-deriv: #06b6d4;
+      --cyan-glow: rgba(6, 182, 212, 0.3);
+      --violet-integ: #a855f7;
+      --violet-glow: rgba(168, 85, 247, 0.3);
+      --amber-hint: #f59e0b;
+      --amber-glow: rgba(245, 158, 11, 0.3);
+      --emerald-correct: #10b981;
+      --rose-wrong: #f43f5e;
+      --slate-text: #94a3b8;
+      --light-text: #f8fafc;
+      
+      --font-ui: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+      --font-mono: 'Fira Code', monospace;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      user-select: none;
+      -webkit-user-select: none;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    html, body {
+      width: 100%;
+      height: 100%;
+      height: 100dvh;
+      max-height: 100vh;
+      max-height: 100dvh;
+      overflow: hidden !important; /* Strict zero-scroll guarantee */
+      background-color: var(--bg-space);
+      color: var(--light-text);
+      font-family: var(--font-ui);
+    }
+
+    body {
+      display: flex;
+      flex-direction: column;
+      background-image: 
+        radial-gradient(ellipse 70% 35% at 50% -10%, rgba(6, 182, 212, 0.12), transparent),
+        radial-gradient(ellipse 70% 35% at 50% 110%, rgba(168, 85, 247, 0.1), transparent);
+    }
+
+    /* Top Cockpit Header (Strictly compact 44px) */
+    header {
+      width: 100%;
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 0 14px;
+      height: 44px;
+      min-height: 44px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--border-subtle);
+      background: rgba(3, 7, 18, 0.85);
+      backdrop-filter: blur(12px);
+      z-index: 30;
+      flex-shrink: 0;
+    }
+
+    .brand-section {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .logo-icon {
+      width: 28px;
+      height: 28px;
+      border-radius: 8px;
+      background: linear-gradient(135deg, var(--cyan-deriv), var(--violet-integ));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 15px;
+      color: #fff;
+      box-shadow: 0 0 10px var(--cyan-glow);
+    }
+
+    .brand-text h1 {
+      font-size: 14px;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      background: linear-gradient(to right, #ffffff, #cbd5e1);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      line-height: 1.1;
+    }
+
+    .brand-text .subtext {
+      font-size: 9.5px;
+      color: var(--slate-text);
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      font-weight: 600;
+    }
+
+    .stats-hud {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .hud-chip {
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid var(--border-subtle);
+      padding: 3px 8px;
+      border-radius: 6px;
+      font-size: 11px;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      font-family: var(--font-mono);
+    }
+
+    .hud-chip .label {
+      color: var(--slate-text);
+      font-size: 9px;
+      text-transform: uppercase;
+    }
+
+    .hud-chip .val {
+      font-weight: 700;
+      color: #fff;
+    }
+
+    .streak-fire {
+      color: #f97316;
+      display: inline-block;
+      transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    .streak-fire.active {
+      transform: scale(1.25);
+      filter: drop-shadow(0 0 6px rgba(249, 115, 22, 0.8));
+    }
+
+    .header-actions {
+      display: flex;
+      gap: 5px;
+    }
+
+    .icon-btn {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--border-subtle);
+      color: var(--slate-text);
+      width: 30px;
+      height: 30px;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      font-size: 13px;
+    }
+
+    .icon-btn:hover {
+      background: rgba(255, 255, 255, 0.12);
+      color: #fff;
+    }
+
+    /* Main Container (Flex 1, zero overflow, fits screen perfectly) */
+    main {
+      width: 100%;
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 6px 14px 8px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      flex: 1;
+      min-height: 0;
+      overflow: hidden;
+    }
+
+    /* Unified Tier & Rule Ribbon (Compact 36px) */
+    .unified-ribbon {
+      background: rgba(15, 23, 42, 0.75);
+      border: 1px solid var(--border-subtle);
+      border-radius: 10px;
+      padding: 4px 10px;
+      height: 36px;
+      min-height: 36px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      flex-shrink: 0;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .ribbon-left {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-shrink: 0;
+    }
+
+    .tier-badge {
+      font-size: 10px;
+      font-weight: 800;
+      padding: 2px 6px;
+      border-radius: 4px;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      font-family: var(--font-mono);
+      background: rgba(6, 182, 212, 0.15);
+      color: var(--cyan-deriv);
+      border: 1px solid rgba(6, 182, 212, 0.35);
+    }
+
+    .tier-title {
+      font-size: 12px;
+      font-weight: 700;
+      color: #e2e8f0;
+      white-space: nowrap;
+    }
+
+    .tier-switch-btn {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--border-subtle);
+      color: #94a3b8;
+      padding: 2px 7px;
+      border-radius: 5px;
+      font-size: 10px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 3px;
+      transition: all 0.2s;
+    }
+    .tier-switch-btn:hover {
+      color: #fff;
+      background: rgba(255, 255, 255, 0.12);
+    }
+
+    .ribbon-center {
+      flex: 1;
+      font-size: 11.5px;
+      color: #cbd5e1;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      padding: 0 4px;
+    }
+    .ribbon-center strong {
+      color: #fff;
+    }
+
+    .ribbon-right {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-shrink: 0;
+    }
+
+    .codex-pill-btn {
+      background: rgba(245, 158, 11, 0.12);
+      border: 1px solid rgba(245, 158, 11, 0.35);
+      color: #fbbf24;
+      padding: 2px 8px;
+      border-radius: 14px;
+      font-size: 10.5px;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      white-space: nowrap;
+      transition: all 0.2s;
+    }
+    .codex-pill-btn:hover {
+      background: rgba(245, 158, 11, 0.25);
+      box-shadow: 0 0 8px var(--amber-glow);
+    }
+
+    .ribbon-progress-track {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: rgba(255, 255, 255, 0.06);
+    }
+
+    .ribbon-progress-fill {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, var(--cyan-deriv), var(--violet-integ));
+      transition: width 0.35s ease;
+    }
+
+    /* Live 60 FPS Exponent Visualizer (Height clamped 95px - 135px) */
+    .visualizer-wrapper {
+      position: relative;
+      background: #090e17;
+      border: 1px solid var(--border-subtle);
+      border-radius: 12px;
+      overflow: hidden;
+      height: clamp(95px, 16vh, 135px);
+      min-height: 95px;
+      max-height: 135px;
+      flex-shrink: 0;
+      box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.6);
+    }
+
+    .canvas-hud {
+      position: absolute;
+      top: 5px;
+      left: 10px;
+      right: 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      pointer-events: none;
+      z-index: 10;
+    }
+
+    .canvas-badge {
+      background: rgba(3, 7, 18, 0.88);
+      border: 1px solid var(--border-subtle);
+      border-radius: 5px;
+      padding: 2px 7px;
+      font-size: 11px;
+      font-family: var(--font-mono);
+      font-weight: 600;
+      color: #e2e8f0;
+      backdrop-filter: blur(4px);
+    }
+
+    .canvas-metrics {
+      display: flex;
+      gap: 5px;
+    }
+
+    .metric-pill {
+      background: rgba(3, 7, 18, 0.88);
+      border: 1px solid var(--border-subtle);
+      border-radius: 5px;
+      padding: 2px 7px;
+      font-size: 10px;
+      font-family: var(--font-mono);
+      color: var(--slate-text);
+      backdrop-filter: blur(4px);
+    }
+    .metric-pill span {
+      color: #38bdf8;
+      font-weight: 700;
+    }
+
+    #visualizerCanvas {
+      width: 100%;
+      height: 100%;
+      display: block;
+      cursor: crosshair;
+    }
+
+    .canvas-hint-overlay {
+      position: absolute;
+      bottom: 4px;
+      right: 10px;
+      font-size: 9px;
+      color: rgba(148, 163, 184, 0.5);
+      pointer-events: none;
+      font-family: var(--font-mono);
+    }
+
+    /* Question Crucible Card (Fills remaining space, flex column, zero scroll) */
+    .crucible-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: 14px;
+      padding: 8px 14px;
+      backdrop-filter: blur(12px);
+      box-shadow: 0 8px 24px -4px rgba(0, 0, 0, 0.6);
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 6px;
+      flex: 1;
+      min-height: 0;
+      overflow: hidden;
+      transition: border-color 0.3s ease;
+    }
+
+    .crucible-card.deriv-active {
+      border-color: rgba(6, 182, 212, 0.35);
+    }
+    .crucible-card.integ-active {
+      border-color: rgba(168, 85, 247, 0.35);
+    }
+
+    .operator-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-shrink: 0;
+      height: 24px;
+    }
+
+    .operator-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 2px 9px;
+      border-radius: 12px;
+      font-size: 10.5px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .operator-tag.deriv {
+      background: rgba(6, 182, 212, 0.15);
+      color: var(--cyan-deriv);
+      border: 1px solid rgba(6, 182, 212, 0.4);
+      box-shadow: 0 0 8px var(--cyan-glow);
+    }
+
+    .operator-tag.integ {
+      background: rgba(168, 85, 247, 0.15);
+      color: var(--violet-integ);
+      border: 1px solid rgba(168, 85, 247, 0.4);
+      box-shadow: 0 0 8px var(--violet-glow);
+    }
+
+    .operator-tag.physics {
+      background: rgba(56, 189, 248, 0.15);
+      color: #38bdf8;
+      border: 1px solid rgba(56, 189, 248, 0.4);
+      box-shadow: 0 0 8px rgba(56, 189, 248, 0.3);
+    }
+
+    .question-prompt {
+      font-size: 12.5px;
+      color: #cbd5e1;
+      font-weight: 500;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 70%;
+      text-align: right;
+    }
+
+    /* Math expression display box */
+    .math-expression-display {
+      text-align: center;
+      padding: 6px 10px;
+      background: rgba(3, 7, 18, 0.65);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      border-radius: 10px;
+      height: clamp(48px, 9vh, 64px);
+      min-height: 48px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      letter-spacing: 0.02em;
+      position: relative;
+      flex-shrink: 0;
+    }
+
+    .context-subtext {
+      font-size: 11px;
+      color: #38bdf8;
+      font-weight: 600;
+      text-align: center;
+      margin-top: -3px;
+      flex-shrink: 0;
+    }
+
+    /* 2x2 Multiple Choice Options Grid */
+    .options-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 7px;
+      flex-shrink: 0;
+    }
+
+    .option-btn {
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid var(--border-subtle);
+      border-radius: 9px;
+      padding: 7px 12px;
+      height: clamp(40px, 7.5vh, 48px);
+      min-height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      gap: 10px;
+      cursor: pointer;
+      transition: all 0.16s ease;
+      position: relative;
+      overflow: hidden;
+      color: #f1f5f9;
+      text-align: left;
+    }
+
+    .option-btn:hover:not(:disabled) {
+      background: rgba(255, 255, 255, 0.09);
+      border-color: rgba(255, 255, 255, 0.22);
+      transform: translateY(-1px);
+    }
+
+    .option-btn:active:not(:disabled) {
+      transform: translateY(1px);
+    }
+
+    .option-btn:disabled {
+      cursor: default;
+    }
+
+    .key-badge {
+      background: rgba(0, 0, 0, 0.45);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 5px;
+      font-family: var(--font-mono);
+      font-size: 10px;
+      font-weight: 700;
+      color: var(--slate-text);
+      width: 20px;
+      height: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .option-math {
+      font-size: 16px;
+      flex: 1;
+      display: flex;
+      align-items: center;
+      overflow: hidden;
+    }
+
+    /* Correct & Wrong Answer Styling */
+    .option-btn.correct {
+      background: rgba(16, 185, 129, 0.2) !important;
+      border-color: var(--emerald-correct) !important;
+      box-shadow: 0 0 16px rgba(16, 185, 129, 0.35);
+      color: #a7f3d0;
+    }
+    .option-btn.correct .key-badge {
+      background: var(--emerald-correct);
+      color: #022c22;
+      border-color: var(--emerald-correct);
+    }
+
+    .option-btn.wrong {
+      background: rgba(244, 63, 94, 0.2) !important;
+      border-color: var(--rose-wrong) !important;
+      box-shadow: 0 0 14px rgba(244, 63, 94, 0.3);
+      color: #fecdd3;
+      animation: shake 0.25s ease-in-out;
+    }
+    .option-btn.wrong .key-badge {
+      background: var(--rose-wrong);
+      color: #4c0519;
+      border-color: var(--rose-wrong);
+    }
+
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      25% { transform: translateX(-5px); }
+      75% { transform: translateX(5px); }
+    }
+
+    /* Bottom Feedback & Auto Advance Strip (32px fixed height, strictly non-expanding) */
+    .bottom-feedback-strip {
+      height: 32px;
+      min-height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      background: rgba(3, 7, 18, 0.5);
+      border-radius: 8px;
+      padding: 0 8px;
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      flex-shrink: 0;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .idle-tip {
+      font-size: 10.5px;
+      color: var(--slate-text);
+      font-family: var(--font-mono);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .active-feedback-content {
+      display: none;
+      width: 100%;
+      height: 100%;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    .verdict-badge {
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 0.04em;
+      white-space: nowrap;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .quick-step-preview {
+      font-size: 11px;
+      color: #cbd5e1;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      flex: 1;
+    }
+
+    .view-steps-btn {
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid var(--border-subtle);
+      color: #cbd5e1;
+      font-size: 10px;
+      padding: 3px 7px;
+      border-radius: 5px;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all 0.2s;
+    }
+    .view-steps-btn:hover {
+      background: rgba(255, 255, 255, 0.16);
+      color: #fff;
+    }
+
+    .advance-btn {
+      background: rgba(255, 255, 255, 0.12);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      color: #fff;
+      font-size: 10.5px;
+      font-weight: 700;
+      padding: 3px 9px;
+      border-radius: 5px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      white-space: nowrap;
+      transition: all 0.15s;
+    }
+    .advance-btn:hover {
+      background: rgba(255, 255, 255, 0.22);
+    }
+
+    .auto-advance-line {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: var(--cyan-deriv);
+      transform-origin: left;
+      transform: scaleX(0);
+    }
+
+    /* Modals (With internal overflow-y auto, never overflowing viewport) */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(3, 7, 18, 0.88);
+      backdrop-filter: blur(8px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 100;
+      padding: 14px;
+      opacity: 0;
+      transition: opacity 0.2s ease;
+    }
+
+    .modal-overlay.open {
+      display: flex;
+      opacity: 1;
+    }
+
+    .modal-card {
+      background: #0f172a;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 16px;
+      max-width: 560px;
+      width: 100%;
+      max-height: 85vh;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.8);
+      transform: scale(0.96);
+      transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+      overflow: hidden;
+    }
+
+    .modal-overlay.open .modal-card {
+      transform: scale(1);
+    }
+
+    .modal-header {
+      padding: 12px 18px;
+      border-bottom: 1px solid var(--border-subtle);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-shrink: 0;
+    }
+
+    .modal-title {
+      font-size: 16px;
+      font-weight: 800;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .modal-body {
+      padding: 16px 18px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      font-size: 13.5px;
+      line-height: 1.55;
+    }
+
+    .modal-footer {
+      padding: 10px 18px;
+      border-top: 1px solid var(--border-subtle);
+      display: flex;
+      justify-content: flex-end;
+      gap: 8px;
+      background: rgba(3, 7, 18, 0.4);
+      flex-shrink: 0;
+    }
+
+    .codex-step-box {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid var(--border-subtle);
+      border-radius: 10px;
+      padding: 11px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .codex-step-box h4 {
+      font-size: 12px;
+      color: #fbbf24;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    .codex-formula-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-around;
+      background: rgba(0, 0, 0, 0.35);
+      padding: 8px;
+      border-radius: 7px;
+      font-size: 16px;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .primary-btn {
+      background: linear-gradient(135deg, var(--cyan-deriv), var(--violet-integ));
+      color: #fff;
+      border: none;
+      padding: 7px 16px;
+      border-radius: 8px;
+      font-weight: 700;
+      font-size: 12.5px;
+      cursor: pointer;
+      transition: all 0.2s;
+      box-shadow: 0 4px 12px rgba(6, 182, 212, 0.3);
+    }
+    .primary-btn:hover {
+      box-shadow: 0 6px 16px rgba(6, 182, 212, 0.5);
+    }
+
+    .tier-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 8px;
+    }
+
+    .tier-option-card {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid var(--border-subtle);
+      border-radius: 10px;
+      padding: 10px 12px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      transition: all 0.2s;
+    }
+    .tier-option-card:hover {
+      background: rgba(255, 255, 255, 0.07);
+    }
+    .tier-option-card.current {
+      border-color: var(--cyan-deriv);
+      background: rgba(6, 182, 212, 0.1);
+    }
+
+    .celebrate-card {
+      text-align: center;
+      padding: 6px 0;
+    }
+    .trophy-glow {
+      font-size: 46px;
+      margin-bottom: 8px;
+      animation: bounce 1s infinite alternate ease-in-out;
+    }
+    @keyframes bounce {
+      from { transform: translateY(0); }
+      to { transform: translateY(-6px); }
+    }
+
+    .stats-summary-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      margin: 12px 0;
+    }
+
+    .summary-box {
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid var(--border-subtle);
+      border-radius: 8px;
+      padding: 8px;
+    }
+    .summary-box .val {
+      font-size: 19px;
+      font-weight: 800;
+      font-family: var(--font-mono);
+      color: #38bdf8;
+    }
+    .summary-box .lbl {
+      font-size: 10px;
+      color: var(--slate-text);
+      text-transform: uppercase;
+    }
+  </style>
+</head>
+<body>
+<!-- WORKBENCH_NAV -->
+<div style="position: fixed; top: 12px; left: 16px; z-index: 99999; display: flex; align-items: center; gap: 8px;">
+  <a href="../index.html" style="display: inline-flex; align-items: center; gap: 6px; padding: 6px 14px; font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; font-size: 0.8rem; font-weight: 600; color: #00f2fe; background: rgba(10, 15, 29, 0.88); border: 1px solid rgba(0, 242, 254, 0.35); border-radius: 9999px; text-decoration: none; backdrop-filter: blur(8px); box-shadow: 0 4px 12px rgba(0,0,0,0.4); transition: all 0.2s;">
+    <span>&larr; The Workbench</span>
+  </a>
+</div>
+
+
+  <!-- Top Cockpit Header -->
+  <header>
+    <div class="brand-section">
+      <div class="logo-icon">⚡</div>
+      <div class="brand-text">
+        <h1>POWERCRAFT</h1>
+        <div class="subtext">The Power Rule Crucible</div>
+      </div>
+    </div>
+
+    <div class="stats-hud">
+      <div class="hud-chip" title="Current Score">
+        <span class="label">SCORE</span>
+        <span class="val" id="scoreDisplay">0</span>
+      </div>
+      <div class="hud-chip" title="Active Streak">
+        <span class="streak-fire" id="streakFire">🔥</span>
+        <span class="val" id="streakDisplay">0</span>
+      </div>
+      <div class="hud-chip" title="Accuracy">
+        <span class="label">ACC</span>
+        <span class="val" id="accDisplay">100%</span>
+      </div>
+    </div>
+
+    <div class="header-actions">
+      <button class="icon-btn" id="audioToggleBtn" title="Toggle Sound (M)">🔊</button>
+      <button class="icon-btn" id="codexHeaderBtn" title="Open 2-Step Codex (H)">📖</button>
+    </div>
+  </header>
+
+  <!-- Main Crucible Body (Zero-Scroll Flex Container) -->
+  <main>
+    <!-- Unified Tier & Pedagogical Rule Ribbon -->
+    <div class="unified-ribbon" id="unifiedRibbon">
+      <div class="ribbon-left">
+        <span class="tier-badge" id="tierBadge">TIER 1</span>
+        <span class="tier-title" id="tierTitle">Basic Derivatives</span>
+        <button class="tier-switch-btn" id="tierSelectBtn">Switch ▾</button>
+      </div>
+
+      <div class="ribbon-center" id="ruleText">
+        <!-- Rendered by KaTeX dynamically -->
+      </div>
+
+      <div class="ribbon-right">
+        <button class="codex-pill-btn" id="hintTriggerBtn">
+          <span>💡 Hint</span>
+          <span style="font-family: var(--font-mono); font-size: 9px; opacity: 0.85;">[H]</span>
+        </button>
+      </div>
+
+      <!-- Live progress line -->
+      <div class="ribbon-progress-track">
+        <div class="ribbon-progress-fill" id="tierProgressFill"></div>
+      </div>
+    </div>
+
+    <!-- 60 FPS HTML5 Canvas Exponent Visualizer -->
+    <div class="visualizer-wrapper">
+      <div class="canvas-hud">
+        <div class="canvas-badge" id="canvasFunctionBadge">$y = x^2$</div>
+        <div class="canvas-metrics" id="canvasMetrics">
+          <div class="metric-pill">x = <span id="metricX">1.50</span></div>
+          <div class="metric-pill" id="metricActionPill">SLOPE <span style="color:#f59e0b;">3.00</span></div>
+        </div>
+      </div>
+      <canvas id="visualizerCanvas"></canvas>
+      <div class="canvas-hint-overlay">Hover/Drag to scrub evaluation point</div>
+    </div>
+
+    <!-- Question Crucible Card -->
+    <div class="crucible-card deriv-active" id="questionCard">
+      <!-- Operator Header -->
+      <div class="operator-header">
+        <div class="operator-tag deriv" id="operatorTag">
+          <span id="operatorSymbol">d/dx</span>
+          <span id="operatorLabel">DERIVATIVE</span>
+        </div>
+        <div class="question-prompt" id="questionPrompt">Evaluate the derivative:</div>
+      </div>
+
+      <!-- Main KaTeX Equation Display -->
+      <div class="math-expression-display" id="mathDisplay">
+        <!-- Rendered by KaTeX -->
+      </div>
+
+      <div class="context-subtext" id="contextSubtext" style="display:none;"></div>
+
+      <!-- 2x2 Multiple Choice Options Grid -->
+      <div class="options-grid" id="optionsGrid">
+        <button class="option-btn" data-index="0" id="opt-0">
+          <span class="key-badge">1</span>
+          <div class="option-math" id="optMath-0"></div>
+        </button>
+        <button class="option-btn" data-index="1" id="opt-1">
+          <span class="key-badge">2</span>
+          <div class="option-math" id="optMath-1"></div>
+        </button>
+        <button class="option-btn" data-index="2" id="opt-2">
+          <span class="key-badge">3</span>
+          <div class="option-math" id="optMath-2"></div>
+        </button>
+        <button class="option-btn" data-index="3" id="opt-3">
+          <span class="key-badge">4</span>
+          <div class="option-math" id="optMath-3"></div>
+        </button>
+      </div>
+
+      <!-- Bottom Feedback & Auto-Advance Strip (Fixed height, never causes page scroll) -->
+      <div class="bottom-feedback-strip" id="bottomFeedbackStrip">
+        <div class="idle-tip" id="idleTip">
+          <span>⌨️ Press [1, 2, 3, 4] to answer</span>
+          <span style="opacity: 0.4;">|</span>
+          <span>[H] Hint Codex</span>
+        </div>
+
+        <div class="active-feedback-content" id="activeFeedbackContent">
+          <div class="verdict-badge" id="feedbackVerdict">✓ CORRECT</div>
+          <div class="quick-step-preview" id="quickStepPreview">Step summary</div>
+          <button class="view-steps-btn" id="viewFullStepsBtn">Steps 📖</button>
+          <button class="advance-btn" id="advanceNextBtn">
+            <span>Next</span>
+            <span style="font-size: 9px; opacity: 0.7;">[Space]</span>
+            <span>➔</span>
+          </button>
+        </div>
+
+        <div class="auto-advance-line" id="autoAdvanceLine"></div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Full Arithmetic Breakdown Modal (Opened when clicking 'Steps 📖') -->
+  <div class="modal-overlay" id="breakdownModal">
+    <div class="modal-card">
+      <div class="modal-header">
+        <div class="modal-title">
+          <span>⚡</span>
+          <span>Arithmetic Breakdown</span>
+        </div>
+        <button class="icon-btn" id="closeBreakdownBtn">✕</button>
+      </div>
+      <div class="modal-body" id="breakdownBody">
+        <!-- Rendered dynamically -->
+      </div>
+      <div class="modal-footer">
+        <button class="primary-btn" id="resumeFromBreakdownBtn">Continue ➔</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2-Step Rewrite Codex Modal -->
+  <div class="modal-overlay" id="codexModal">
+    <div class="modal-card">
+      <div class="modal-header">
+        <div class="modal-title">
+          <span>📖</span>
+          <span>The Two-Step Rewrite Codex</span>
+        </div>
+        <button class="icon-btn" id="closeCodexBtn">✕</button>
+      </div>
+      <div class="modal-body">
+        <p style="color: var(--slate-text); font-size: 13px;" id="codexIntroText">
+          Mastery rule: Whenever you see radicals (<span id="codexRadical"></span>) or denominators (<span id="codexDenom"></span>), convert to pure power form <span id="codexPowerForm"></span> <strong>first</strong> before applying arithmetic!
+        </p>
+
+        <!-- Dynamic Contextual Hint for Current Question -->
+        <div id="dynamicHintSection" class="codex-step-box" style="border-color: rgba(245, 158, 11, 0.4); background: rgba(245, 158, 11, 0.05);">
+          <h4 style="color: #fbbf24;">⚡ Current Question Walkthrough</h4>
+          <div id="dynamicHintContent" style="font-size: 13px; line-height: 1.6; color: #f1f5f9;">
+            <!-- Injected dynamically -->
+          </div>
+        </div>
+
+        <!-- Universal Reference Tables -->
+        <div class="codex-step-box">
+          <h4>Step 1: Rewrite into Pure Power Form</h4>
+          <div class="codex-formula-row">
+            <span id="codexRef1"></span>
+            <span style="color: var(--slate-text);">|</span>
+            <span id="codexRef2"></span>
+          </div>
+          <p style="font-size: 12px; color: var(--slate-text); margin-top: 4px;" id="codexRefExamples">
+            <!-- Rendered by KaTeX -->
+          </p>
+        </div>
+
+        <div class="codex-step-box">
+          <h4>Step 2: Apply the Power Operation</h4>
+          <div style="display: flex; flex-direction: column; gap: 8px;">
+            <div style="background: rgba(6, 182, 212, 0.1); border: 1px solid rgba(6, 182, 212, 0.2); border-radius: 8px; padding: 8px;">
+              <div style="font-size: 10.5px; font-weight: 700; color: var(--cyan-deriv);">DERIVATIVE (Multiply & Reduce)</div>
+              <div style="font-size: 15px; margin-top: 3px;" id="codexRefDeriv"></div>
+              <div style="font-size: 11.5px; color: #cbd5e1; margin-top: 2px;" id="codexDerivEx"></div>
+            </div>
+
+            <div style="background: rgba(168, 85, 247, 0.1); border: 1px solid rgba(168, 85, 247, 0.2); border-radius: 8px; padding: 8px;">
+              <div style="font-size: 10.5px; font-weight: 700; color: var(--violet-integ);">INTEGRAL (Increase & Divide)</div>
+              <div style="font-size: 15px; margin-top: 3px;" id="codexRefInteg"></div>
+              <div style="font-size: 11.5px; color: #cbd5e1; margin-top: 2px;" id="codexIntegEx"></div>
+            </div>
+
+            <div style="background: rgba(244, 63, 94, 0.1); border: 1px solid rgba(244, 63, 94, 0.25); border-radius: 8px; padding: 8px;">
+              <div style="font-size: 10.5px; font-weight: 700; color: #fda4af;">CRUCIAL EXCEPTION: $n = -1$</div>
+              <div style="font-size: 15px; margin-top: 3px;" id="codexRefException"></div>
+              <div style="font-size: 11.5px; color: #cbd5e1; margin-top: 2px;">
+                The standard power rule gives division by zero. Always use $\int \frac{1}{x} dx = \ln|x| + C$.
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="primary-btn" id="resumeFromCodexBtn">Got It, Back to Crucible</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tier Selector Modal -->
+  <div class="modal-overlay" id="tierSelectModal">
+    <div class="modal-card">
+      <div class="modal-header">
+        <div class="modal-title">
+          <span>🎯</span>
+          <span>Select Training Tier</span>
+        </div>
+        <button class="icon-btn" id="closeTierModalBtn">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="tier-grid" id="tierGridContainer">
+          <!-- Dynamically populated 8 tiers with full KaTeX formulas -->
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="primary-btn" id="closeTierSelectBtn">Done</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tier Completion Celebration Modal -->
+  <div class="modal-overlay" id="celebrateModal">
+    <div class="modal-card">
+      <div class="modal-body celebrate-card">
+        <div class="trophy-glow">🏆</div>
+        <h2 style="font-size: 20px; font-weight: 800; color: #fff;" id="celebrateTitle">TIER 1 MASTERED!</h2>
+        <p style="color: var(--slate-text); font-size: 12.5px; margin-top: 3px;" id="celebrateSubtitle">
+          Unbreakable muscle memory forged on positive integer powers.
+        </p>
+
+        <div class="stats-summary-grid">
+          <div class="summary-box">
+            <div class="val" id="summaryAccuracy">100%</div>
+            <div class="lbl">Accuracy</div>
+          </div>
+          <div class="summary-box">
+            <div class="val" id="summaryStreak">8</div>
+            <div class="lbl">Max Streak</div>
+          </div>
+          <div class="summary-box">
+            <div class="val" id="summaryScore">800</div>
+            <div class="lbl">Tier Pts</div>
+          </div>
+        </div>
+
+        <p style="font-size: 12.5px; color: #cbd5e1; line-height: 1.5;" id="celebratePraise">
+          Outstanding precision! Ready to advance into higher calculus challenges.
+        </p>
+      </div>
+      <div class="modal-footer" style="justify-content: center; gap: 12px;">
+        <button class="tier-switch-btn" id="replayTierBtn" style="padding: 8px 14px; font-size: 12px;">Replay Tier</button>
+        <button class="primary-btn" id="advanceTierBtn">Advance to Next Tier ➔</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- GAME SCRIPT LOGIC -->
+  <script>
+    /**
+     * PowerCraft: The Power Rule Crucible
+     * Zero-dependency single-file educational game.
+     * Guaranteed zero-scroll layout with 100% KaTeX math typesetting.
+     */
+
+    // --- Web Audio Synthesizer ---
+    class AudioEngine {
+      constructor() {
+        this.ctx = null;
+        this.enabled = true;
+      }
+
+      init() {
+        if (!this.ctx) {
+          const AudioContext = window.AudioContext || window.webkitAudioContext;
+          if (AudioContext) {
+            this.ctx = new AudioContext();
+          }
+        }
+        if (this.ctx && this.ctx.state === 'suspended') {
+          this.ctx.resume();
+        }
+      }
+
+      toggle() {
+        this.enabled = !this.enabled;
+        return this.enabled;
+      }
+
+      playCorrect() {
+        if (!this.enabled) return;
+        this.init();
+        if (!this.ctx) return;
+
+        const now = this.ctx.currentTime;
+        const freqs = [523.25, 659.25, 783.99, 1046.50];
+        freqs.forEach((f, idx) => {
+          const osc = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+          osc.type = 'triangle';
+          osc.frequency.setValueAtTime(f, now + idx * 0.05);
+
+          gain.gain.setValueAtTime(0, now + idx * 0.05);
+          gain.gain.linearRampToValueAtTime(0.16, now + idx * 0.05 + 0.02);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + idx * 0.05 + 0.3);
+
+          osc.connect(gain);
+          gain.connect(this.ctx.destination);
+
+          osc.start(now + idx * 0.05);
+          osc.stop(now + idx * 0.05 + 0.32);
+        });
+      }
+
+      playWrong() {
+        if (!this.enabled) return;
+        this.init();
+        if (!this.ctx) return;
+
+        const now = this.ctx.currentTime;
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        osc.type = 'sawtooth';
+        osc.frequency.setValueAtTime(140, now);
+        osc.frequency.exponentialRampToValueAtTime(75, now + 0.3);
+
+        gain.gain.setValueAtTime(0.14, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.3);
+
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+
+        osc.start(now);
+        osc.stop(now + 0.32);
+      }
+
+      playClick() {
+        if (!this.enabled) return;
+        this.init();
+        if (!this.ctx) return;
+
+        const now = this.ctx.currentTime;
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(800, now);
+        gain.gain.setValueAtTime(0.04, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.04);
+
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+
+        osc.start(now);
+        osc.stop(now + 0.04);
+      }
+
+      playHint() {
+        if (!this.enabled) return;
+        this.init();
+        if (!this.ctx) return;
+
+        const now = this.ctx.currentTime;
+        const freqs = [440, 554.37, 659.25];
+        freqs.forEach((f, idx) => {
+          const osc = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(f, now + idx * 0.05);
+          gain.gain.setValueAtTime(0.08, now + idx * 0.05);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + idx * 0.05 + 0.22);
+          osc.connect(gain);
+          gain.connect(this.ctx.destination);
+          osc.start(now + idx * 0.05);
+          osc.stop(now + idx * 0.05 + 0.24);
+        });
+      }
+
+      playVictory() {
+        if (!this.enabled) return;
+        this.init();
+        if (!this.ctx) return;
+
+        const now = this.ctx.currentTime;
+        const notes = [
+          { f: 392.00, t: 0.0 },
+          { f: 523.25, t: 0.1 },
+          { f: 659.25, t: 0.2 },
+          { f: 783.99, t: 0.3 },
+          { f: 1046.50, t: 0.42 }
+        ];
+
+        notes.forEach(n => {
+          const osc = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+          osc.type = 'triangle';
+          osc.frequency.setValueAtTime(n.f, now + n.t);
+
+          gain.gain.setValueAtTime(0, now + n.t);
+          gain.gain.linearRampToValueAtTime(0.18, now + n.t + 0.03);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + n.t + 0.5);
+
+          osc.connect(gain);
+          gain.connect(this.ctx.destination);
+
+          osc.start(now + n.t);
+          osc.stop(now + n.t + 0.55);
+        });
+      }
+    }
+
+    const audio = new AudioEngine();
+
+    // Universal KaTeX Auto-Render Helper
+    function renderAllMath(container = document.body) {
+      if (window.renderMathInElement) {
+        window.renderMathInElement(container, {
+          delimiters: [
+            { left: "$$", right: "$$", display: true },
+            { left: "$", right: "$", display: false }
+          ],
+          throwOnError: false
+        });
+      }
+    }
+
+    // Render static formulas in Two-Step Rewrite Codex
+    function renderCodexStaticFormulas() {
+      if (!window.katex) return;
+      const map = [
+        { id: 'codexRadical', tex: "\\sqrt{x}" },
+        { id: 'codexDenom', tex: "\\frac{1}{x^n}" },
+        { id: 'codexPowerForm', tex: "x^p" },
+        { id: 'codexRef1', tex: "\\frac{1}{x^n} \\implies x^{-n}" },
+        { id: 'codexRef2', tex: "\\sqrt[m]{x^n} \\implies x^{n/m}" },
+        { id: 'codexRefDeriv', tex: "\\frac{d}{dx}[x^n] = n x^{n-1}" },
+        { id: 'codexRefInteg', tex: "\\int x^n dx = \\frac{x^{n+1}}{n+1} + C" },
+        { id: 'codexRefException', tex: "\\int \\frac{1}{x} dx = \\ln|x| + C" },
+        { id: 'codexRefExamples', tex: "\\text{Example: } \\frac{1}{x^3} = x^{-3}, \\quad \\sqrt{x} = x^{1/2}, \\quad \\frac{1}{\\sqrt{x}} = x^{-1/2}." },
+        { id: 'codexDerivEx', tex: "\\text{Example: } \\frac{d}{dx}[x^{-2}] = (-2)x^{-2-1} = -2x^{-3} = -\\frac{2}{x^3}" },
+        { id: 'codexIntegEx', tex: "\\text{Example: } \\int x^{-2} dx = \\frac{x^{-2+1}}{-2+1} = \\frac{x^{-1}}{-1} = -\\frac{1}{x} + C" }
+      ];
+
+      map.forEach(item => {
+        const el = document.getElementById(item.id);
+        if (el) {
+          katex.render(item.tex, el, { throwOnError: false });
+        }
+      });
+    }
+
+    // --- CURRICULUM DEFINITION (8 TIERS) ---
+    const TIERS_META = [
+      {
+        id: 1,
+        title: "Basic Derivatives ($x^n$)",
+        badge: "TIER 1",
+        rule: "<strong>Power Rule:</strong> Bring power to front, subtract 1 from exponent: $\\frac{d}{dx}[x^n] = n x^{n-1}$",
+        isIntegral: false,
+        questionsRequired: 7,
+        desc: "Powers of $x$: $x^2, x^3, x^4, x, C$."
+      },
+      {
+        id: 2,
+        title: "Derivatives with Coefficients",
+        badge: "TIER 2",
+        rule: "<strong>Coefficients:</strong> Multiply constant by old power: $\\frac{d}{dx}[c \\cdot x^n] = (c \\cdot n) x^{n-1}$",
+        isIntegral: false,
+        questionsRequired: 7,
+        desc: "$3x^2, 5x^3, -2x^4, 7x$."
+      },
+      {
+        id: 3,
+        title: "Integral Power Rule & Contrast",
+        badge: "TIER 3",
+        rule: "<strong>Integral Rule:</strong> Add 1 to exponent, divide by new exponent: $\\int x^n dx = \\frac{x^{n+1}}{n+1} + C$",
+        isIntegral: true,
+        questionsRequired: 7,
+        desc: "Positive integers with derivative distractors."
+      },
+      {
+        id: 4,
+        title: "Negative Powers & The Exception",
+        badge: "TIER 4",
+        rule: "<strong>Negative Powers:</strong> $\\frac{1}{x^n} = x^{-n}$. Watch signs! Note: $\\int \\frac{1}{x} dx = \\ln|x| + C$.",
+        isIntegral: false,
+        questionsRequired: 8,
+        desc: "Fractions $1/x^2, 1/x^3$ and $\\int 1/x dx = \\ln|x|+C$."
+      },
+      {
+        id: 5,
+        title: "Fractional Powers & Radicals",
+        badge: "TIER 5",
+        rule: "<strong>Radicals:</strong> $\\sqrt{x} = x^{1/2}, \\frac{1}{\\sqrt{x}} = x^{-1/2}$. Flip fractions when dividing!",
+        isIntegral: false,
+        questionsRequired: 8,
+        desc: "Square roots, cube roots, rational arithmetic."
+      },
+      {
+        id: 6,
+        title: "The Dual Crucible (Alternation)",
+        badge: "TIER 6",
+        rule: "<strong>Dual Crucible:</strong> Check operator badge! Rapidly switch between $\\frac{d}{dx}$ and $\\int$.",
+        isIntegral: false,
+        questionsRequired: 8,
+        desc: "Random rapid alternating derivatives & integrals."
+      },
+      {
+        id: 7,
+        title: "Kinematics: $x(t) \\to v(t) \\to a(t)$",
+        badge: "TIER 7",
+        rule: "<strong>Kinematics:</strong> $v(t) = \\frac{dx}{dt}$, $a(t) = \\frac{dv}{dt}$, and $v(t) = \\int a(t) dt$.",
+        isIntegral: false,
+        questionsRequired: 8,
+        desc: "Displacement, velocity, acceleration polynomials."
+      },
+      {
+        id: 8,
+        title: "Work, Springs & Potential Energy",
+        badge: "TIER 8",
+        rule: "<strong>Potentials & Work:</strong> $W = \\int F dx$, $F = -\\frac{dU}{dx}$, and gravity $F = \\frac{k}{r^2}$.",
+        isIntegral: true,
+        questionsRequired: 8,
+        desc: "Spring work $\\frac{1}{2}kx^2$, inverse square potentials."
+      }
+    ];
+
+    function pickRandom(arr) {
+      return arr[Math.floor(Math.random() * arr.length)];
+    }
+
+    function shuffle(arr) {
+      const copy = [...arr];
+      for (let i = copy.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [copy[i], copy[j]] = [copy[j], copy[i]];
+      }
+      return copy;
+    }
+
+    // PROCEDURAL QUESTION GENERATORS
+    function generateTier1() {
+      const types = ['square', 'cube', 'fourth', 'fifth', 'linear', 'constant'];
+      const chosen = pickRandom(types);
+
+      if (chosen === 'square') {
+        return {
+          operator: 'deriv',
+          promptText: "Evaluate the derivative:",
+          latexQuestion: "\\frac{d}{dx}\\left[ x^2 \\right]",
+          curvePower: 2,
+          correctLatex: "2x",
+          optionsLatex: ["2x", "\\frac{x^3}{3}", "x", "2"],
+          steps: [
+            "Formula: $\\frac{d}{dx}[x^n] = n x^{n-1}$ with $n = 2$.",
+            "Bring exponent 2 to the front: $2 \\cdot x^{2-1}$.",
+            "Subtract 1 from exponent: $2x^1 = 2x$."
+          ],
+          hintRewrite: "Expression is already pure power: $x^2$.",
+          hintRule: "Derivative rule: Multiply by 2 and subtract 1 from exponent: $2 \\cdot x^{2-1} = 2x$."
+        };
+      } else if (chosen === 'cube') {
+        return {
+          operator: 'deriv',
+          promptText: "Evaluate the derivative:",
+          latexQuestion: "\\frac{d}{dx}\\left[ x^3 \\right]",
+          curvePower: 3,
+          correctLatex: "3x^2",
+          optionsLatex: ["3x^2", "\\frac{x^4}{4}", "3x^3", "2x^2"],
+          steps: [
+            "Formula: $\\frac{d}{dx}[x^n] = n x^{n-1}$ with $n = 3$.",
+            "Bring 3 to the front: $3 \\cdot x^{3-1}$.",
+            "Subtract 1: $3x^2$."
+          ],
+          hintRewrite: "Power form: $x^3$.",
+          hintRule: "Bring 3 to front, subtract 1: $3 \\cdot x^{3-1} = 3x^2$."
+        };
+      } else if (chosen === 'fourth') {
+        return {
+          operator: 'deriv',
+          promptText: "Evaluate the derivative:",
+          latexQuestion: "\\frac{d}{dx}\\left[ x^4 \\right]",
+          curvePower: 4,
+          correctLatex: "4x^3",
+          optionsLatex: ["4x^3", "3x^4", "\\frac{x^5}{5}", "4x^4"],
+          steps: [
+            "Power rule with $n = 4$: $n x^{n-1}$.",
+            "Multiply by 4 and reduce power by 1: $4x^{4-1} = 4x^3$."
+          ],
+          hintRewrite: "Power form: $x^4$.",
+          hintRule: "Bring 4 to front, subtract 1: $4x^3$."
+        };
+      } else if (chosen === 'fifth') {
+        return {
+          operator: 'deriv',
+          promptText: "Evaluate the derivative:",
+          latexQuestion: "\\frac{d}{dx}\\left[ x^5 \\right]",
+          curvePower: 5,
+          correctLatex: "5x^4",
+          optionsLatex: ["5x^4", "4x^5", "\\frac{x^6}{6}", "5x^5"],
+          steps: [
+            "Power rule with $n = 5$: $5 \\cdot x^{5-1} = 5x^4$."
+          ],
+          hintRewrite: "Power form: $x^5$.",
+          hintRule: "Bring 5 to front, reduce exponent: $5x^4$."
+        };
+      } else if (chosen === 'linear') {
+        return {
+          operator: 'deriv',
+          promptText: "Evaluate the derivative:",
+          latexQuestion: "\\frac{d}{dx}\\left[ x \\right]",
+          curvePower: 1,
+          correctLatex: "1",
+          optionsLatex: ["1", "0", "x", "\\frac{x^2}{2}"],
+          steps: [
+            "Rewrite $x$ as $x^1$.",
+            "Apply power rule: $1 \\cdot x^{1-1} = 1 \\cdot x^0 = 1$."
+          ],
+          hintRewrite: "$x = x^1$.",
+          hintRule: "Bring 1 to front, subtract 1: $1 \\cdot x^0 = 1$."
+        };
+      } else {
+        const c = pickRandom([7, 12, 42, 9]);
+        return {
+          operator: 'deriv',
+          promptText: "Evaluate the derivative:",
+          latexQuestion: `\\frac{d}{dx}\\left[ ${c} \\right]`,
+          curvePower: 0,
+          correctLatex: "0",
+          optionsLatex: ["0", `${c}`, "1", `${c}x`],
+          steps: [
+            `The constant ${c} does not change with $x$.`,
+            `Alternatively: ${c} = ${c}x^0 \\implies \\frac{d}{dx}[${c}x^0] = 0$.`
+          ],
+          hintRewrite: `A constant has slope zero: ${c} = ${c}x^0$.`,
+          hintRule: "The derivative of any constant is always 0."
+        };
+      }
+    }
+
+    function generateTier2() {
+      const items = [
+        { c: 3, n: 2, ans: "6x", distractors: ["5x", "3x", "6x^2"], expl: "3 \\cdot 2 = 6, 2 - 1 = 1 \\implies 6x" },
+        { c: 5, n: 3, ans: "15x^2", distractors: ["8x^2", "15x^3", "5x^2"], expl: "5 \\cdot 3 = 15, 3 - 1 = 2 \\implies 15x^2" },
+        { c: -2, n: 4, ans: "-8x^3", distractors: ["-8x^4", "2x^3", "-6x^3"], expl: "(-2) \\cdot 4 = -8, 4 - 1 = 3 \\implies -8x^3" },
+        { c: 7, n: 1, ans: "7", distractors: ["0", "7x", "1"], expl: "7 \\cdot 1 \\cdot x^0 = 7" },
+        { c: 4, n: 5, ans: "20x^4", distractors: ["9x^4", "20x^5", "4x^4"], expl: "4 \\cdot 5 = 20, 5 - 1 = 4 \\implies 20x^4" },
+        { c: -3, n: 2, ans: "-6x", distractors: ["-5x", "-6x^2", "-3"], expl: "(-3) \\cdot 2 = -6, 2 - 1 = 1 \\implies -6x" }
+      ];
+      const q = pickRandom(items);
+      const termLatex = q.n === 1 ? `${q.c}x` : `${q.c}x^${q.n}`;
+
+      return {
+        operator: 'deriv',
+        promptText: "Evaluate the derivative:",
+        latexQuestion: `\\frac{d}{dx}\\left[ ${termLatex} \\right]`,
+        curvePower: q.n,
+        correctLatex: q.ans,
+        optionsLatex: [q.ans, ...q.distractors],
+        steps: [
+          `Constant multiple rule: $\\frac{d}{dx}[c \\cdot x^n] = c \\cdot \\frac{d}{dx}[x^n]$.`,
+          `Multiply coefficient by old exponent: $(${q.c}) \\times (${q.n}) = ${q.c * q.n}$.`,
+          `Subtract 1 from exponent: $n - 1 = ${q.n - 1}$.`,
+          `Result: ${q.ans}.`
+        ],
+        hintRewrite: `Form: $c \\cdot x^n$ with $c = ${q.c}$ and $n = ${q.n}$.`,
+        hintRule: `Multiply coefficient by exponent (${q.c} \\times ${q.n} = ${q.c * q.n}) and reduce exponent to ${q.n - 1}.`
+      };
+    }
+
+    function generateTier3() {
+      const items = [
+        {
+          expr: "x^2", n: 2,
+          ans: "\\frac{x^3}{3} + C",
+          derivDistractor: "2x",
+          distractors: ["\\frac{x^3}{2} + C", "x^3 + C"],
+          steps: [
+            "Formula: $\\int x^n dx = \\frac{x^{n+1}}{n+1} + C$.",
+            "Add 1 to exponent: $2 + 1 = 3$.",
+            "Divide by the new exponent 3: $\\frac{x^3}{3} + C$."
+          ],
+          rule: "Add 1 to exponent, divide by new exponent."
+        },
+        {
+          expr: "x^3", n: 3,
+          ans: "\\frac{x^4}{4} + C",
+          derivDistractor: "3x^2",
+          distractors: ["\\frac{x^4}{3} + C", "\\frac{x^3}{4} + C"],
+          steps: [
+            "Formula: $\\int x^n dx = \\frac{x^{n+1}}{n+1} + C$.",
+            "Add 1 to exponent: $3 + 1 = 4$.",
+            "Divide by 4: $\\frac{x^4}{4} + C$."
+          ],
+          rule: "Add 1 to power (4), divide by 4."
+        },
+        {
+          expr: "6x^2", n: 2,
+          ans: "2x^3 + C",
+          derivDistractor: "12x",
+          distractors: ["3x^3 + C", "\\frac{6x^3}{2} + C"],
+          steps: [
+            "Factor constant: $6 \\int x^2 dx = 6 \\left(\\frac{x^3}{3}\\right) + C$.",
+            "Simplify coefficient: $\\frac{6}{3} = 2$.",
+            "Result: $2x^3 + C$."
+          ],
+          rule: "Integrate $x^2 \\to x^3/3$, then $6/3 = 2$."
+        },
+        {
+          expr: "1", n: 0,
+          ans: "x + C",
+          derivDistractor: "0",
+          distractors: ["1 + C", "\\frac{x^2}{2} + C"],
+          steps: [
+            "Rewrite $1$ as $x^0$.",
+            "Add 1 to exponent: $0 + 1 = 1$.",
+            "Divide by 1: $\\frac{x^1}{1} + C = x + C$."
+          ],
+          rule: "$\\int 1 dx = x + C$ (derivative of $x$ is 1)."
+        },
+        {
+          expr: "x", n: 1,
+          ans: "\\frac{x^2}{2} + C",
+          derivDistractor: "1",
+          distractors: ["x^2 + C", "2x + C"],
+          steps: [
+            "Rewrite $x$ as $x^1$.",
+            "Add 1 to exponent: $1 + 1 = 2$.",
+            "Divide by 2: $\\frac{x^2}{2} + C$."
+          ],
+          rule: "Add 1 to power 1: $\\frac{x^2}{2} + C$."
+        }
+      ];
+      const q = pickRandom(items);
+
+      return {
+        operator: 'integ',
+        promptText: "Evaluate the indefinite integral:",
+        latexQuestion: `\\int ${q.expr}\\,dx`,
+        curvePower: q.n,
+        correctLatex: q.ans,
+        optionsLatex: [q.ans, q.derivDistractor, ...q.distractors],
+        steps: [
+          ...q.steps,
+          `Watch out: "${q.derivDistractor}" is the DERIVATIVE, not the integral!`
+        ],
+        hintRewrite: `Integration increases power: $x^n \\to \\frac{x^{n+1}}{n+1}$.`,
+        hintRule: q.rule
+      };
+    }
+
+    function generateTier4() {
+      const items = [
+        {
+          type: 'deriv',
+          expr: "\\frac{1}{x}",
+          powerForm: "x^{-1}",
+          ans: "-\\frac{1}{x^2}",
+          curvePower: -1,
+          distractors: ["-\\frac{1}{x}", "\\ln|x|", "\\frac{1}{x^2}"],
+          steps: [
+            "Step 1: Convert to pure power: $\\frac{1}{x} = x^{-1}$.",
+            "Step 2: Apply derivative: $(-1) \\cdot x^{-1-1} = -1 x^{-2}$.",
+            "Step 3: Convert back: $-1 x^{-2} = -\\frac{1}{x^2}$."
+          ],
+          hintRewrite: "Rewrite $\\frac{1}{x}$ as $x^{-1}$.",
+          hintRule: "$\\frac{d}{dx}[x^{-1}] = -1 x^{-1-1} = -x^{-2} = -\\frac{1}{x^2}$."
+        },
+        {
+          type: 'deriv',
+          expr: "\\frac{1}{x^2}",
+          powerForm: "x^{-2}",
+          ans: "-\\frac{2}{x^3}",
+          curvePower: -2,
+          distractors: ["-\\frac{2}{x}", "-\\frac{1}{x^3}", "\\frac{2}{x^3}"],
+          steps: [
+            "Step 1: Rewrite $\\frac{1}{x^2}$ as $x^{-2}$.",
+            "Step 2: Apply derivative: $(-2) \\cdot x^{-2-1} = -2x^{-3}$.",
+            "Step 3: Convert back: $-\\frac{2}{x^3}$."
+          ],
+          hintRewrite: "Rewrite $\\frac{1}{x^2}$ as $x^{-2}$.",
+          hintRule: "Bring -2 to front, subtract 1: $-2 - 1 = -3 \\implies -\\frac{2}{x^3}$."
+        },
+        {
+          type: 'integ',
+          expr: "\\frac{1}{x^2}",
+          powerForm: "x^{-2}",
+          ans: "-\\frac{1}{x} + C",
+          curvePower: -2,
+          distractors: ["-\\frac{2}{x^3}", "\\frac{1}{x} + C", "-\\frac{1}{3x^3} + C"],
+          steps: [
+            "Step 1: Rewrite as $x^{-2}$.",
+            "Step 2: Add 1 to exponent: $-2 + 1 = -1$.",
+            "Step 3: Divide by new exponent: $\\frac{x^{-1}}{-1} + C = -\\frac{1}{x} + C$."
+          ],
+          hintRewrite: "$\\int x^{-2} dx$.",
+          hintRule: "Add 1 to $-2$: new power is $-1$. Divide by $-1 \\implies -\\frac{1}{x} + C$."
+        },
+        {
+          type: 'integ',
+          expr: "\\frac{1}{x}",
+          powerForm: "x^{-1}",
+          ans: "\\ln|x| + C",
+          curvePower: -1,
+          distractors: ["\\frac{x^0}{0} + C", "-\\frac{1}{x^2} + C", "0 + C"],
+          steps: [
+            "CRUCIAL EXCEPTION: Power rule would give $\\frac{x^0}{0}$ (division by zero!).",
+            "By definition, $\\int \\frac{1}{x} dx = \\ln|x| + C$."
+          ],
+          hintRewrite: "$\\frac{1}{x} = x^{-1}$ is the ONE exception to the power rule!",
+          hintRule: "Never divide by zero! $\\int \\frac{1}{x} dx = \\ln|x| + C$."
+        }
+      ];
+
+      const q = pickRandom(items);
+      const isDeriv = q.type === 'deriv';
+
+      return {
+        operator: isDeriv ? 'deriv' : 'integ',
+        promptText: isDeriv ? "Evaluate the derivative:" : "Evaluate the indefinite integral:",
+        latexQuestion: isDeriv ? `\\frac{d}{dx}\\left[ ${q.expr} \\right]` : `\\int ${q.expr}\\,dx`,
+        curvePower: q.curvePower,
+        correctLatex: q.ans,
+        optionsLatex: [q.ans, ...q.distractors],
+        steps: q.steps,
+        hintRewrite: q.hintRewrite,
+        hintRule: q.hintRule
+      };
+    }
+
+    function generateTier5() {
+      const items = [
+        {
+          type: 'deriv',
+          expr: "\\sqrt{x}",
+          ans: "\\frac{1}{2\\sqrt{x}}",
+          curvePower: 0.5,
+          distractors: ["\\frac{2}{3}x^{3/2}", "\\frac{1}{\\sqrt{x}}", "2\\sqrt{x}"],
+          steps: [
+            "Step 1: Rewrite root as power: $\\sqrt{x} = x^{1/2}$.",
+            "Step 2: Derivative: $\\frac{1}{2} x^{1/2 - 1} = \\frac{1}{2} x^{-1/2}$.",
+            "Step 3: Convert: $\\frac{1}{2\\sqrt{x}}$."
+          ],
+          hintRewrite: "Rewrite $\\sqrt{x} \\implies x^{1/2}$.",
+          hintRule: "$\\frac{1}{2} - 1 = -\\frac{1}{2} \\implies \\frac{1}{2\\sqrt{x}}$."
+        },
+        {
+          type: 'integ',
+          expr: "\\sqrt{x}",
+          ans: "\\frac{2}{3}x^{3/2} + C",
+          curvePower: 0.5,
+          distractors: ["\\frac{1}{2\\sqrt{x}}", "\\frac{3}{2}x^{3/2} + C", "\\frac{2}{3}\\sqrt{x} + C"],
+          steps: [
+            "Step 1: Rewrite: $x^{1/2}$.",
+            "Step 2: Add 1: $\\frac{1}{2} + 1 = \\frac{3}{2}$.",
+            "Step 3: Divide by $\\frac{3}{2}$ (multiply by reciprocal $\\frac{2}{3}$): $\\frac{2}{3}x^{3/2} + C$."
+          ],
+          hintRewrite: "$\\int x^{1/2} dx$.",
+          hintRule: "Add 1 to $1/2 \\to 3/2$. Multiply by reciprocal $2/3$."
+        },
+        {
+          type: 'integ',
+          expr: "\\frac{1}{\\sqrt{x}}",
+          ans: "2\\sqrt{x} + C",
+          curvePower: -0.5,
+          distractors: ["-\\frac{1}{2\\sqrt{x^3}}", "\\frac{1}{2}\\sqrt{x} + C", "\\sqrt{x} + C"],
+          steps: [
+            "Step 1: Rewrite as $x^{-1/2}$.",
+            "Step 2: Add 1: $-\\frac{1}{2} + 1 = \\frac{1}{2}$.",
+            "Step 3: Divide by $\\frac{1}{2}$ (multiply by 2): $2x^{1/2} + C = 2\\sqrt{x} + C$."
+          ],
+          hintRewrite: "$\\int x^{-1/2} dx$.",
+          hintRule: "$-1/2 + 1 = 1/2$. Dividing by $1/2$ gives $2\\sqrt{x} + C$."
+        }
+      ];
+
+      const q = pickRandom(items);
+      const isDeriv = q.type === 'deriv';
+
+      return {
+        operator: isDeriv ? 'deriv' : 'integ',
+        promptText: isDeriv ? "Evaluate the derivative:" : "Evaluate the indefinite integral:",
+        latexQuestion: isDeriv ? `\\frac{d}{dx}\\left[ ${q.expr} \\right]` : `\\int ${q.expr}\\,dx`,
+        curvePower: q.curvePower,
+        correctLatex: q.ans,
+        optionsLatex: [q.ans, ...q.distractors],
+        steps: q.steps,
+        hintRewrite: q.hintRewrite,
+        hintRule: q.hintRule
+      };
+    }
+
+    function generateTier6() {
+      const pairs = [
+        {
+          base: "x^3",
+          deriv: { ans: "3x^2", dist: ["\\frac{x^4}{4} + C", "3x^3", "x^2"] },
+          integ: { ans: "\\frac{x^4}{4} + C", dist: ["3x^2", "\\frac{x^3}{3} + C", "x^4 + C"] },
+          power: 3
+        },
+        {
+          base: "4x^2",
+          deriv: { ans: "8x", dist: ["\\frac{4x^3}{3} + C", "4x", "8x^2"] },
+          integ: { ans: "\\frac{4x^3}{3} + C", dist: ["8x", "2x^3 + C", "4x^3 + C"] },
+          power: 2
+        },
+        {
+          base: "\\frac{1}{x^2}",
+          deriv: { ans: "-\\frac{2}{x^3}", dist: ["-\\frac{1}{x} + C", "\\frac{2}{x^3}", "-\\frac{2}{x}"] },
+          integ: { ans: "-\\frac{1}{x} + C", dist: ["-\\frac{2}{x^3}", "\\frac{1}{x} + C", "-\\frac{1}{3x^3} + C"] },
+          power: -2
+        },
+        {
+          base: "\\sqrt{x}",
+          deriv: { ans: "\\frac{1}{2\\sqrt{x}}", dist: ["\\frac{2}{3}x^{3/2} + C", "2\\sqrt{x}", "\\frac{1}{\\sqrt{x}}"] },
+          integ: { ans: "\\frac{2}{3}x^{3/2} + C", dist: ["\\frac{1}{2\\sqrt{x}}", "\\frac{3}{2}x^{3/2} + C", "2\\sqrt{x} + C"] },
+          power: 0.5
+        }
+      ];
+
+      const pair = pickRandom(pairs);
+      const isDeriv = Math.random() < 0.5;
+
+      if (isDeriv) {
+        return {
+          operator: 'deriv',
+          promptText: "CRUCIBLE ALERT: Evaluate DERIVATIVE:",
+          latexQuestion: `\\frac{d}{dx}\\left[ ${pair.base} \\right]`,
+          curvePower: pair.power,
+          correctLatex: pair.deriv.ans,
+          optionsLatex: [pair.deriv.ans, ...pair.deriv.dist],
+          steps: [
+            "Operator is DERIVATIVE $\\frac{d}{dx}$ (Multiply power to front, subtract 1).",
+            `Result: ${pair.deriv.ans}.`
+          ],
+          hintRewrite: `Look closely: $\\frac{d}{dx}$ means DERIVATIVE!`,
+          hintRule: "Bring power forward, subtract 1 from exponent."
+        };
+      } else {
+        return {
+          operator: 'integ',
+          promptText: "CRUCIBLE ALERT: Evaluate INTEGRAL:",
+          latexQuestion: `\\int ${pair.base}\\,dx`,
+          curvePower: pair.power,
+          correctLatex: pair.integ.ans,
+          optionsLatex: [pair.integ.ans, ...pair.integ.dist],
+          steps: [
+            "Operator is INTEGRAL $\\int$ (Add 1 to exponent, divide by new exponent).",
+            `Result: ${pair.integ.ans}.`
+          ],
+          hintRewrite: `Look closely: $\\int$ means INTEGRAL!`,
+          hintRule: "Add 1 to exponent, divide by new exponent."
+        };
+      }
+    }
+
+    function generateTier7() {
+      const items = [
+        {
+          subtext: "Displacement ➔ Velocity",
+          prompt: "Given $x(t) = 3t^2 - 4t + 5$, find $v(t) = \\frac{dx}{dt}$:",
+          latexQuestion: "v(t) = \\frac{d}{dt}\\left[ 3t^2 - 4t + 5 \\right]",
+          curvePower: 2,
+          isPhysics: true,
+          ans: "6t - 4",
+          distractors: ["3t - 4", "6t + 5", "t^3 - 2t^2"],
+          steps: [
+            "Velocity is the derivative of position: $v(t) = x'(t)$.",
+            "$\\frac{d}{dt}[3t^2] = 6t$, $\\frac{d}{dt}[-4t] = -4$, $\\frac{d}{dt}[5] = 0$.",
+            "Result: $v(t) = 6t - 4$."
+          ],
+          hintRewrite: "Differentiate each term with respect to time $t$.",
+          hintRule: "$3t^2 \\to 6t$, $-4t \\to -4$, constant 5 becomes 0."
+        },
+        {
+          subtext: "Velocity ➔ Acceleration",
+          prompt: "Given $v(t) = 6t - 4$, find $a(t) = \\frac{dv}{dt}$:",
+          latexQuestion: "a(t) = \\frac{d}{dt}\\left[ 6t - 4 \\right]",
+          curvePower: 1,
+          isPhysics: true,
+          ans: "6\\text{ m/s}^2",
+          distractors: ["6t\\text{ m/s}^2", "0\\text{ m/s}^2", "3t^2 - 4t"],
+          steps: [
+            "Acceleration is the derivative of velocity: $a(t) = v'(t)$.",
+            "$\\frac{d}{dt}[6t] = 6$, $\\frac{d}{dt}[-4] = 0$.",
+            "Result: $a(t) = 6\\text{ m/s}^2$."
+          ],
+          hintRewrite: "Differentiate $6t - 4$ with respect to $t$.",
+          hintRule: "Linear term $6t$ differentiates to 6; constant $-4$ differentiates to 0."
+        },
+        {
+          subtext: "Turnaround Time ($v = 0$)",
+          prompt: "For $x(t) = -t^2 + 6t$, find time $t$ where $v(t) = 0$:",
+          latexQuestion: "v(t) = -2t + 6 = 0 \\implies t = ?",
+          curvePower: 2,
+          isPhysics: true,
+          ans: "t = 3\\text{ s}",
+          distractors: ["t = 6\\text{ s}", "t = 2\\text{ s}", "t = 1.5\\text{ s}"],
+          steps: [
+            "Velocity is $v(t) = \\frac{dx}{dt} = -2t + 6$.",
+            "Set velocity to zero: $-2t + 6 = 0 \\implies 2t = 6 \\implies t = 3\\text{ s}$."
+          ],
+          hintRewrite: "Turnaround occurs when $v(t) = 0$.",
+          hintRule: "Solve $-2t + 6 = 0 \\implies t = 3\\text{ s}$."
+        }
+      ];
+
+      const q = pickRandom(items);
+      return {
+        operator: 'physics',
+        promptText: q.prompt,
+        latexQuestion: q.latexQuestion,
+        curvePower: q.curvePower,
+        subtext: q.subtext,
+        isPhysics: true,
+        correctLatex: q.ans,
+        optionsLatex: [q.ans, ...q.distractors],
+        steps: q.steps,
+        hintRewrite: q.hintRewrite,
+        hintRule: q.hintRule
+      };
+    }
+
+    function generateTier8() {
+      const items = [
+        {
+          subtext: "Work by Variable Spring Force",
+          prompt: "Calculate work $W = \\int_0^x F dx$ for $F(x) = k x^1$:",
+          latexQuestion: "W = \\int_0^x k x^1\\,dx",
+          curvePower: 1,
+          isPhysics: true,
+          ans: "\\frac{1}{2}kx^2",
+          distractors: ["k x^2", "k x", "\\frac{1}{3}kx^3"],
+          steps: [
+            "Work is the integral of force over displacement: $W = \\int F dx$.",
+            "Integral power rule on $x^1$: $k \\left(\\frac{x^2}{2}\\right) = \\frac{1}{2}kx^2$."
+          ],
+          hintRewrite: "Linear spring force $F = kx^1$.",
+          hintRule: "Power rule on $x^1$: increase exponent to 2, divide by 2: $\\frac{1}{2}kx^2$."
+        },
+        {
+          subtext: "Inverse-Square Gravitational Potential",
+          prompt: "Given gravity $F(r) = k r^{-2}$, find $\\int F\\,dr$:",
+          latexQuestion: "\\int k r^{-2}\\,dr",
+          curvePower: -2,
+          isPhysics: true,
+          ans: "-\\frac{k}{r} + C",
+          distractors: ["-\\frac{2k}{r^3} + C", "\\frac{k}{r} + C", "-\\frac{k}{2r^2} + C"],
+          steps: [
+            "Integral power rule on $r^{-2}$: add 1 to exponent: $-2 + 1 = -1$.",
+            "Divide by $-1$: $\\frac{k r^{-1}}{-1} = -\\frac{k}{r} + C$."
+          ],
+          hintRewrite: "Rewrite $\\frac{k}{r^2}$ as $k r^{-2}$.",
+          hintRule: "$-2 + 1 = -1$. Divide by $-1 \\implies -\\frac{k}{r} + C$."
+        },
+        {
+          subtext: "Power as Time Derivative of Work",
+          prompt: "For work $W(t) = 4t^3\\text{ J}$, find power $P(t) = \\frac{dW}{dt}$:",
+          latexQuestion: "P(t) = \\frac{d}{dt}\\left[ 4t^3 \\right]",
+          curvePower: 3,
+          isPhysics: true,
+          ans: "12t^2\\text{ W}",
+          distractors: ["4t^2\\text{ W}", "12t^3\\text{ W}", "t^4\\text{ W}"],
+          steps: [
+            "Power is the derivative of work with respect to time: $P = \\frac{dW}{dt}$.",
+            "Power rule on $4t^3$: $4 \\times 3 t^{3-1} = 12t^2\\text{ W}$."
+          ],
+          hintRewrite: "Differentiate $4t^3$ with respect to time $t$.",
+          hintRule: "Multiply coefficient by power: $4 \\times 3 = 12$, reduce exponent to 2."
+        }
+      ];
+
+      const q = pickRandom(items);
+      return {
+        operator: 'physics',
+        promptText: q.prompt,
+        latexQuestion: q.latexQuestion,
+        curvePower: q.curvePower,
+        subtext: q.subtext,
+        isPhysics: true,
+        correctLatex: q.ans,
+        optionsLatex: [q.ans, ...q.distractors],
+        steps: q.steps,
+        hintRewrite: q.hintRewrite,
+        hintRule: q.hintRule
+      };
+    }
+
+    function generatePowerQuestion(tier) {
+      switch(tier) {
+        case 1: return generateTier1();
+        case 2: return generateTier2();
+        case 3: return generateTier3();
+        case 4: return generateTier4();
+        case 5: return generateTier5();
+        case 6: return generateTier6();
+        case 7: return generateTier7();
+        case 8: return generateTier8();
+        default: return generateTier1();
+      }
+    }
+
+    // --- GAME ENGINE ---
+    class PowerCraftGame {
+      constructor() {
+        this.currentTier = 1;
+        this.score = 0;
+        this.streak = 0;
+        this.highestStreak = 0;
+        this.totalAnswered = 0;
+        this.totalCorrect = 0;
+        this.tierProgress = 0;
+        this.currentQuestion = null;
+        this.isAnswered = false;
+        this.hintUsedForCurrent = false;
+
+        this.spacedRepQueue = [];
+        this.questionsSinceMiss = 0;
+        this.advanceTimeout = null;
+
+        // Visualizer Canvas controller
+        this.canvas = document.getElementById('visualizerCanvas');
+        this.ctx = this.canvas.getContext('2d');
+        this.scrubX = 1.5;
+        this.physicsTime = 0;
+        this.animFrameId = null;
+
+        this.initDOM();
+        this.bindEvents();
+        this.startCanvasLoop();
+        this.loadTier(1);
+
+        renderCodexStaticFormulas();
+        setTimeout(() => {
+          renderAllMath(document.body);
+          renderCodexStaticFormulas();
+        }, 80);
+      }
+
+      initDOM() {
+        this.elScore = document.getElementById('scoreDisplay');
+        this.elStreak = document.getElementById('streakDisplay');
+        this.elStreakFire = document.getElementById('streakFire');
+        this.elAcc = document.getElementById('accDisplay');
+
+        this.elTierBadge = document.getElementById('tierBadge');
+        this.elTierTitle = document.getElementById('tierTitle');
+        this.elTierProgress = document.getElementById('tierProgressFill');
+        this.elRuleText = document.getElementById('ruleText');
+
+        this.elCard = document.getElementById('questionCard');
+        this.elOpTag = document.getElementById('operatorTag');
+        this.elOpSymbol = document.getElementById('operatorSymbol');
+        this.elOpLabel = document.getElementById('operatorLabel');
+        this.elPrompt = document.getElementById('questionPrompt');
+        this.elMath = document.getElementById('mathDisplay');
+        this.elContextSubtext = document.getElementById('contextSubtext');
+
+        this.optionButtons = [
+          document.getElementById('opt-0'),
+          document.getElementById('opt-1'),
+          document.getElementById('opt-2'),
+          document.getElementById('opt-3')
+        ];
+
+        // Bottom Feedback Strip Elements
+        this.elIdleTip = document.getElementById('idleTip');
+        this.elActiveFeedback = document.getElementById('activeFeedbackContent');
+        this.elFeedbackVerdict = document.getElementById('feedbackVerdict');
+        this.elQuickStepPreview = document.getElementById('quickStepPreview');
+        this.elAutoAdvanceLine = document.getElementById('autoAdvanceLine');
+        this.btnAdvance = document.getElementById('advanceNextBtn');
+        this.btnViewFullSteps = document.getElementById('viewFullStepsBtn');
+
+        // Modals
+        this.modalCodex = document.getElementById('codexModal');
+        this.modalTierSelect = document.getElementById('tierSelectModal');
+        this.modalCelebrate = document.getElementById('celebrateModal');
+        this.modalBreakdown = document.getElementById('breakdownModal');
+        this.elBreakdownBody = document.getElementById('breakdownBody');
+        this.dynamicHintContent = document.getElementById('dynamicHintContent');
+
+        // Cached Canvas HUD Elements
+        this.elMetricX = document.getElementById('metricX');
+        this.elMetricAction = document.getElementById('metricActionPill');
+
+        // Populate Tier Grid Modal with KaTeX Math
+        const tierGrid = document.getElementById('tierGridContainer');
+        tierGrid.innerHTML = '';
+        TIERS_META.forEach(t => {
+          const card = document.createElement('div');
+          card.className = `tier-option-card ${t.id === this.currentTier ? 'current' : ''}`;
+          card.id = `tier-card-${t.id}`;
+          card.innerHTML = `
+            <div>
+              <div style="font-size: 10.5px; font-weight: 800; color: var(--cyan-deriv); font-family: var(--font-mono);">${t.badge}</div>
+              <div class="tier-card-title" style="font-size: 13.5px; font-weight: 700; color: #fff;">${t.title}</div>
+              <div class="tier-card-desc" style="font-size: 11.5px; color: var(--slate-text);">${t.desc}</div>
+            </div>
+            <div style="font-size: 16px; color: var(--slate-text);">➔</div>
+          `;
+          card.onclick = () => {
+            this.loadTier(t.id);
+            this.closeModal(this.modalTierSelect);
+          };
+          tierGrid.appendChild(card);
+        });
+        renderAllMath(tierGrid);
+      }
+
+      bindEvents() {
+        this.optionButtons.forEach(btn => {
+          btn.addEventListener('click', () => {
+            const idx = parseInt(btn.getAttribute('data-index'), 10);
+            this.handleAnswer(idx);
+          });
+        });
+
+        this.btnAdvance.addEventListener('click', () => this.advanceNextQuestion());
+
+        this.btnViewFullSteps.addEventListener('click', () => {
+          this.openModal(this.modalBreakdown);
+        });
+        document.getElementById('closeBreakdownBtn').addEventListener('click', () => this.closeModal(this.modalBreakdown));
+        document.getElementById('resumeFromBreakdownBtn').addEventListener('click', () => {
+          this.closeModal(this.modalBreakdown);
+          this.advanceNextQuestion();
+        });
+
+        // Hint trigger
+        const openCodex = () => {
+          audio.playHint();
+          this.hintUsedForCurrent = true;
+          this.updateDynamicCodexHint();
+          this.openModal(this.modalCodex);
+          renderCodexStaticFormulas();
+        };
+
+        document.getElementById('hintTriggerBtn').addEventListener('click', openCodex);
+        document.getElementById('codexHeaderBtn').addEventListener('click', openCodex);
+        document.getElementById('closeCodexBtn').addEventListener('click', () => this.closeModal(this.modalCodex));
+        document.getElementById('resumeFromCodexBtn').addEventListener('click', () => this.closeModal(this.modalCodex));
+
+        // Tier modal
+        document.getElementById('tierSelectBtn').addEventListener('click', () => {
+          audio.playClick();
+          this.openModal(this.modalTierSelect);
+          renderAllMath(this.modalTierSelect);
+        });
+        document.getElementById('closeTierModalBtn').addEventListener('click', () => this.closeModal(this.modalTierSelect));
+        document.getElementById('closeTierSelectBtn').addEventListener('click', () => this.closeModal(this.modalTierSelect));
+
+        // Celebrate modal
+        document.getElementById('replayTierBtn').addEventListener('click', () => {
+          this.closeModal(this.modalCelebrate);
+          this.loadTier(this.currentTier);
+        });
+        document.getElementById('advanceTierBtn').addEventListener('click', () => {
+          this.closeModal(this.modalCelebrate);
+          const nextTier = Math.min(8, this.currentTier + 1);
+          this.loadTier(nextTier);
+        });
+
+        // Audio toggle
+        const audioBtn = document.getElementById('audioToggleBtn');
+        audioBtn.addEventListener('click', () => {
+          const enabled = audio.toggle();
+          audioBtn.textContent = enabled ? '🔊' : '🔇';
+          if (enabled) audio.playClick();
+        });
+
+        // Keyboard Shortcuts
+        window.addEventListener('keydown', (e) => {
+          if (this.modalBreakdown.classList.contains('open')) {
+            if (e.key === 'Escape' || e.key === ' ' || e.key === 'Enter') {
+              this.closeModal(this.modalBreakdown);
+              this.advanceNextQuestion();
+              e.preventDefault();
+            }
+            return;
+          }
+          if (this.modalCodex.classList.contains('open')) {
+            if (e.key === 'Escape' || e.key === ' ' || e.key === 'Enter') {
+              this.closeModal(this.modalCodex);
+              e.preventDefault();
+            }
+            return;
+          }
+          if (this.modalCelebrate.classList.contains('open')) {
+            if (e.key === ' ' || e.key === 'Enter') {
+              document.getElementById('advanceTierBtn').click();
+              e.preventDefault();
+            }
+            return;
+          }
+          if (this.modalTierSelect.classList.contains('open')) {
+            if (e.key === 'Escape') this.closeModal(this.modalTierSelect);
+            return;
+          }
+
+          if (!this.isAnswered) {
+            if (['1', '2', '3', '4'].includes(e.key)) {
+              const idx = parseInt(e.key, 10) - 1;
+              if (this.optionButtons[idx]) this.handleAnswer(idx);
+            } else if (e.key.toLowerCase() === 'h') {
+              openCodex();
+            }
+          } else {
+            if (e.key === ' ' || e.key === 'Enter') {
+              this.advanceNextQuestion();
+              e.preventDefault();
+            }
+          }
+
+          if (e.key.toLowerCase() === 'm') {
+            audioBtn.click();
+          }
+        });
+
+        // Canvas scrubbing
+        const handleScrub = (evt) => {
+          const rect = this.canvas.getBoundingClientRect();
+          const clientX = evt.touches ? evt.touches[0].clientX : evt.clientX;
+          const ratio = (clientX - rect.left) / rect.width;
+          const clamped = Math.max(0.1, Math.min(0.9, ratio));
+          this.scrubX = 0.2 + clamped * 2.8;
+        };
+
+        this.canvas.addEventListener('mousemove', handleScrub);
+        this.canvas.addEventListener('touchmove', handleScrub, { passive: true });
+
+        window.addEventListener('resize', () => this.resizeCanvas());
+        this.resizeCanvas();
+      }
+
+      resizeCanvas() {
+        const rect = this.canvas.parentElement.getBoundingClientRect();
+        const dpr = window.devicePixelRatio || 1;
+        this.canvas.width = rect.width * dpr;
+        this.canvas.height = rect.height * dpr;
+        this.ctx.resetTransform?.();
+        this.ctx.scale(dpr, dpr);
+      }
+
+      openModal(modal) {
+        modal.classList.add('open');
+      }
+
+      closeModal(modal) {
+        modal.classList.remove('open');
+      }
+
+      loadTier(tierNum) {
+        this.currentTier = tierNum;
+        this.tierProgress = 0;
+        this.hintUsedForCurrent = false;
+
+        const meta = TIERS_META.find(t => t.id === tierNum) || TIERS_META[0];
+        this.elTierBadge.textContent = meta.badge;
+        this.elTierTitle.innerHTML = meta.title;
+        this.elRuleText.innerHTML = meta.rule;
+
+        renderAllMath(this.elTierTitle);
+        renderAllMath(this.elRuleText);
+
+        TIERS_META.forEach(t => {
+          const el = document.getElementById(`tier-card-${t.id}`);
+          if (el) {
+            if (t.id === tierNum) el.classList.add('current');
+            else el.classList.remove('current');
+          }
+        });
+
+        this.updateProgressFill();
+        this.generateAndDisplayQuestion();
+      }
+
+      updateProgressFill() {
+        const meta = TIERS_META.find(t => t.id === this.currentTier);
+        const req = meta.questionsRequired;
+        const pct = Math.min(100, Math.round((this.tierProgress / req) * 100));
+        this.elTierProgress.style.width = `${pct}%`;
+      }
+
+      generateAndDisplayQuestion() {
+        if (this.advanceTimeout) clearTimeout(this.advanceTimeout);
+        this.isAnswered = false;
+        this.hintUsedForCurrent = false;
+
+        let q;
+        if (this.spacedRepQueue.length > 0 && this.questionsSinceMiss >= 2) {
+          q = this.spacedRepQueue.shift();
+          this.questionsSinceMiss = 0;
+        } else {
+          q = generatePowerQuestion(this.currentTier);
+          this.questionsSinceMiss++;
+        }
+
+        const correctLatex = q.correctLatex;
+        const shuffled = shuffle(q.optionsLatex);
+        const correctIndex = shuffled.indexOf(correctLatex);
+
+        this.currentQuestion = {
+          ...q,
+          options: shuffled,
+          correctIndex: correctIndex
+        };
+
+        const isDeriv = q.operator === 'deriv';
+        const isPhysics = q.operator === 'physics';
+
+        this.elCard.className = `crucible-card ${isDeriv ? 'deriv-active' : isPhysics ? 'deriv-active' : 'integ-active'}`;
+        this.elOpTag.className = `operator-tag ${isDeriv ? 'deriv' : isPhysics ? 'physics' : 'integ'}`;
+
+        if (isPhysics) {
+          this.elOpSymbol.textContent = "PHYSICS";
+          this.elOpLabel.textContent = "KINEMATICS / ENERGY";
+        } else if (isDeriv) {
+          this.elOpSymbol.textContent = "d/dx";
+          this.elOpLabel.textContent = "DERIVATIVE";
+        } else {
+          this.elOpSymbol.textContent = "∫ dx";
+          this.elOpLabel.textContent = "INTEGRAL";
+        }
+
+        // Render Prompt with KaTeX
+        this.elPrompt.innerHTML = q.promptText;
+        renderAllMath(this.elPrompt);
+
+        if (q.subtext) {
+          this.elContextSubtext.style.display = 'block';
+          this.elContextSubtext.textContent = q.subtext;
+        } else {
+          this.elContextSubtext.style.display = 'none';
+        }
+
+        // Render main equation
+        katex.render(q.latexQuestion, this.elMath, {
+          displayMode: true,
+          throwOnError: false
+        });
+
+        // Options KaTeX rendering
+        this.optionButtons.forEach((btn, idx) => {
+          btn.className = 'option-btn';
+          btn.disabled = false;
+          const optMathEl = document.getElementById(`optMath-${idx}`);
+          optMathEl.innerHTML = '';
+          katex.render(this.currentQuestion.options[idx], optMathEl, {
+            displayMode: false,
+            throwOnError: false
+          });
+        });
+
+        // Reset bottom feedback strip to idle
+        this.elIdleTip.style.display = 'flex';
+        this.elActiveFeedback.style.display = 'none';
+        this.elAutoAdvanceLine.style.transition = 'none';
+        this.elAutoAdvanceLine.style.transform = 'scaleX(0)';
+
+        // Canvas function badge
+        const badgeEl = document.getElementById('canvasFunctionBadge');
+        if (q.isPhysics) {
+          badgeEl.innerHTML = `Track Simulator: $x(t)$`;
+          renderAllMath(badgeEl);
+        } else {
+          const powerStr = q.curvePower !== undefined ? q.curvePower : 2;
+          const latexStr = isDeriv ? `y = x^{${powerStr}}` : `f(x) = x^{${powerStr}}`;
+          katex.render(latexStr, badgeEl, { throwOnError: false });
+        }
+      }
+
+      handleAnswer(selectedIndex) {
+        if (this.isAnswered) return;
+        this.isAnswered = true;
+
+        const correctIdx = this.currentQuestion.correctIndex;
+        const isCorrect = selectedIndex === correctIdx;
+
+        this.totalAnswered++;
+        this.optionButtons.forEach(btn => btn.disabled = true);
+
+        if (isCorrect) {
+          audio.playCorrect();
+          this.totalCorrect++;
+          this.streak++;
+          if (this.streak > this.highestStreak) this.highestStreak = this.streak;
+
+          const basePts = 100;
+          const streakMultiplier = Math.min(3, 1 + (this.streak - 1) * 0.2);
+          const earned = Math.round((this.hintUsedForCurrent ? basePts * 0.5 : basePts) * streakMultiplier);
+          this.score += earned;
+
+          this.tierProgress++;
+          this.updateProgressFill();
+
+          this.optionButtons[selectedIndex].classList.add('correct');
+          this.elFeedbackVerdict.textContent = "✓ CORRECT";
+          this.elFeedbackVerdict.style.color = "var(--emerald-correct)";
+        } else {
+          audio.playWrong();
+          this.streak = 0;
+          this.spacedRepQueue.push(this.currentQuestion);
+
+          this.optionButtons[selectedIndex].classList.add('wrong');
+          this.optionButtons[correctIdx].classList.add('correct');
+
+          this.elFeedbackVerdict.textContent = "✕ REVIEW";
+          this.elFeedbackVerdict.style.color = "var(--rose-wrong)";
+        }
+
+        this.updateHUD();
+        this.showFeedbackStrip();
+        this.startAutoAdvanceCountdown();
+
+        // Check for tier victory
+        const meta = TIERS_META.find(t => t.id === this.currentTier);
+        if (this.tierProgress >= meta.questionsRequired) {
+          setTimeout(() => this.triggerCelebration(), 1400);
+        }
+      }
+
+      updateHUD() {
+        this.elScore.textContent = this.score;
+        this.elStreak.textContent = this.streak;
+        if (this.streak >= 3) {
+          this.elStreakFire.classList.add('active');
+        } else {
+          this.elStreakFire.classList.remove('active');
+        }
+
+        const acc = this.totalAnswered > 0 ? Math.round((this.totalCorrect / this.totalAnswered) * 100) : 100;
+        this.elAcc.textContent = `${acc}%`;
+      }
+
+      showFeedbackStrip() {
+        this.elIdleTip.style.display = 'none';
+        this.elActiveFeedback.style.display = 'flex';
+
+        const steps = this.currentQuestion.steps || [];
+        const firstStep = steps[0] || "Review arithmetic rule.";
+        this.elQuickStepPreview.innerHTML = firstStep;
+        renderAllMath(this.elQuickStepPreview);
+
+        // Populate breakdown modal
+        this.elBreakdownBody.innerHTML = '';
+        steps.forEach((s, idx) => {
+          const p = document.createElement('div');
+          p.style.fontSize = '13.5px';
+          p.style.lineHeight = '1.6';
+          p.style.padding = '6px 0';
+          p.style.borderBottom = '1px solid rgba(255,255,255,0.06)';
+          p.innerHTML = `<strong>Step ${idx + 1}:</strong> ${s}`;
+          this.elBreakdownBody.appendChild(p);
+        });
+        renderAllMath(this.elBreakdownBody);
+      }
+
+      startAutoAdvanceCountdown() {
+        this.elAutoAdvanceLine.style.transition = 'none';
+        this.elAutoAdvanceLine.style.transform = 'scaleX(0)';
+        void this.elAutoAdvanceLine.offsetWidth;
+
+        this.elAutoAdvanceLine.style.transition = 'transform 1.4s linear';
+        this.elAutoAdvanceLine.style.transform = 'scaleX(1)';
+
+        this.advanceTimeout = setTimeout(() => {
+          this.advanceNextQuestion();
+        }, 1450);
+      }
+
+      advanceNextQuestion() {
+        if (this.advanceTimeout) clearTimeout(this.advanceTimeout);
+        if (this.modalCelebrate.classList.contains('open')) return;
+        if (this.modalBreakdown.classList.contains('open')) return;
+        this.generateAndDisplayQuestion();
+      }
+
+      triggerCelebration() {
+        if (this.advanceTimeout) clearTimeout(this.advanceTimeout);
+        audio.playVictory();
+
+        if (typeof confetti === 'function') {
+          confetti({
+            particleCount: 75,
+            angle: 60,
+            spread: 55,
+            origin: { x: 0, y: 0.7 }
+          });
+          confetti({
+            particleCount: 75,
+            angle: 120,
+            spread: 55,
+            origin: { x: 1, y: 0.7 }
+          });
+        }
+
+        const meta = TIERS_META.find(t => t.id === this.currentTier);
+        document.getElementById('celebrateTitle').textContent = `${meta.badge} MASTERED!`;
+        document.getElementById('celebrateSubtitle').innerHTML = meta.desc;
+        renderAllMath(document.getElementById('celebrateSubtitle'));
+
+        const acc = this.totalAnswered > 0 ? Math.round((this.totalCorrect / this.totalAnswered) * 100) : 100;
+        document.getElementById('summaryAccuracy').textContent = `${acc}%`;
+        document.getElementById('summaryStreak').textContent = this.highestStreak;
+        document.getElementById('summaryScore').textContent = this.score;
+
+        const advanceBtn = document.getElementById('advanceTierBtn');
+        if (this.currentTier >= 8) {
+          advanceBtn.textContent = "Crucible Completed! 🎓";
+          document.getElementById('celebratePraise').textContent = 
+            "Incredible achievement! You have mastered positive powers, coefficients, fractions, negative exponents, radicals, dual alternation, and advanced physics calculus!";
+        } else {
+          advanceBtn.textContent = `Advance to Tier ${this.currentTier + 1} ➔`;
+          document.getElementById('celebratePraise').textContent = 
+            `Outstanding work on ${meta.title}! The next tier awaits.`;
+        }
+
+        this.openModal(this.modalCelebrate);
+      }
+
+      updateDynamicCodexHint() {
+        if (!this.currentQuestion) return;
+        const q = this.currentQuestion;
+        let html = `
+          <div style="margin-bottom: 6px;">
+            <strong>Expression:</strong> $${q.latexQuestion}$
+          </div>
+          <div style="margin-bottom: 5px;">
+            <strong>Step 1 (Rewrite Form):</strong> ${q.hintRewrite || "Convert to pure power $x^p$."}
+          </div>
+          <div>
+            <strong>Step 2 (Arithmetic Rule):</strong> ${q.hintRule || "Apply standard power operation."}
+          </div>
+        `;
+        this.dynamicHintContent.innerHTML = html;
+        renderAllMath(this.dynamicHintContent);
+      }
+
+      // --- LIVE 60 FPS CANVAS VISUALIZER LOOP ---
+      startCanvasLoop() {
+        const render = () => {
+          this.drawVisualizer();
+          this.animFrameId = requestAnimationFrame(render);
+        };
+        this.animFrameId = requestAnimationFrame(render);
+      }
+
+      drawVisualizer() {
+        const width = this.canvas.parentElement.clientWidth;
+        const height = this.canvas.parentElement.clientHeight;
+        const ctx = this.ctx;
+
+        ctx.clearRect(0, 0, width, height);
+
+        // Sleek Grid lines
+        ctx.strokeStyle = 'rgba(255, 255, 255, 0.035)';
+        ctx.lineWidth = 1;
+        const gridSize = 24;
+        for (let x = 0; x < width; x += gridSize) {
+          ctx.beginPath();
+          ctx.moveTo(x, 0);
+          ctx.lineTo(x, height);
+          ctx.stroke();
+        }
+        for (let y = 0; y < height; y += gridSize) {
+          ctx.beginPath();
+          ctx.moveTo(0, y);
+          ctx.lineTo(width, y);
+          ctx.stroke();
+        }
+
+        if (!this.currentQuestion) return;
+
+        const isPhysics = this.currentQuestion.operator === 'physics';
+        const isDeriv = this.currentQuestion.operator === 'deriv';
+
+        if (isPhysics) {
+          this.drawPhysicsSimulation(width, height);
+        } else {
+          this.drawMathFunctionSimulation(width, height, isDeriv);
+        }
+      }
+
+      drawMathFunctionSimulation(width, height, isDeriv) {
+        const ctx = this.ctx;
+        const power = this.currentQuestion ? this.currentQuestion.curvePower : 2;
+        const originX = 55;
+        const originY = height - 20;
+        const scaleX = (width - 90) / 3.0;
+        const scaleY = (height - 35) / 8.5;
+
+        // Axes
+        ctx.strokeStyle = 'rgba(255, 255, 255, 0.18)';
+        ctx.lineWidth = 1.2;
+        ctx.beginPath();
+        ctx.moveTo(originX, originY);
+        ctx.lineTo(width - 15, originY);
+        ctx.moveTo(originX, originY);
+        ctx.lineTo(originX, 10);
+        ctx.stroke();
+
+        const f = (x) => {
+          if (x <= 0.01 && power < 0) return 999;
+          try {
+            return Math.pow(x, power);
+          } catch(e) {
+            return 0;
+          }
+        };
+
+        const df = (x) => {
+          if (power === 0) return 0;
+          if (x <= 0.01 && power - 1 < 0) return 999;
+          return power * Math.pow(x, power - 1);
+        };
+
+        // Integral Shading
+        if (!isDeriv) {
+          const areaGrad = ctx.createLinearGradient(0, 0, 0, originY);
+          areaGrad.addColorStop(0, 'rgba(168, 85, 247, 0.35)');
+          areaGrad.addColorStop(1, 'rgba(168, 85, 247, 0.02)');
+
+          ctx.fillStyle = areaGrad;
+          ctx.beginPath();
+          ctx.moveTo(originX, originY);
+
+          const startX = power < 0 ? 0.3 : 0.05;
+          for (let x = startX; x <= this.scrubX; x += 0.05) {
+            const px = originX + x * scaleX;
+            const yVal = Math.min(8.0, f(x));
+            const py = originY - yVal * scaleY;
+            ctx.lineTo(px, py);
+          }
+          const endPx = originX + this.scrubX * scaleX;
+          ctx.lineTo(endPx, originY);
+          ctx.closePath();
+          ctx.fill();
+        }
+
+        // Plot curve y = x^n
+        ctx.strokeStyle = isDeriv ? '#06b6d4' : '#a855f7';
+        ctx.lineWidth = 2.2;
+        ctx.shadowColor = isDeriv ? 'rgba(6, 182, 212, 0.5)' : 'rgba(168, 85, 247, 0.5)';
+        ctx.shadowBlur = 6;
+        ctx.beginPath();
+
+        const plotStart = power < 0 ? 0.25 : 0;
+        let started = false;
+        for (let x = plotStart; x <= 3.2; x += 0.04) {
+          const y = f(x);
+          if (y > 8.5) continue;
+          const px = originX + x * scaleX;
+          const py = originY - y * scaleY;
+          if (!started) {
+            ctx.moveTo(px, py);
+            started = true;
+          } else {
+            ctx.lineTo(px, py);
+          }
+        }
+        ctx.stroke();
+        ctx.shadowBlur = 0;
+
+        // Active Scrub Point
+        const curX = this.scrubX;
+        const curY = Math.min(8.0, f(curX));
+        const pointPx = originX + curX * scaleX;
+        const pointPy = originY - curY * scaleY;
+
+        // Tangent line (for derivative)
+        if (isDeriv) {
+          const slope = df(curX);
+          const tangentLen = 38;
+          const dxPx = tangentLen;
+          const dyPx = slope * (scaleY / scaleX) * tangentLen;
+
+          ctx.strokeStyle = '#f59e0b';
+          ctx.lineWidth = 1.8;
+          ctx.beginPath();
+          ctx.moveTo(pointPx - dxPx, pointPy + dyPx);
+          ctx.lineTo(pointPx + dxPx, pointPy - dyPx);
+          ctx.stroke();
+
+          if (this.elMetricAction) {
+            this.elMetricAction.innerHTML = `SLOPE <span style="color:#f59e0b;">${slope.toFixed(2)}</span>`;
+          }
+        } else {
+          let area = power === -1 ? Math.log(curX) : Math.pow(curX, power + 1) / (power + 1);
+          if (this.elMetricAction) {
+            this.elMetricAction.innerHTML = `AREA <span style="color:#a855f7;">${area.toFixed(2)}</span>`;
+          }
+        }
+
+        // Scrubber circle
+        ctx.fillStyle = '#fff';
+        ctx.beginPath();
+        ctx.arc(pointPx, pointPy, 4.5, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.strokeStyle = isDeriv ? '#06b6d4' : '#a855f7';
+        ctx.lineWidth = 2;
+        ctx.stroke();
+
+        if (this.elMetricX) this.elMetricX.textContent = `${curX.toFixed(2)}`;
+      }
+
+      drawPhysicsSimulation(width, height) {
+        const ctx = this.ctx;
+        this.physicsTime += 0.02;
+
+        const trackY = height * 0.62;
+        const trackStart = 50;
+        const trackEnd = width - 50;
+        const trackLen = trackEnd - trackStart;
+
+        ctx.strokeStyle = 'rgba(255, 255, 255, 0.2)';
+        ctx.lineWidth = 2.5;
+        ctx.beginPath();
+        ctx.moveTo(trackStart, trackY);
+        ctx.lineTo(trackEnd, trackY);
+        ctx.stroke();
+
+        ctx.fillStyle = 'rgba(255, 255, 255, 0.12)';
+        for (let i = 0; i <= 10; i++) {
+          const hx = trackStart + (trackLen / 10) * i;
+          ctx.fillRect(hx - 1, trackY - 4, 2, 8);
+        }
+
+        const t = (Math.sin(this.physicsTime) + 1) / 2;
+        const cartX = trackStart + t * trackLen;
+        const v = Math.cos(this.physicsTime) * 32;
+        const a = -Math.sin(this.physicsTime) * 32;
+
+        // Particle cart
+        ctx.fillStyle = '#0f172a';
+        ctx.strokeStyle = '#38bdf8';
+        ctx.lineWidth = 1.8;
+        ctx.beginPath();
+        ctx.roundRect ? ctx.roundRect(cartX - 20, trackY - 22, 40, 18, 5) : ctx.rect(cartX - 20, trackY - 22, 40, 18);
+        ctx.fill();
+        ctx.stroke();
+
+        // Wheels
+        ctx.fillStyle = '#94a3b8';
+        ctx.beginPath();
+        ctx.arc(cartX - 10, trackY - 3, 3.5, 0, Math.PI * 2);
+        ctx.arc(cartX + 10, trackY - 3, 3.5, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Velocity vector arrow
+        ctx.strokeStyle = '#06b6d4';
+        ctx.fillStyle = '#06b6d4';
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.moveTo(cartX, trackY - 13);
+        ctx.lineTo(cartX + v, trackY - 13);
+        ctx.stroke();
+        if (Math.abs(v) > 5) {
+          const dir = v > 0 ? 1 : -1;
+          ctx.beginPath();
+          ctx.moveTo(cartX + v, trackY - 13);
+          ctx.lineTo(cartX + v - dir * 5, trackY - 16);
+          ctx.lineTo(cartX + v - dir * 5, trackY - 10);
+          ctx.fill();
+        }
+
+        // Acceleration vector arrow
+        ctx.strokeStyle = '#a855f7';
+        ctx.fillStyle = '#a855f7';
+        ctx.lineWidth = 1.8;
+        ctx.beginPath();
+        ctx.moveTo(cartX, trackY - 28);
+        ctx.lineTo(cartX + a, trackY - 28);
+        ctx.stroke();
+        if (Math.abs(a) > 5) {
+          const dirA = a > 0 ? 1 : -1;
+          ctx.beginPath();
+          ctx.moveTo(cartX + a, trackY - 28);
+          ctx.lineTo(cartX + a - dirA * 4, trackY - 31);
+          ctx.lineTo(cartX + a - dirA * 4, trackY - 25);
+          ctx.fill();
+        }
+
+        // Vector labels
+        ctx.font = '9.5px "Fira Code", monospace';
+        ctx.fillStyle = '#06b6d4';
+        ctx.fillText(`v⃗: ${(v/10).toFixed(1)} m/s`, cartX - 24, trackY + 16);
+        ctx.fillStyle = '#a855f7';
+        ctx.fillText(`a⃗: ${(a/10).toFixed(1)} m/s²`, cartX - 24, trackY - 32);
+
+        if (this.elMetricX) this.elMetricX.textContent = `${(this.physicsTime % 10).toFixed(1)}s`;
+        if (this.elMetricAction) this.elMetricAction.innerHTML = `v = <span style="color:#06b6d4">${(v/10).toFixed(1)}</span> | a = <span style="color:#a855f7">${(a/10).toFixed(1)}</span>`;
+      }
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      window.game = new PowerCraftGame();
+    });
+  </script>
+</body>
+</html>

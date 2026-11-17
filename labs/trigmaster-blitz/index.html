@@ -1,0 +1,2035 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <title>TrigMaster Blitz: Competitive Trigonometry Arena | Mazhar's Lab</title>
+  <meta name="description" content="Competitive trigonometry reflex arena testing angle conversions, identities, and trigonometric transformations at high speed.">
+  <link rel="canonical" href="https://mazhar.in/labs/trigmaster-blitz/">
+  <meta name="lab-category" content="Oddities & Uncategorized">
+  <meta name="lab-status" content="Playground">
+  <meta name="lab-hook" content="Fast-paced competitive trigonometry arena with instant evaluation and streak scoring.">
+  <meta name="lab-tech" content="SVG, KaTeX, Tailwind, Audio / TTS">
+  <meta name="lab-tags" content="Trigonometry, Game Loop, Math Reflex, Speed Drill">
+  <!-- Open Graph / SEO -->
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="TrigMaster Blitz: Competitive Trigonometry Arena | Mazhar's Lab">
+  <meta property="og:description" content="Competitive trigonometry reflex arena testing angle conversions, identities, and trigonometric transformations at high speed.">
+  <meta property="og:url" content="https://mazhar.in/labs/trigmaster-blitz/">
+  <!-- Schema.org WebApplication -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "TrigMaster Blitz: Competitive Trigonometry Arena | Mazhar's Lab",
+    "description": "Competitive trigonometry reflex arena testing angle conversions, identities, and trigonometric transformations at high speed.",
+    "url": "https://mazhar.in/labs/trigmaster-blitz/",
+    "applicationCategory": "EducationalApplication",
+    "author": {
+      "@type": "Person",
+      "name": "Syed Mazhar Ali",
+      "url": "https://mazhar.in"
+    }
+  }
+  </script>
+
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TrigMaster Blitz: Competitive Trigonometry Arena | Mazhar's Lab</title>
+  <meta name="description" content="High-octane competitive trigonometry arcade with spaced repetition, procedural challenge generation, and competitive JEE/Olympiad tiers.">
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              cyan: '#06b6d4',
+              violet: '#8b5cf6',
+              emerald: '#10b981',
+              rose: '#f43f5e',
+              amber: '#f59e0b'
+            }
+          },
+          fontFamily: {
+            mono: ['JetBrains Mono', 'Fira Code', 'monospace']
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- KaTeX CDN -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+
+  <!-- Canvas Confetti CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js"></script>
+
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap');
+    
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+    }
+
+    .glass-panel {
+      background: rgba(15, 23, 42, 0.75);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .glass-card {
+      background: rgba(30, 41, 59, 0.6);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.07);
+    }
+
+    .neon-glow-cyan {
+      box-shadow: 0 0 25px -5px rgba(6, 182, 212, 0.35);
+    }
+    
+    .neon-glow-violet {
+      box-shadow: 0 0 25px -5px rgba(139, 92, 246, 0.35);
+    }
+
+    .neon-border-pulse {
+      animation: pulseBorder 2.5s infinite;
+    }
+
+    @keyframes pulseBorder {
+      0%, 100% { border-color: rgba(6, 182, 212, 0.4); box-shadow: 0 0 15px rgba(6, 182, 212, 0.2); }
+      50% { border-color: rgba(139, 92, 246, 0.5); box-shadow: 0 0 20px rgba(139, 92, 246, 0.3); }
+    }
+
+    .katex {
+      font-size: 1.15em !important;
+      text-rendering: geometricPrecision;
+      overflow: visible !important;
+    }
+
+    .katex-display {
+      margin: 0.35em 0 !important;
+      overflow: visible !important;
+    }
+
+    .katex-display > .katex {
+      white-space: normal !important;
+      text-align: center;
+    }
+
+    .katex-html {
+      overflow: visible !important;
+    }
+
+    /* Suppress accidental native scrollbars in math containers */
+    .no-scrollbar {
+      -ms-overflow-style: none !important;
+      scrollbar-width: none !important;
+    }
+    .no-scrollbar::-webkit-scrollbar {
+      display: none !important;
+      width: 0 !important;
+      height: 0 !important;
+    }
+
+    /* Option button animations */
+    .option-btn {
+      transition: all 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .option-btn:hover:not(:disabled) {
+      transform: translateY(-2px);
+      border-color: rgba(6, 182, 212, 0.6);
+      box-shadow: 0 8px 24px -6px rgba(6, 182, 212, 0.25);
+    }
+
+    .option-btn:active:not(:disabled) {
+      transform: translateY(0) scale(0.99);
+    }
+
+    /* Custom progress bar transition */
+    .smooth-bar {
+      transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    /* Key indicator pill */
+    .key-badge {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.75rem;
+    }
+  </style>
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col selection:bg-cyan-500/30 selection:text-cyan-200 antialiased overflow-x-hidden">
+
+  <!-- Background decorative ambient gradients -->
+  <div class="fixed inset-0 pointer-events-none z-0 overflow-hidden">
+    <div class="absolute -top-40 -left-40 w-96 h-96 bg-cyan-500/10 rounded-full blur-3xl"></div>
+    <div class="absolute top-1/3 -right-40 w-96 h-96 bg-violet-600/10 rounded-full blur-3xl"></div>
+    <div class="absolute -bottom-40 left-1/3 w-96 h-96 bg-emerald-500/10 rounded-full blur-3xl"></div>
+  </div>
+
+  <!-- TOP NAV & GLOBAL HUD -->
+  <header class="sticky top-0 z-40 w-full glass-panel border-b border-slate-800/80 px-4 py-3">
+    <div class="max-w-6xl mx-auto flex items-center justify-between gap-4">
+      <!-- Logo & Brand -->
+      <div class="flex items-center gap-3 cursor-pointer select-none" id="brandBtn">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-cyan-500 via-indigo-500 to-violet-500 flex items-center justify-center shadow-lg shadow-cyan-500/20">
+          <svg class="w-6 h-6 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <polygon points="12 2 2 22 22 22"/>
+            <circle cx="12" cy="15" r="2"/>
+          </svg>
+        </div>
+        <div>
+          <div class="flex items-center gap-2">
+            <span class="font-extrabold text-lg tracking-tight bg-gradient-to-r from-cyan-400 via-teal-300 to-violet-400 bg-clip-text text-transparent">TrigMaster</span>
+            <span class="text-xs px-1.5 py-0.5 rounded font-black bg-cyan-500/20 text-cyan-300 border border-cyan-500/30 tracking-wider">BLITZ</span>
+          </div>
+          <p class="text-[11px] text-slate-400 leading-none mt-0.5">Competitive Trigonometric Engine</p>
+        </div>
+      </div>
+
+      <!-- Quick Global Stats in Header -->
+      <div class="hidden sm:flex items-center gap-4 text-xs font-medium">
+        <div class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-900/80 border border-slate-800">
+          <span class="text-amber-400">⚡</span>
+          <span class="text-slate-400">XP:</span>
+          <span id="navXp" class="font-bold text-amber-300 font-mono">0</span>
+        </div>
+        <div class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-900/80 border border-slate-800">
+          <span class="text-rose-400">🔥</span>
+          <span class="text-slate-400">Streak:</span>
+          <span id="navStreak" class="font-bold text-rose-300 font-mono">0</span>
+        </div>
+        <div id="errorQueueNavPill" class="hidden items-center gap-1.5 px-3 py-1.5 rounded-lg bg-indigo-950/70 border border-indigo-700/50 text-indigo-300">
+          <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/><path d="M3 12a9 9 0 0 0 9 9 9.75 9.75 0 0 0 6.74-2.74L21 16"/><path d="M16 21h5v-5"/></svg>
+          <span>Review:</span>
+          <span id="navErrorCount" class="font-bold font-mono">0</span>
+        </div>
+      </div>
+
+      <!-- Right Controls -->
+      <div class="flex items-center gap-2">
+        <button id="soundToggleBtn" class="p-2 rounded-xl bg-slate-900/90 border border-slate-800 text-slate-300 hover:text-white hover:border-slate-700 transition" title="Toggle Synthesizer Sound (S)">
+          <svg id="soundIconOn" class="w-5 h-5 text-cyan-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/></svg>
+          <svg id="soundIconOff" class="w-5 h-5 text-slate-500 hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><line x1="23" y1="9" x2="17" y2="15"/><line x1="17" y1="9" x2="23" y2="15"/></svg>
+        </button>
+
+        <button id="dashboardBtn" class="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-slate-900 border border-slate-800 text-slate-300 hover:text-cyan-300 hover:border-cyan-500/40 text-xs font-semibold transition">
+          <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+          <span class="hidden md:inline">Lobby</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- MAIN CONTAINER -->
+  <main class="flex-1 max-w-5xl w-full mx-auto p-4 md:p-6 flex flex-col justify-center relative z-10">
+
+    <!-- VIEW 1: LOBBY / DASHBOARD -->
+    <section id="lobbyView" class="space-y-8 animate-fadeIn">
+      <!-- Hero Banner -->
+      <div class="glass-panel p-6 sm:p-8 rounded-3xl relative overflow-hidden neon-glow-cyan">
+        <div class="relative z-10 max-w-2xl">
+          <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-500/10 border border-cyan-500/30 text-cyan-300 text-xs font-semibold mb-3">
+            <span class="w-2 h-2 rounded-full bg-cyan-400 animate-ping"></span>
+            Zero Latency Math Training
+          </div>
+          <h1 class="text-3xl sm:text-5xl font-extrabold tracking-tight text-white leading-tight">
+            Master the Unit Circle & Beyond at <span class="bg-gradient-to-r from-cyan-400 via-sky-300 to-violet-400 bg-clip-text text-transparent">Light Speed</span>.
+          </h1>
+          <p class="text-slate-400 text-sm sm:text-base mt-3 leading-relaxed">
+            Procedurally synthesized trigonometric challenges ranging from basic ASTC quadrant symmetries to Olympiad telescoping products.
+          </p>
+        </div>
+        <div class="absolute right-0 bottom-0 opacity-10 pointer-events-none transform translate-x-10 translate-y-10">
+          <svg class="w-96 h-96 text-cyan-400" viewBox="0 0 200 200" fill="currentColor">
+            <circle cx="100" cy="100" r="80" fill="none" stroke="currentColor" stroke-width="6"/>
+            <line x1="20" y1="100" x2="180" y2="100" stroke="currentColor" stroke-width="4"/>
+            <line x1="100" y1="20" x2="100" y2="180" stroke="currentColor" stroke-width="4"/>
+          </svg>
+        </div>
+      </div>
+
+      <!-- Mode Cards Grid -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <!-- MODE 1: Campaign / Infinite Ascent -->
+        <div class="glass-card p-6 rounded-2xl hover:border-cyan-500/50 transition cursor-pointer group flex flex-col justify-between" onclick="startGame('campaign')">
+          <div>
+            <div class="flex items-center justify-between mb-4">
+              <div class="w-12 h-12 rounded-xl bg-cyan-500/20 border border-cyan-500/40 text-cyan-400 flex items-center justify-center font-bold text-xl group-hover:scale-105 transition">
+                <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m18 15-6-6-6 6"/></svg>
+              </div>
+              <span class="text-xs font-mono font-bold px-2.5 py-1 rounded bg-slate-800 text-slate-300 border border-slate-700">TIER 1 - 8+</span>
+            </div>
+            <h3 class="text-xl font-bold text-white group-hover:text-cyan-300 transition flex items-center gap-2">
+              Infinite Ascent
+              <span class="text-xs px-2 py-0.5 rounded-full bg-cyan-500/20 text-cyan-300 font-normal">Campaign</span>
+            </h3>
+            <p class="text-slate-400 text-xs sm:text-sm mt-2 leading-relaxed">
+              Progressive mastery tiers. Includes active Spaced-Repetition Error Queue: mistaken questions are drilled until answered correctly twice.
+            </p>
+          </div>
+          <div class="mt-6 flex items-center justify-between pt-4 border-t border-slate-800/80 text-xs">
+            <span class="text-slate-400">Current Progress: <strong id="lobbyTierProgress" class="text-cyan-400">Tier 1</strong></span>
+            <span class="text-cyan-400 font-bold flex items-center gap-1 group-hover:translate-x-1 transition">Play Campaign &rarr;</span>
+          </div>
+        </div>
+
+        <!-- MODE 2: 60-Second Blitz -->
+        <div class="glass-card p-6 rounded-2xl hover:border-amber-500/50 transition cursor-pointer group flex flex-col justify-between" onclick="startGame('blitz')">
+          <div>
+            <div class="flex items-center justify-between mb-4">
+              <div class="w-12 h-12 rounded-xl bg-amber-500/20 border border-amber-500/40 text-amber-400 flex items-center justify-center font-bold text-xl group-hover:scale-105 transition">
+                <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+              </div>
+              <span class="text-xs font-mono font-bold px-2.5 py-1 rounded bg-slate-800 text-amber-300 border border-slate-700">60 SECONDS</span>
+            </div>
+            <h3 class="text-xl font-bold text-white group-hover:text-amber-300 transition flex items-center gap-2">
+              60-Second Blitz
+              <span class="text-xs px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-300 font-normal">Fast-Paced</span>
+            </h3>
+            <p class="text-slate-400 text-xs sm:text-sm mt-2 leading-relaxed">
+              High-velocity speed run with multiplier streaks (1x &rarr; 2x &rarr; 4x). Faster answers award maximum bonus score.
+            </p>
+          </div>
+          <div class="mt-6 flex items-center justify-between pt-4 border-t border-slate-800/80 text-xs">
+            <span class="text-slate-400">High Score: <strong id="lobbyBlitzHighScore" class="text-amber-400 font-mono">0 pts</strong></span>
+            <span class="text-amber-400 font-bold flex items-center gap-1 group-hover:translate-x-1 transition">Enter Blitz &rarr;</span>
+          </div>
+        </div>
+
+        <!-- MODE 3: Sudden Death -->
+        <div class="glass-card p-6 rounded-2xl hover:border-rose-500/50 transition cursor-pointer group flex flex-col justify-between" onclick="startGame('suddendeath')">
+          <div>
+            <div class="flex items-center justify-between mb-4">
+              <div class="w-12 h-12 rounded-xl bg-rose-500/20 border border-rose-500/40 text-rose-400 flex items-center justify-center font-bold text-xl group-hover:scale-105 transition">
+                <svg class="w-6 h-6" viewBox="0 0 24 24" fill="currentColor"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+              </div>
+              <span class="text-xs font-mono font-bold px-2.5 py-1 rounded bg-slate-800 text-rose-300 border border-slate-700">3 HEARTS</span>
+            </div>
+            <h3 class="text-xl font-bold text-white group-hover:text-rose-300 transition flex items-center gap-2">
+              Sudden Death
+              <span class="text-xs px-2 py-0.5 rounded-full bg-rose-500/20 text-rose-300 font-normal">Hardcore</span>
+            </h3>
+            <p class="text-slate-400 text-xs sm:text-sm mt-2 leading-relaxed">
+              Begins immediately at Level 3 difficulty. One mistake burns a heart. 3 mistakes and your run is terminated.
+            </p>
+          </div>
+          <div class="mt-6 flex items-center justify-between pt-4 border-t border-slate-800/80 text-xs">
+            <span class="text-slate-400">Best Survival: <strong id="lobbySuddenHighScore" class="text-rose-400 font-mono">0 Solved</strong></span>
+            <span class="text-rose-400 font-bold flex items-center gap-1 group-hover:translate-x-1 transition">Face Death &rarr;</span>
+          </div>
+        </div>
+
+        <!-- MODE 4: Zen Trainer -->
+        <div class="glass-card p-6 rounded-2xl hover:border-violet-500/50 transition cursor-pointer group flex flex-col justify-between" onclick="openZenSetup()">
+          <div>
+            <div class="flex items-center justify-between mb-4">
+              <div class="w-12 h-12 rounded-xl bg-violet-500/20 border border-violet-500/40 text-violet-400 flex items-center justify-center font-bold text-xl group-hover:scale-105 transition">
+                <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg>
+              </div>
+              <span class="text-xs font-mono font-bold px-2.5 py-1 rounded bg-slate-800 text-violet-300 border border-slate-700">UNTIMED</span>
+            </div>
+            <h3 class="text-xl font-bold text-white group-hover:text-violet-300 transition flex items-center gap-2">
+              Zen Trainer
+              <span class="text-xs px-2 py-0.5 rounded-full bg-violet-500/20 text-violet-300 font-normal">Custom Drill</span>
+            </h3>
+            <p class="text-slate-400 text-xs sm:text-sm mt-2 leading-relaxed">
+              Zero timers, zero heart penalties. Customize exactly which mathematical domains (e.g., Inverse Trig, Compound, Reductions) to drill.
+            </p>
+          </div>
+          <div class="mt-6 flex items-center justify-between pt-4 border-t border-slate-800/80 text-xs">
+            <span class="text-slate-400">Custom Category Filters</span>
+            <span class="text-violet-400 font-bold flex items-center gap-1 group-hover:translate-x-1 transition">Configure Drill &rarr;</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quick Formula Handbook & Reference Drawer -->
+      <div class="glass-panel p-5 rounded-2xl border border-slate-800">
+        <div class="flex items-center justify-between cursor-pointer" onclick="toggleReferenceCheatsheet()">
+          <div class="flex items-center gap-3">
+            <div class="p-2 rounded-lg bg-slate-800 text-cyan-400">
+              <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1-2.5-2.5Z"/><path d="M6 6h10"/><path d="M6 10h10"/></svg>
+            </div>
+            <div>
+              <h4 class="font-bold text-sm text-slate-200">Competitive Trigonometry Quick Sheet</h4>
+              <p class="text-xs text-slate-400">Review key ASTC quadrant rules, principal inverse ranges, & double angle identities.</p>
+            </div>
+          </div>
+          <span id="cheatSheetChevron" class="text-slate-400 text-xs font-bold transition-transform">▼ Expand</span>
+        </div>
+        <div id="cheatSheetBody" class="hidden mt-4 pt-4 border-t border-slate-800/80 text-xs text-slate-300 space-y-3">
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+            <div class="bg-slate-900/80 p-3 rounded-xl border border-slate-800">
+              <span class="font-bold text-cyan-400 block mb-1">ASTC Quadrant Rule</span>
+              <p class="text-slate-400 mb-1">Q1: All (+), Q2: Sin/Csc (+), Q3: Tan/Cot (+), Q4: Cos/Sec (+)</p>
+              <div id="refAstcKatex"></div>
+            </div>
+            <div class="bg-slate-900/80 p-3 rounded-xl border border-slate-800">
+              <span class="font-bold text-violet-400 block mb-1">Principal Inverse Trig Ranges</span>
+              <p class="text-slate-400 mb-1">\sin^{-1} \in [-\frac{\pi}{2}, \frac{\pi}{2}], \cos^{-1} \in [0, \pi]</p>
+              <div id="refInverseKatex"></div>
+            </div>
+            <div class="bg-slate-900/80 p-3 rounded-xl border border-slate-800">
+              <span class="font-bold text-emerald-400 block mb-1">Compound & Extrema Form</span>
+              <p class="text-slate-400 mb-1">Max/Min of $a\sin\theta + b\cos\theta$ is $\pm\sqrt{a^2+b^2}$</p>
+              <div id="refExtremaKatex"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- VIEW 2: ZEN TRAINER TOPIC CONFIGURATION MODAL -->
+    <div id="zenConfigModal" class="hidden fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-4">
+      <div class="glass-panel p-6 sm:p-8 rounded-3xl max-w-lg w-full border border-slate-800 space-y-5 animate-scaleUp">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-3">
+            <div class="p-2.5 rounded-xl bg-violet-500/20 text-violet-300">
+              <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 2v2"/><path d="M12 20v2"/></svg>
+            </div>
+            <h3 class="text-xl font-bold text-white">Zen Practice Filter</h3>
+          </div>
+          <button onclick="closeZenSetup()" class="text-slate-400 hover:text-white p-1 rounded-lg hover:bg-slate-800">&times;</button>
+        </div>
+        <p class="text-xs text-slate-400">Select which mathematical tiers to include in your focused training set:</p>
+
+        <div class="space-y-2 text-xs" id="zenTierCheckboxes">
+          <!-- Dynamically populated or static -->
+          <label class="flex items-center gap-3 p-2.5 rounded-xl bg-slate-900/60 border border-slate-800/80 cursor-pointer hover:bg-slate-800/60 transition">
+            <input type="checkbox" value="1" checked class="w-4 h-4 rounded text-violet-600 focus:ring-0 bg-slate-950 border-slate-700">
+            <div><span class="font-semibold text-slate-200">Tier 1:</span> Special Angles, Radians & Reciprocals</div>
+          </label>
+          <label class="flex items-center gap-3 p-2.5 rounded-xl bg-slate-900/60 border border-slate-800/80 cursor-pointer hover:bg-slate-800/60 transition">
+            <input type="checkbox" value="2" checked class="w-4 h-4 rounded text-violet-600 focus:ring-0 bg-slate-950 border-slate-700">
+            <div><span class="font-semibold text-slate-200">Tier 2:</span> Pythagorean & Co-function Identities</div>
+          </label>
+          <label class="flex items-center gap-3 p-2.5 rounded-xl bg-slate-900/60 border border-slate-800/80 cursor-pointer hover:bg-slate-800/60 transition">
+            <input type="checkbox" value="3" checked class="w-4 h-4 rounded text-violet-600 focus:ring-0 bg-slate-950 border-slate-700">
+            <div><span class="font-semibold text-slate-200">Tier 3:</span> Symmetries & ASTC Reductions</div>
+          </label>
+          <label class="flex items-center gap-3 p-2.5 rounded-xl bg-slate-900/60 border border-slate-800/80 cursor-pointer hover:bg-slate-800/60 transition">
+            <input type="checkbox" value="4" checked class="w-4 h-4 rounded text-violet-600 focus:ring-0 bg-slate-950 border-slate-700">
+            <div><span class="font-semibold text-slate-200">Tier 4:</span> Double Angle & Half Angle Formulas</div>
+          </label>
+          <label class="flex items-center gap-3 p-2.5 rounded-xl bg-slate-900/60 border border-slate-800/80 cursor-pointer hover:bg-slate-800/60 transition">
+            <input type="checkbox" value="5" checked class="w-4 h-4 rounded text-violet-600 focus:ring-0 bg-slate-950 border-slate-700">
+            <div><span class="font-semibold text-slate-200">Tier 5:</span> Compound Angles & Product-to-Sum</div>
+          </label>
+          <label class="flex items-center gap-3 p-2.5 rounded-xl bg-slate-900/60 border border-slate-800/80 cursor-pointer hover:bg-slate-800/60 transition">
+            <input type="checkbox" value="6" checked class="w-4 h-4 rounded text-violet-600 focus:ring-0 bg-slate-950 border-slate-700">
+            <div><span class="font-semibold text-slate-200">Tier 6:</span> Inverse Trigonometry (\sin^{-1}, \cos^{-1})</div>
+          </label>
+          <label class="flex items-center gap-3 p-2.5 rounded-xl bg-slate-900/60 border border-slate-800/80 cursor-pointer hover:bg-slate-800/60 transition">
+            <input type="checkbox" value="7" checked class="w-4 h-4 rounded text-violet-600 focus:ring-0 bg-slate-950 border-slate-700">
+            <div><span class="font-semibold text-slate-200">Tier 7:</span> Extrema & Algebraic Equations</div>
+          </label>
+          <label class="flex items-center gap-3 p-2.5 rounded-xl bg-slate-900/60 border border-slate-800/80 cursor-pointer hover:bg-slate-800/60 transition">
+            <input type="checkbox" value="8" checked class="w-4 h-4 rounded text-violet-600 focus:ring-0 bg-slate-950 border-slate-700">
+            <div><span class="font-semibold text-slate-200">Tier 8:</span> JEE / Olympiad Lightning Calculations</div>
+          </label>
+        </div>
+
+        <div class="flex gap-3 pt-2">
+          <button onclick="closeZenSetup()" class="flex-1 py-2.5 rounded-xl border border-slate-800 text-slate-400 font-bold text-xs hover:bg-slate-900 transition">Cancel</button>
+          <button onclick="startZenCustom()" class="flex-1 py-2.5 rounded-xl bg-gradient-to-r from-violet-600 to-indigo-600 text-white font-bold text-xs hover:opacity-90 shadow-lg shadow-violet-500/25 transition">Begin Training</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- VIEW 3: ACTIVE GAMEPLAY ARENA -->
+    <section id="gameView" class="hidden w-full max-w-3xl mx-auto space-y-5 animate-fadeIn">
+      <!-- In-Game Status HUD -->
+      <div class="glass-panel p-4 rounded-2xl flex items-center justify-between gap-4 border border-slate-800">
+        <!-- Mode Badge & Title -->
+        <div class="flex items-center gap-3">
+          <div id="gameModeIcon" class="w-9 h-9 rounded-xl flex items-center justify-center font-bold text-sm bg-cyan-500/20 text-cyan-400 border border-cyan-500/40">
+            ⚡
+          </div>
+          <div>
+            <div class="flex items-center gap-2">
+              <span id="gameModeTitle" class="font-bold text-sm text-white">Infinite Ascent</span>
+              <span id="gameTierPill" class="text-[10px] px-2 py-0.5 rounded-full bg-slate-800 text-slate-300 font-mono border border-slate-700">Tier 1</span>
+            </div>
+            <p id="gameSubDetail" class="text-[11px] text-slate-400">Target: 7 correct to promote</p>
+          </div>
+        </div>
+
+        <!-- Center Timers / Multipliers / Hearts -->
+        <div class="flex items-center gap-4">
+          <!-- 60s Blitz Countdown Timer -->
+          <div id="blitzTimerContainer" class="hidden items-center gap-2 px-3 py-1.5 rounded-xl bg-slate-900 border border-amber-500/40">
+            <svg class="w-4 h-4 text-amber-400 animate-pulse" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            <span id="blitzTimerDisplay" class="font-mono font-black text-amber-300 text-base">60.0s</span>
+          </div>
+
+          <!-- Sudden Death Hearts -->
+          <div id="heartsContainer" class="hidden items-center gap-1.5 text-rose-500">
+            <span id="heart1" class="transition transform hover:scale-110">❤️</span>
+            <span id="heart2" class="transition transform hover:scale-110">❤️</span>
+            <span id="heart3" class="transition transform hover:scale-110">❤️</span>
+          </div>
+
+          <!-- Combo multiplier badge -->
+          <div id="multiplierBadge" class="hidden items-center px-2.5 py-1 rounded-lg bg-gradient-to-r from-amber-500/20 to-orange-500/20 border border-amber-500/50 text-amber-300 text-xs font-mono font-bold animate-bounce">
+            2x MULTI
+          </div>
+        </div>
+
+        <!-- Right Quick Stats (Score & Streak) -->
+        <div class="flex items-center gap-3">
+          <div class="text-right">
+            <span class="text-[10px] uppercase tracking-wider text-slate-400 block leading-none">Score</span>
+            <span id="gameScore" class="font-mono font-black text-base text-cyan-300 leading-tight">0</span>
+          </div>
+          <button onclick="quitToLobby()" class="p-2 rounded-xl bg-slate-900 border border-slate-800 text-slate-400 hover:text-rose-400 hover:border-rose-500/40 transition" title="Surrender run to Lobby">
+            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- Campaign Mastery Progress Bar -->
+      <div id="campaignMasteryBox" class="w-full bg-slate-900/90 rounded-xl p-3 border border-slate-800/80">
+        <div class="flex items-center justify-between text-xs mb-1.5">
+          <span class="text-slate-400 font-medium flex items-center gap-1.5">
+            <span class="w-2 h-2 rounded-full bg-cyan-400"></span>
+            Tier Mastery Progress
+          </span>
+          <span id="campaignProgressLabel" class="font-mono text-cyan-400 font-bold">0 / 7</span>
+        </div>
+        <div class="w-full h-2.5 bg-slate-950 rounded-full overflow-hidden border border-slate-800">
+          <div id="campaignProgressBar" class="h-full bg-gradient-to-r from-cyan-500 via-sky-400 to-violet-500 smooth-bar" style="width: 0%"></div>
+        </div>
+      </div>
+
+      <!-- QUESTION CARD -->
+      <div class="glass-panel p-6 sm:p-8 rounded-3xl border border-slate-800 relative overflow-hidden neon-border-pulse shadow-2xl">
+        <!-- Top Auto-Advance Countdown Bar (shown after selecting an option) -->
+        <div class="absolute top-0 left-0 right-0 h-1.5 bg-slate-800">
+          <div id="autoAdvanceBar" class="h-full bg-cyan-400 w-0 transition-none"></div>
+        </div>
+
+        <!-- Question Category and Spaced Repetition Pill -->
+        <div class="flex items-center justify-between gap-2 mb-4">
+          <span id="qCategoryPill" class="text-xs px-3 py-1 rounded-full bg-cyan-500/10 text-cyan-300 border border-cyan-500/20 font-medium">
+            Category
+          </span>
+          <span id="qErrorQueueIndicator" class="hidden text-xs px-2.5 py-0.5 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/30 font-medium flex items-center gap-1">
+            <svg class="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+            Review Retry
+          </span>
+        </div>
+
+        <!-- Question Prompt Text & KaTeX Render Target -->
+        <div class="min-h-[110px] flex flex-col justify-center items-center text-center py-2 px-1">
+          <div id="qPromptText" class="text-slate-300 text-sm mb-2 font-medium">Evaluate the expression:</div>
+          <div id="qMathKatex" class="text-2xl sm:text-3xl font-extrabold text-white tracking-wide max-w-full py-2 flex items-center justify-center no-scrollbar"></div>
+        </div>
+
+        <!-- Explanation / Proof Banner (Appears on answer) -->
+        <div id="explanationBanner" class="hidden mt-4 p-4 rounded-2xl bg-slate-900/90 border border-slate-800 text-xs sm:text-sm animate-fadeIn">
+          <div class="flex items-start gap-2.5">
+            <div id="expStatusIcon" class="mt-0.5 font-bold text-base shrink-0">✓</div>
+            <div class="flex-1 overflow-hidden">
+              <span id="expStatusText" class="font-bold text-emerald-400 block mb-0.5">Correct Answer!</span>
+              <div id="expMathKatex" class="text-slate-300 leading-relaxed py-1 no-scrollbar"></div>
+            </div>
+            <button id="skipAdvanceBtn" onclick="forceNextQuestion()" class="px-2.5 py-1 rounded-lg bg-slate-800 text-slate-300 hover:text-white border border-slate-700 text-xs font-semibold whitespace-nowrap shrink-0">
+              Next &rarr;
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- 4 ANSWER BUTTONS (2x2 RESPONSIVE GRID) -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5 pt-1">
+        <button id="optBtn0" class="option-btn relative glass-card p-4 sm:p-5 rounded-2xl border border-slate-800 flex items-center justify-between text-left group min-h-[68px] overflow-hidden" onclick="handleSelectOption(0)">
+          <div class="flex items-center gap-3 overflow-hidden">
+            <span class="key-badge px-2 py-1 rounded-md bg-slate-800 text-slate-400 group-hover:text-cyan-300 group-hover:bg-cyan-950/80 border border-slate-700/80 shrink-0">1</span>
+            <span id="optKatex0" class="text-base sm:text-lg font-bold text-white flex items-center no-scrollbar"></span>
+          </div>
+          <span id="optIcon0" class="shrink-0 ml-2 opacity-0 transition-opacity"></span>
+        </button>
+
+        <button id="optBtn1" class="option-btn relative glass-card p-4 sm:p-5 rounded-2xl border border-slate-800 flex items-center justify-between text-left group min-h-[68px] overflow-hidden" onclick="handleSelectOption(1)">
+          <div class="flex items-center gap-3 overflow-hidden">
+            <span class="key-badge px-2 py-1 rounded-md bg-slate-800 text-slate-400 group-hover:text-cyan-300 group-hover:bg-cyan-950/80 border border-slate-700/80 shrink-0">2</span>
+            <span id="optKatex1" class="text-base sm:text-lg font-bold text-white flex items-center no-scrollbar"></span>
+          </div>
+          <span id="optIcon1" class="shrink-0 ml-2 opacity-0 transition-opacity"></span>
+        </button>
+
+        <button id="optBtn2" class="option-btn relative glass-card p-4 sm:p-5 rounded-2xl border border-slate-800 flex items-center justify-between text-left group min-h-[68px] overflow-hidden" onclick="handleSelectOption(2)">
+          <div class="flex items-center gap-3 overflow-hidden">
+            <span class="key-badge px-2 py-1 rounded-md bg-slate-800 text-slate-400 group-hover:text-cyan-300 group-hover:bg-cyan-950/80 border border-slate-700/80 shrink-0">3</span>
+            <span id="optKatex2" class="text-base sm:text-lg font-bold text-white flex items-center no-scrollbar"></span>
+          </div>
+          <span id="optIcon2" class="shrink-0 ml-2 opacity-0 transition-opacity"></span>
+        </button>
+
+        <button id="optBtn3" class="option-btn relative glass-card p-4 sm:p-5 rounded-2xl border border-slate-800 flex items-center justify-between text-left group min-h-[68px] overflow-hidden" onclick="handleSelectOption(3)">
+          <div class="flex items-center gap-3 overflow-hidden">
+            <span class="key-badge px-2 py-1 rounded-md bg-slate-800 text-slate-400 group-hover:text-cyan-300 group-hover:bg-cyan-950/80 border border-slate-700/80 shrink-0">4</span>
+            <span id="optKatex3" class="text-base sm:text-lg font-bold text-white flex items-center no-scrollbar"></span>
+          </div>
+          <span id="optIcon3" class="shrink-0 ml-2 opacity-0 transition-opacity"></span>
+        </button>
+      </div>
+
+      <div class="text-center text-[11px] text-slate-500 font-mono">
+        Pro tip: Press <kbd class="px-1.5 py-0.5 rounded bg-slate-900 border border-slate-800 text-slate-400">1</kbd> <kbd class="px-1.5 py-0.5 rounded bg-slate-900 border border-slate-800 text-slate-400">2</kbd> <kbd class="px-1.5 py-0.5 rounded bg-slate-900 border border-slate-800 text-slate-400">3</kbd> <kbd class="px-1.5 py-0.5 rounded bg-slate-900 border border-slate-800 text-slate-400">4</kbd> to answer instantly.
+      </div>
+    </section>
+
+    <!-- VIEW 4: LEVEL VICTORY / CAMPAIGN TIER ADVANCEMENT MODAL -->
+    <div id="celebrationModal" class="hidden fixed inset-0 z-50 bg-slate-950/85 backdrop-blur-md flex items-center justify-center p-4">
+      <div class="glass-panel p-6 sm:p-8 rounded-3xl max-w-md w-full border border-cyan-500/40 text-center space-y-6 neon-glow-cyan animate-scaleUp">
+        <div class="w-20 h-20 mx-auto rounded-3xl bg-gradient-to-tr from-cyan-500 to-violet-500 flex items-center justify-center text-4xl shadow-xl shadow-cyan-500/30 animate-bounce">
+          🏆
+        </div>
+
+        <div>
+          <span class="text-xs font-mono font-bold uppercase tracking-widest text-cyan-400 block mb-1">Tier Mastered</span>
+          <h2 id="celebTitle" class="text-2xl sm:text-3xl font-extrabold text-white">Tier 1 Cleared!</h2>
+          <p id="celebSubtitle" class="text-xs sm:text-sm text-slate-400 mt-2">Outstanding precision on foundational angles and ASTC reciprocals.</p>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3 py-2 text-left">
+          <div class="bg-slate-900/80 p-3 rounded-2xl border border-slate-800">
+            <span class="text-[10px] text-slate-400 block uppercase font-mono">Accuracy</span>
+            <span id="celebAccuracy" class="text-xl font-bold font-mono text-emerald-400">100%</span>
+          </div>
+          <div class="bg-slate-900/80 p-3 rounded-2xl border border-slate-800">
+            <span class="text-[10px] text-slate-400 block uppercase font-mono">XP Earned</span>
+            <span id="celebXpEarned" class="text-xl font-bold font-mono text-amber-400">+140 XP</span>
+          </div>
+        </div>
+
+        <div class="flex flex-col gap-2.5">
+          <button id="celebNextBtn" onclick="advanceToNextTier()" class="w-full py-3.5 rounded-xl bg-gradient-to-r from-cyan-500 to-indigo-600 hover:from-cyan-400 hover:to-indigo-500 text-white font-extrabold text-sm shadow-lg shadow-cyan-500/25 transition flex items-center justify-center gap-2">
+            Advance to Next Tier
+            <span class="text-xs font-mono opacity-80">(Space / Enter)</span>
+          </button>
+          <button onclick="quitToLobby()" class="w-full py-2.5 rounded-xl border border-slate-800 text-slate-400 hover:text-white font-semibold text-xs hover:bg-slate-900 transition">
+            Back to Dashboard
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- VIEW 5: GAME OVER / RUN SUMMARY MODAL (For Blitz / Sudden Death) -->
+    <div id="gameOverModal" class="hidden fixed inset-0 z-50 bg-slate-950/85 backdrop-blur-md flex items-center justify-center p-4">
+      <div class="glass-panel p-6 sm:p-8 rounded-3xl max-w-md w-full border border-rose-500/40 text-center space-y-6 animate-scaleUp">
+        <div id="gameOverIcon" class="w-20 h-20 mx-auto rounded-3xl bg-gradient-to-tr from-rose-500 to-amber-600 flex items-center justify-center text-4xl shadow-xl shadow-rose-500/30">
+          💥
+        </div>
+
+        <div>
+          <h2 id="gameOverTitle" class="text-2xl sm:text-3xl font-extrabold text-white">Run Completed</h2>
+          <p id="gameOverSubtitle" class="text-xs sm:text-sm text-slate-400 mt-2">Here is your performance breakdown:</p>
+        </div>
+
+        <div class="grid grid-cols-3 gap-2 py-2">
+          <div class="bg-slate-900/80 p-3 rounded-2xl border border-slate-800">
+            <span class="text-[10px] text-slate-400 block uppercase font-mono">Final Score</span>
+            <span id="goScore" class="text-lg font-bold font-mono text-cyan-400">0</span>
+          </div>
+          <div class="bg-slate-900/80 p-3 rounded-2xl border border-slate-800">
+            <span class="text-[10px] text-slate-400 block uppercase font-mono">Solved</span>
+            <span id="goSolved" class="text-lg font-bold font-mono text-emerald-400">0</span>
+          </div>
+          <div class="bg-slate-900/80 p-3 rounded-2xl border border-slate-800">
+            <span class="text-[10px] text-slate-400 block uppercase font-mono">Max Streak</span>
+            <span id="goStreak" class="text-lg font-bold font-mono text-amber-400">0🔥</span>
+          </div>
+        </div>
+
+        <div class="flex flex-col gap-2.5">
+          <button onclick="retryCurrentMode()" class="w-full py-3.5 rounded-xl bg-gradient-to-r from-rose-600 to-amber-600 hover:opacity-90 text-white font-extrabold text-sm shadow-lg shadow-rose-500/25 transition">
+            Play Again
+          </button>
+          <button onclick="quitToLobby()" class="w-full py-2.5 rounded-xl border border-slate-800 text-slate-400 hover:text-white font-semibold text-xs hover:bg-slate-900 transition">
+            Return to Dashboard
+          </button>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="w-full text-center py-4 text-xs text-slate-600 border-t border-slate-900">
+    <p>TrigMaster Blitz &bull; Competitive Mathematics & JEE / Olympiad Trigonometry Mastery</p>
+  </footer>
+
+  <!-- JAVASCRIPT APPLICATION CODE -->
+  <script>
+    /* =========================================================================
+       1. WEB AUDIO API PROCEDURAL SOUND SYNTHESIZER
+       ========================================================================= */
+    class SoundEngine {
+      constructor() {
+        this.ctx = null;
+        this.muted = localStorage.getItem('tmb_muted') === 'true';
+      }
+
+      init() {
+        if (!this.ctx) {
+          const AudioCtx = window.AudioContext || window.webkitAudioContext;
+          if (AudioCtx) {
+            this.ctx = new AudioCtx();
+          }
+        }
+        if (this.ctx && this.ctx.state === 'suspended') {
+          this.ctx.resume();
+        }
+      }
+
+      playCorrect() {
+        if (this.muted) return;
+        this.init();
+        if (!this.ctx) return;
+        
+        const now = this.ctx.currentTime;
+        const osc1 = this.ctx.createOscillator();
+        const osc2 = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+
+        osc1.type = 'sine';
+        osc2.type = 'triangle';
+        osc1.frequency.setValueAtTime(523.25, now); // C5
+        osc1.frequency.exponentialRampToValueAtTime(659.25, now + 0.08); // E5
+        osc1.frequency.exponentialRampToValueAtTime(783.99, now + 0.16); // G5
+        osc1.frequency.exponentialRampToValueAtTime(1046.50, now + 0.24); // C6
+
+        osc2.frequency.setValueAtTime(261.63, now);
+        osc2.frequency.exponentialRampToValueAtTime(523.25, now + 0.24);
+
+        gain.gain.setValueAtTime(0.2, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.45);
+
+        osc1.connect(gain);
+        osc2.connect(gain);
+        gain.connect(this.ctx.destination);
+
+        osc1.start(now);
+        osc2.start(now);
+        osc1.stop(now + 0.45);
+        osc2.stop(now + 0.45);
+      }
+
+      playWrong() {
+        if (this.muted) return;
+        this.init();
+        if (!this.ctx) return;
+
+        const now = this.ctx.currentTime;
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+
+        osc.type = 'sawtooth';
+        osc.frequency.setValueAtTime(160, now);
+        osc.frequency.exponentialRampToValueAtTime(75, now + 0.35);
+
+        gain.gain.setValueAtTime(0.3, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.38);
+
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+
+        osc.start(now);
+        osc.stop(now + 0.38);
+      }
+
+      playStreakTick(count) {
+        if (this.muted) return;
+        this.init();
+        if (!this.ctx) return;
+
+        const now = this.ctx.currentTime;
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+
+        // Higher pitch as streak increases
+        const baseFreq = 440 + Math.min(count * 45, 600);
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(baseFreq, now);
+        osc.frequency.exponentialRampToValueAtTime(baseFreq * 1.5, now + 0.1);
+
+        gain.gain.setValueAtTime(0.18, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.15);
+
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+
+        osc.start(now);
+        osc.stop(now + 0.15);
+      }
+
+      playFanfare() {
+        if (this.muted) return;
+        this.init();
+        if (!this.ctx) return;
+
+        const notes = [
+          { f: 523.25, d: 0.12 }, // C5
+          { f: 659.25, d: 0.12 }, // E5
+          { f: 783.99, d: 0.12 }, // G5
+          { f: 1046.50, d: 0.35 } // C6
+        ];
+
+        let start = this.ctx.currentTime;
+        notes.forEach(n => {
+          const osc = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+          osc.type = 'triangle';
+          osc.frequency.setValueAtTime(n.f, start);
+
+          gain.gain.setValueAtTime(0.25, start);
+          gain.gain.exponentialRampToValueAtTime(0.001, start + n.d);
+
+          osc.connect(gain);
+          gain.connect(this.ctx.destination);
+
+          osc.start(start);
+          osc.stop(start + n.d);
+          start += n.d * 0.9;
+        });
+      }
+
+      playCountdownTick() {
+        if (this.muted) return;
+        this.init();
+        if (!this.ctx) return;
+
+        const now = this.ctx.currentTime;
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+
+        osc.type = 'square';
+        osc.frequency.setValueAtTime(880, now);
+
+        gain.gain.setValueAtTime(0.08, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.05);
+
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+
+        osc.start(now);
+        osc.stop(now + 0.05);
+      }
+    }
+
+    const audio = new SoundEngine();
+
+    /* =========================================================================
+       2. PERSISTENCE & USER STATE
+       ========================================================================= */
+    const STATE_KEY = 'trigmaster_blitz_save_v1';
+    let gameState = {
+      xp: 0,
+      campaignTier: 1,
+      blitzHighScore: 0,
+      suddenDeathHighScore: 0,
+      errorQueue: [] // Array of { id, question, retryCount: 0 }
+    };
+
+    function loadState() {
+      try {
+        const raw = localStorage.getItem(STATE_KEY);
+        if (raw) {
+          const parsed = JSON.parse(raw);
+          gameState = { ...gameState, ...parsed };
+        }
+      } catch (e) {
+        console.warn('Storage read error:', e);
+      }
+      updateGlobalHUD();
+    }
+
+    function saveState() {
+      try {
+        localStorage.setItem(STATE_KEY, JSON.stringify(gameState));
+      } catch (e) {
+        console.warn('Storage write error:', e);
+      }
+      updateGlobalHUD();
+    }
+
+    function updateGlobalHUD() {
+      document.getElementById('navXp').innerText = gameState.xp;
+      document.getElementById('lobbyTierProgress').innerText = `Tier ${gameState.campaignTier}`;
+      document.getElementById('lobbyBlitzHighScore').innerText = `${gameState.blitzHighScore} pts`;
+      document.getElementById('lobbySuddenHighScore').innerText = `${gameState.suddenDeathHighScore} Solved`;
+
+      const errPill = document.getElementById('errorQueueNavPill');
+      const errCount = document.getElementById('navErrorCount');
+      if (gameState.errorQueue.length > 0) {
+        errPill.classList.remove('hidden');
+        errPill.classList.add('flex');
+        errCount.innerText = gameState.errorQueue.length;
+      } else {
+        errPill.classList.add('hidden');
+        errPill.classList.remove('flex');
+      }
+    }
+
+    /* =========================================================================
+       3. PROCEDURAL QUESTION GENERATION ENGINE (8 TIERS)
+       CRITICAL CONSTRAINT: Uses \sin^{-1}, \cos^{-1}, \tan^{-1} (NEVER arcsin/arccos/arctan)
+       ========================================================================= */
+    const lruCache = [];
+    const LRU_MAX_SIZE = 24;
+
+    function recordInLRU(key) {
+      lruCache.unshift(key);
+      if (lruCache.length > LRU_MAX_SIZE) lruCache.pop();
+    }
+
+    function isRecentQuestion(key) {
+      return lruCache.includes(key);
+    }
+
+    function shuffleArray(arr) {
+      const copy = [...arr];
+      for (let i = copy.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [copy[i], copy[j]] = [copy[j], copy[i]];
+      }
+      return copy;
+    }
+
+    // Helper: Build LaTeX options ensuring 3 distinct plausible distractors
+    function buildOptions(correctLatex, distractorList) {
+      const distinct = new Set([correctLatex]);
+      const validDistractors = shuffleArray(distractorList).filter(d => d && d !== correctLatex);
+      
+      for (const d of validDistractors) {
+        distinct.add(d);
+        if (distinct.size === 4) break;
+      }
+
+      // If still fewer than 4, synthesize generic mathematical fallbacks
+      const fallbacks = ["0", "1", "-1", "\\frac{1}{2}", "-\\frac{1}{2}", "\\frac{\\sqrt{3}}{2}", "-\\frac{\\sqrt{3}}{2}", "\\sqrt{3}", "-\\sqrt{3}", "\\frac{1}{\\sqrt{2}}", "-\\frac{1}{\\sqrt{2}}", "\\sqrt{2}"];
+      for (const fb of shuffleArray(fallbacks)) {
+        if (distinct.size === 4) break;
+        distinct.add(fb);
+      }
+
+      const options = shuffleArray(Array.from(distinct));
+      const correctIndex = options.indexOf(correctLatex);
+      return { options, correctIndex };
+    }
+
+    // Helper: Safely parse and render mixed mathematical strings (text with $...$ delimiters)
+    function renderMathInText(str) {
+      if (!str) return '';
+      if (str.includes('$')) {
+        return str.replace(/\$([^\$]+)\$/g, (match, math) => {
+          try {
+            return katex.renderToString(math.trim(), { displayMode: false, throwOnError: false });
+          } catch (e) {
+            return `<span class="font-mono text-cyan-300">${math}</span>`;
+          }
+        });
+      }
+      if (/^\\|\\sin|\\cos|\\tan|\\cot|\\sec|\\csc|\\frac|\\pi|\^|_/.test(str)) {
+        try {
+          return katex.renderToString(str, { displayMode: false, throwOnError: false });
+        } catch (e) {
+          return str;
+        }
+      }
+      return str;
+    }
+
+    /* GENERATOR IMPLEMENTATION */
+    function generateTrigQuestion(level, forcedCategory = null) {
+      let attempts = 0;
+      let q = null;
+
+      while (attempts < 25) {
+        attempts++;
+        q = createTierQuestion(level);
+        if (!isRecentQuestion(q.hashKey)) {
+          recordInLRU(q.hashKey);
+          break;
+        }
+      }
+      return q;
+    }
+
+    function createTierQuestion(tier) {
+      switch (tier) {
+        case 1: return generateTier1();
+        case 2: return generateTier2();
+        case 3: return generateTier3();
+        case 4: return generateTier4();
+        case 5: return generateTier5();
+        case 6: return generateTier6();
+        case 7: return generateTier7();
+        case 8:
+        default: return generateTier8();
+      }
+    }
+
+    /* --- TIER 1: All-Quadrant Special Values & Reciprocals --- */
+    function generateTier1() {
+      const angleItems = [
+        { deg: "0^\\circ", rad: "0", sin: "0", cos: "1", tan: "0", csc: "\\text{undefined}", sec: "1", cot: "\\text{undefined}" },
+        { deg: "30^\\circ", rad: "\\frac{\\pi}{6}", sin: "\\frac{1}{2}", cos: "\\frac{\\sqrt{3}}{2}", tan: "\\frac{1}{\\sqrt{3}}", csc: "2", sec: "\\frac{2}{\\sqrt{3}}", cot: "\\sqrt{3}" },
+        { deg: "45^\\circ", rad: "\\frac{\\pi}{4}", sin: "\\frac{1}{\\sqrt{2}}", cos: "\\frac{1}{\\sqrt{2}}", tan: "1", csc: "\\sqrt{2}", sec: "\\sqrt{2}", cot: "1" },
+        { deg: "60^\\circ", rad: "\\frac{\\pi}{3}", sin: "\\frac{\\sqrt{3}}{2}", cos: "\\frac{1}{2}", tan: "\\sqrt{3}", csc: "\\frac{2}{\\sqrt{3}}", sec: "2", cot: "\\frac{1}{\\sqrt{3}}" },
+        { deg: "90^\\circ", rad: "\\frac{\\pi}{2}", sin: "1", cos: "0", tan: "\\text{undefined}", csc: "1", sec: "\\text{undefined}", cot: "0" },
+        { deg: "120^\\circ", rad: "\\frac{2\\pi}{3}", sin: "\\frac{\\sqrt{3}}{2}", cos: "-\\frac{1}{2}", tan: "-\\sqrt{3}", csc: "\\frac{2}{\\sqrt{3}}", sec: "-2", cot: "-\\frac{1}{\\sqrt{3}}" },
+        { deg: "135^\\circ", rad: "\\frac{3\\pi}{4}", sin: "\\frac{1}{\\sqrt{2}}", cos: "-\\frac{1}{\\sqrt{2}}", tan: "-1", csc: "\\sqrt{2}", sec: "-\\sqrt{2}", cot: "-1" },
+        { deg: "150^\\circ", rad: "\\frac{5\\pi}{6}", sin: "\\frac{1}{2}", cos: "-\\frac{\\sqrt{3}}{2}", tan: "-\\frac{1}{\\sqrt{3}}", csc: "2", sec: "-\\frac{2}{\\sqrt{3}}", cot: "-\\sqrt{3}" },
+        { deg: "180^\\circ", rad: "\\pi", sin: "0", cos: "-1", tan: "0", csc: "\\text{undefined}", sec: "-1", cot: "\\text{undefined}" },
+        { deg: "210^\\circ", rad: "\\frac{7\\pi}{6}", sin: "-\\frac{1}{2}", cos: "-\\frac{\\sqrt{3}}{2}", tan: "\\frac{1}{\\sqrt{3}}", csc: "-2", sec: "-\\frac{2}{\\sqrt{3}}", cot: "\\sqrt{3}" },
+        { deg: "225^\\circ", rad: "\\frac{5\\pi}{4}", sin: "-\\frac{1}{\\sqrt{2}}", cos: "-\\frac{1}{\\sqrt{2}}", tan: "1", csc: "-\\sqrt{2}", sec: "-\\sqrt{2}", cot: "1" },
+        { deg: "240^\\circ", rad: "\\frac{4\\pi}{3}", sin: "-\\frac{\\sqrt{3}}{2}", cos: "-\\frac{1}{2}", tan: "\\sqrt{3}", csc: "-\\frac{2}{\\sqrt{3}}", sec: "-2", cot: "\\frac{1}{\\sqrt{3}}" },
+        { deg: "270^\\circ", rad: "\\frac{3\\pi}{2}", sin: "-1", cos: "0", tan: "\\text{undefined}", csc: "-1", sec: "\\text{undefined}", cot: "0" },
+        { deg: "300^\\circ", rad: "\\frac{5\\pi}{3}", sin: "-\\frac{\\sqrt{3}}{2}", cos: "\\frac{1}{2}", tan: "-\\sqrt{3}", csc: "-\\frac{2}{\\sqrt{3}}", sec: "2", cot: "-\\frac{1}{\\sqrt{3}}" },
+        { deg: "315^\\circ", rad: "\\frac{7\\pi}{4}", sin: "-\\frac{1}{\\sqrt{2}}", cos: "\\frac{1}{\\sqrt{2}}", tan: "-1", csc: "-\\sqrt{2}", sec: "\\sqrt{2}", cot: "-1" },
+        { deg: "330^\\circ", rad: "\\frac{11\\pi}{6}", sin: "-\\frac{1}{2}", cos: "\\frac{\\sqrt{3}}{2}", tan: "-\\frac{1}{\\sqrt{3}}", csc: "-2", sec: "\\frac{2}{\\sqrt{3}}", cot: "-\\sqrt{3}" }
+      ];
+
+      const funcs = ['sin', 'cos', 'tan', 'csc', 'sec', 'cot'];
+      const fn = funcs[Math.floor(Math.random() * funcs.length)];
+      const item = angleItems[Math.floor(Math.random() * angleItems.length)];
+      
+      const val = item[fn];
+      if (val === "\\text{undefined}") {
+        return generateTier1(); // re-roll for smooth clean multiple choice
+      }
+
+      const useRad = Math.random() > 0.45;
+      const angleStr = useRad ? item.rad : item.deg;
+      const questionLatex = `\\${fn}\\left(${angleStr}\\right)`;
+      
+      // Plausible distractors: opposite sign, reciprocal, inverted ratio
+      const rawDistractors = [
+        val.startsWith('-') ? val.substring(1) : `-${val}`,
+        item[fn === 'sin' ? 'cos' : fn === 'cos' ? 'sin' : 'cot'] || "1",
+        fn === 'tan' ? "\\sqrt{3}" : "\\frac{1}{2}",
+        fn === 'sec' || fn === 'csc' ? "-\\sqrt{2}" : "\\frac{\\sqrt{3}}{2}"
+      ];
+      const distractors = rawDistractors.filter(d => d && d !== "\\text{undefined}");
+
+      const { options, correctIndex } = buildOptions(val, distractors);
+
+      return {
+        hashKey: `T1_${fn}_${angleStr}`,
+        tier: 1,
+        category: "Unit Circle Values",
+        promptText: "Evaluate the exact value of:",
+        mathLatex: questionLatex,
+        options,
+        correctIndex,
+        explanation: `By quadrant geometry and reference angles: $${questionLatex} = ${val}$.`
+      };
+    }
+
+    /* --- TIER 2: Fundamental Pythagorean & Co-function Identities --- */
+    function generateTier2() {
+      const templates = [
+        {
+          q: "\\sin^2(37^\\circ) + \\cos^2(37^\\circ)",
+          ans: "1",
+          dist: ["0", "2", "\\frac{1}{2}"],
+          exp: "By Pythagorean Identity $\\sin^2\\theta + \\cos^2\\theta = 1$."
+        },
+        {
+          q: "\\sec^2(\\theta) - \\tan^2(\\theta)",
+          ans: "1",
+          dist: ["-1", "0", "2"],
+          exp: "From $1 + \\tan^2\\theta = \\sec^2\\theta$, we have $\\sec^2\\theta - \\tan^2\\theta = 1$."
+        },
+        {
+          q: "\\csc^2(\\theta) - \\cot^2(\\theta)",
+          ans: "1",
+          dist: ["-1", "0", "\\sec^2\\theta"],
+          exp: "From $1 + \\cot^2\\theta = \\csc^2\\theta$, isolating gives $1$."
+        },
+        {
+          q: "\\sin\\left(\\frac{\\pi}{2} - \\theta\\right)",
+          ans: "\\cos\\theta",
+          dist: ["-\\cos\\theta", "\\sin\\theta", "-\\sin\\theta"],
+          exp: "By the co-function identity: $\\sin\\left(\\frac{\\pi}{2} - \\theta\\right) = \\cos\\theta$."
+        },
+        {
+          q: "\\cos\\left(\\frac{\\pi}{2} - \\theta\\right)",
+          ans: "\\sin\\theta",
+          dist: ["-\\sin\\theta", "\\cos\\theta", "-\\cos\\theta"],
+          exp: "By the co-function identity: $\\cos\\left(\\frac{\\pi}{2} - \\theta\\right) = \\sin\\theta$."
+        },
+        {
+          q: "\\tan\\left(\\frac{\\pi}{2} - \\theta\\right)",
+          ans: "\\cot\\theta",
+          dist: ["-\\cot\\theta", "\\tan\\theta", "1"],
+          exp: "By the co-function identity: $\\tan\\left(\\frac{\\pi}{2} - \\theta\\right) = \\cot\\theta$."
+        },
+        {
+          q: "\\frac{\\sin(68^\\circ)}{\\cos(22^\\circ)}",
+          ans: "1",
+          dist: ["0", "\\tan(46^\\circ)", "-1"],
+          exp: "Since $68^\\circ + 22^\\circ = 90^\\circ$, $\\cos(22^\\circ) = \\sin(68^\\circ)$, so the quotient is $1$."
+        },
+        {
+          q: "\\sin^2\\left(\\frac{\\pi}{8}\\right) + \\cos^2\\left(\\frac{\\pi}{8}\\right)",
+          ans: "1",
+          dist: ["\\frac{1}{2}", "\\frac{\\sqrt{2}}{2}", "0"],
+          exp: "For any angle $\\theta$, $\\sin^2\\theta + \\cos^2\\theta = 1$."
+        }
+      ];
+
+      const item = templates[Math.floor(Math.random() * templates.length)];
+      const { options, correctIndex } = buildOptions(item.ans, item.dist);
+
+      return {
+        hashKey: `T2_${item.q}`,
+        tier: 2,
+        category: "Identities & Co-functions",
+        promptText: "Simplify or evaluate the identity expression:",
+        mathLatex: item.q,
+        options,
+        correctIndex,
+        explanation: item.exp
+      };
+    }
+
+    /* --- TIER 3: Symmetries & Quadrant Reductions (ASTC Rule) --- */
+    function generateTier3() {
+      const templates = [
+        {
+          q: "\\sin(-\\theta)",
+          ans: "-\\sin\\theta",
+          dist: ["\\sin\\theta", "-\\cos\\theta", "\\cos\\theta"],
+          exp: "$\\sin$ is an odd function, so $\\sin(-\\theta) = -\\sin\\theta$."
+        },
+        {
+          q: "\\cos(-\\theta)",
+          ans: "\\cos\\theta",
+          dist: ["-\\cos\\theta", "\\sin\\theta", "-\\sin\\theta"],
+          exp: "$\\cos$ is an even function, so $\\cos(-\\theta) = \\cos\\theta$."
+        },
+        {
+          q: "\\tan(-\\theta)",
+          ans: "-\\tan\\theta",
+          dist: ["\\tan\\theta", "\\cot\\theta", "-\\cot\\theta"],
+          exp: "$\\tan$ is an odd function, giving $\\tan(-\\theta) = -\\tan\\theta$."
+        },
+        {
+          q: "\\sin(\\pi - \\theta)",
+          ans: "\\sin\\theta",
+          dist: ["-\\sin\\theta", "\\cos\\theta", "-\\cos\\theta"],
+          exp: "In Quadrant II (ASTC: Sine is positive), $\\sin(\\pi - \\theta) = \\sin\\theta$."
+        },
+        {
+          q: "\\cos(\\pi - \\theta)",
+          ans: "-\\cos\\theta",
+          dist: ["\\cos\\theta", "-\\sin\\theta", "\\sin\\theta"],
+          exp: "In Quadrant II (ASTC: Cosine is negative), $\\cos(\\pi - \\theta) = -\\cos\\theta$."
+        },
+        {
+          q: "\\tan(\\pi + \\theta)",
+          ans: "\\tan\\theta",
+          dist: ["-\\tan\\theta", "\\cot\\theta", "-\\cot\\theta"],
+          exp: "In Quadrant III (ASTC: Tangent is positive), $\\tan(\\pi + \\theta) = \\tan\\theta$."
+        },
+        {
+          q: "\\sin(2\\pi - \\theta)",
+          ans: "-\\sin\\theta",
+          dist: ["\\sin\\theta", "-\\cos\\theta", "\\cos\\theta"],
+          exp: "In Quadrant IV (ASTC: Sine is negative), $\\sin(2\\pi - \\theta) = -\\sin\\theta$."
+        },
+        {
+          q: "\\cos(\\pi + \\theta)",
+          ans: "-\\cos\\theta",
+          dist: ["\\cos\\theta", "-\\sin\\theta", "\\sin\\theta"],
+          exp: "In Quadrant III, $\\cos(\\pi + \\theta) = -\\cos\\theta$."
+        }
+      ];
+
+      const item = templates[Math.floor(Math.random() * templates.length)];
+      const { options, correctIndex } = buildOptions(item.ans, item.dist);
+
+      return {
+        hashKey: `T3_${item.q}`,
+        tier: 3,
+        category: "ASTC Quadrant Reductions",
+        promptText: "Apply quadrant reduction rules to simplify:",
+        mathLatex: item.q,
+        options,
+        correctIndex,
+        explanation: item.exp
+      };
+    }
+
+    /* --- TIER 4: Double Angle & Half Angle Formulas --- */
+    function generateTier4() {
+      const templates = [
+        {
+          q: "2\\sin(15^\\circ)\\cos(15^\\circ)",
+          ans: "\\frac{1}{2}",
+          dist: ["\\frac{\\sqrt{3}}{2}", "\\frac{1}{\\sqrt{2}}", "1"],
+          exp: "Use double angle $\\sin(2\\theta) = 2\\sin\\theta\\cos\\theta$: $\\sin(30^\\circ) = \\frac{1}{2}$."
+        },
+        {
+          q: "\\cos^2(15^\\circ) - \\sin^2(15^\\circ)",
+          ans: "\\frac{\\sqrt{3}}{2}",
+          dist: ["\\frac{1}{2}", "\\frac{1}{\\sqrt{2}}", "1"],
+          exp: "Use $\\cos(2\\theta) = \\cos^2\\theta - \\sin^2\\theta$: $\\cos(30^\\circ) = \\frac{\\sqrt{3}}{2}$."
+        },
+        {
+          q: "2\\cos^2(22.5^\\circ) - 1",
+          ans: "\\frac{1}{\\sqrt{2}}",
+          dist: ["\\frac{1}{2}", "\\frac{\\sqrt{3}}{2}", "\\sqrt{2}"],
+          exp: "Use $\\cos(2\\theta) = 2\\cos^2\\theta - 1$: $\\cos(45^\\circ) = \\frac{1}{\\sqrt{2}}$."
+        },
+        {
+          q: "1 - 2\\sin^2(15^\\circ)",
+          ans: "\\frac{\\sqrt{3}}{2}",
+          dist: ["\\frac{1}{2}", "\\frac{1}{\\sqrt{2}}", "0"],
+          exp: "Use $\\cos(2\\theta) = 1 - 2\\sin^2\\theta$: $\\cos(30^\\circ) = \\frac{\\sqrt{3}}{2}$."
+        },
+        {
+          q: "\\frac{2\\tan(15^\\circ)}{1 - \\tan^2(15^\\circ)}",
+          ans: "\\frac{1}{\\sqrt{3}}",
+          dist: ["\\sqrt{3}", "1", "\\frac{1}{2}"],
+          exp: "Use $\\tan(2\\theta) = \\frac{2\\tan\\theta}{1 - \\tan^2\\theta}$: $\\tan(30^\\circ) = \\frac{1}{\\sqrt{3}}$."
+        },
+        {
+          q: "\\frac{1 - \\cos(60^\\circ)}{2}",
+          ans: "\\frac{1}{4}",
+          dist: ["\\frac{1}{2}", "\\frac{3}{4}", "\\frac{1}{\\sqrt{2}}"],
+          exp: "By power reduction: $\\sin^2(30^\\circ) = \\left(\\frac{1}{2}\\right)^2 = \\frac{1}{4}$."
+        }
+      ];
+
+      const item = templates[Math.floor(Math.random() * templates.length)];
+      const { options, correctIndex } = buildOptions(item.ans, item.dist);
+
+      return {
+        hashKey: `T4_${item.q}`,
+        tier: 4,
+        category: "Double & Half Angle",
+        promptText: "Calculate the exact numerical value:",
+        mathLatex: item.q,
+        options,
+        correctIndex,
+        explanation: item.exp
+      };
+    }
+
+    /* --- TIER 5: Compound Angles & Product-to-Sum --- */
+    function generateTier5() {
+      const templates = [
+        {
+          q: "\\sin(75^\\circ)",
+          ans: "\\frac{\\sqrt{6} + \\sqrt{2}}{4}",
+          dist: ["\\frac{\\sqrt{6} - \\sqrt{2}}{4}", "\\frac{\\sqrt{3} + 1}{2}", "\\frac{\\sqrt{2}}{2}"],
+          exp: "$\\sin(45^\\circ+30^\\circ) = \\sin 45^\\circ\\cos 30^\\circ + \\cos 45^\\circ\\sin 30^\\circ = \\frac{\\sqrt{6}+\\sqrt{2}}{4}$."
+        },
+        {
+          q: "\\cos(75^\\circ)",
+          ans: "\\frac{\\sqrt{6} - \\sqrt{2}}{4}",
+          dist: ["\\frac{\\sqrt{6} + \\sqrt{2}}{4}", "\\frac{\\sqrt{3} - 1}{2}", "\\frac{1}{2}"],
+          exp: "$\\cos(45^\\circ+30^\\circ) = \\cos 45^\\circ\\cos 30^\\circ - \\sin 45^\\circ\\sin 30^\\circ = \\frac{\\sqrt{6}-\\sqrt{2}}{4}$."
+        },
+        {
+          q: "\\cos(105^\\circ)",
+          ans: "-\\frac{\\sqrt{6} - \\sqrt{2}}{4}",
+          dist: ["\\frac{\\sqrt{6} - \\sqrt{2}}{4}", "-\\frac{\\sqrt{6} + \\sqrt{2}}{4}", "\\frac{1}{2}"],
+          exp: "$\\cos(60^\\circ+45^\\circ) = \\frac{1}{2}\\frac{\\sqrt{2}}{2} - \\frac{\\sqrt{3}}{2}\\frac{\\sqrt{2}}{2} = -\\frac{\\sqrt{6}-\\sqrt{2}}{4}$."
+        },
+        {
+          q: "\\tan(75^\\circ)",
+          ans: "2 + \\sqrt{3}",
+          dist: ["2 - \\sqrt{3}", "\\sqrt{3} + 1", "\\sqrt{3} - 1"],
+          exp: "$\\tan(45^\\circ+30^\\circ) = \\frac{1 + 1/\\sqrt{3}}{1 - 1/\\sqrt{3}} = \\frac{\\sqrt{3}+1}{\\sqrt{3}-1} = 2+\\sqrt{3}$."
+        },
+        {
+          q: "\\tan(15^\\circ)",
+          ans: "2 - \\sqrt{3}",
+          dist: ["2 + \\sqrt{3}", "1 - \\sqrt{3}", "\\frac{1}{\\sqrt{3}}"],
+          exp: "$\\tan(45^\\circ-30^\\circ) = 2-\\sqrt{3}$."
+        },
+        {
+          q: "\\sin(50^\\circ)\\cos(40^\\circ) + \\cos(50^\\circ)\\sin(40^\\circ)",
+          ans: "1",
+          dist: ["0", "\\frac{1}{2}", "\\frac{\\sqrt{3}}{2}"],
+          exp: "Recognize $\\sin(A+B)$: $\\sin(50^\\circ+40^\\circ) = \\sin(90^\\circ) = 1$."
+        },
+        {
+          q: "\\cos(70^\\circ)\\cos(10^\\circ) + \\sin(70^\\circ)\\sin(10^\\circ)",
+          ans: "\\frac{1}{2}",
+          dist: ["\\frac{\\sqrt{3}}{2}", "1", "0"],
+          exp: "Recognize $\\cos(A-B)$: $\\cos(70^\\circ-10^\\circ) = \\cos(60^\\circ) = \\frac{1}{2}$."
+        }
+      ];
+
+      const item = templates[Math.floor(Math.random() * templates.length)];
+      const { options, correctIndex } = buildOptions(item.ans, item.dist);
+
+      return {
+        hashKey: `T5_${item.q}`,
+        tier: 5,
+        category: "Compound & Product-to-Sum",
+        promptText: "Evaluate using compound angle addition theorems:",
+        mathLatex: item.q,
+        options,
+        correctIndex,
+        explanation: item.exp
+      };
+    }
+
+    /* --- TIER 6: Inverse Trigonometry & Principal Values ---
+       MANDATORY: Must use \sin^{-1}, \cos^{-1}, \tan^{-1} (NEVER arcsin, arccos, arctan)
+    */
+    function generateTier6() {
+      const templates = [
+        {
+          q: "\\sin^{-1}\\left(\\frac{1}{2}\\right)",
+          ans: "\\frac{\\pi}{6}",
+          dist: ["\\frac{\\pi}{3}", "\\frac{\\pi}{4}", "-\\frac{\\pi}{6}"],
+          exp: "The principal branch of $\\sin^{-1}x$ is $[-\\pi/2, \\pi/2]$. Thus $\\sin^{-1}(1/2) = \\frac{\\pi}{6}$."
+        },
+        {
+          q: "\\sin^{-1}\\left(-\\frac{1}{2}\\right)",
+          ans: "-\\frac{\\pi}{6}",
+          dist: ["\\frac{\\pi}{6}", "\\frac{5\\pi}{6}", "-\\frac{\\pi}{3}"],
+          exp: "$\\sin^{-1}(-x) = -\\sin^{-1}(x)$, giving $-\\frac{\\pi}{6}$."
+        },
+        {
+          q: "\\cos^{-1}\\left(-\\frac{1}{2}\\right)",
+          ans: "\\frac{2\\pi}{3}",
+          dist: ["-\\frac{\\pi}{3}", "\\frac{\\pi}{3}", "\\frac{4\\pi}{3}"],
+          exp: "The principal branch of $\\cos^{-1}x$ is $[0, \\pi]$. $\\cos^{-1}(-x) = \\pi - \\cos^{-1}(x) = \\pi - \\frac{\\pi}{3} = \\frac{2\\pi}{3}$."
+        },
+        {
+          q: "\\cos^{-1}\\left(-\\frac{\\sqrt{3}}{2}\\right)",
+          ans: "\\frac{5\\pi}{6}",
+          dist: ["-\\frac{\\pi}{6}", "\\frac{\\pi}{6}", "\\frac{7\\pi}{6}"],
+          exp: "$\\cos^{-1}(-\\sqrt{3}/2) = \\pi - \\frac{\\pi}{6} = \\frac{5\\pi}{6}$."
+        },
+        {
+          q: "\\tan^{-1}(-1)",
+          ans: "-\\frac{\\pi}{4}",
+          dist: ["\\frac{3\\pi}{4}", "\\frac{\\pi}{4}", "-\\frac{\\pi}{2}"],
+          exp: "The principal branch of $\\tan^{-1}x$ is $(-\\pi/2, \\pi/2)$. Thus $\\tan^{-1}(-1) = -\\frac{\\pi}{4}$."
+        },
+        {
+          q: "\\sin\\left(\\cos^{-1}\\left(\\frac{3}{5}\\right)\\right)",
+          ans: "\\frac{4}{5}",
+          dist: ["\\frac{3}{5}", "\\frac{5}{4}", "-\\frac{4}{5}"],
+          exp: "Let $\\theta = \\cos^{-1}(3/5)$. Then $\\sin\\theta = \\sqrt{1 - (3/5)^2} = \\frac{4}{5}$."
+        },
+        {
+          q: "\\tan\\left(\\sin^{-1}\\left(\\frac{3}{5}\\right)\\right)",
+          ans: "\\frac{3}{4}",
+          dist: ["\\frac{4}{3}", "\\frac{3}{5}", "\\frac{5}{3}"],
+          exp: "For a 3-4-5 right triangle with opposite 3 and hypotenuse 5, $\\tan\\theta = \\frac{3}{4}$."
+        },
+        {
+          q: "\\cos\\left(\\sin^{-1}(x)\\right)",
+          ans: "\\sqrt{1 - x^2}",
+          dist: ["1 - x^2", "\\frac{1}{\\sqrt{1-x^2}}", "x"],
+          exp: "$\\cos(\\sin^{-1}x) = \\sqrt{1 - \\sin^2(\\sin^{-1}x)} = \\sqrt{1 - x^2}$."
+        }
+      ];
+
+      const item = templates[Math.floor(Math.random() * templates.length)];
+      const { options, correctIndex } = buildOptions(item.ans, item.dist);
+
+      return {
+        hashKey: `T6_${item.q}`,
+        tier: 6,
+        category: "Inverse Trig (Principal Values)",
+        promptText: "Evaluate within the standard principal branch:",
+        mathLatex: item.q,
+        options,
+        correctIndex,
+        explanation: item.exp
+      };
+    }
+
+    /* --- TIER 7: Extrema & Algebraic Trig Equations --- */
+    function generateTier7() {
+      const templates = [
+        {
+          prompt: "Determine the maximum value of:",
+          q: "3\\sin\\theta + 4\\cos\\theta",
+          ans: "5",
+          dist: ["7", "1", "25"],
+          exp: "Maximum of $a\\sin\\theta + b\\cos\\theta$ is $\\sqrt{a^2+b^2} = \\sqrt{3^2+4^2} = 5$."
+        },
+        {
+          prompt: "Determine the minimum value of:",
+          q: "5\\sin\\theta - 12\\cos\\theta",
+          ans: "-13",
+          dist: ["-17", "13", "-7"],
+          exp: "Minimum is $-\\sqrt{5^2 + (-12)^2} = -13$."
+        },
+        {
+          prompt: "Determine the maximum value of:",
+          q: "\\sin\\theta\\cos\\theta",
+          ans: "\\frac{1}{2}",
+          dist: ["1", "\\frac{1}{4}", "2"],
+          exp: "Rewrite as $\\frac{1}{2}\\sin(2\\theta)$. Since max of $\\sin$ is $1$, maximum is $\\frac{1}{2}$."
+        },
+        {
+          prompt: "Determine the fundamental period of:",
+          q: "f(x) = \\sin(4x)",
+          ans: "\\frac{\\pi}{2}",
+          dist: ["\\pi", "2\\pi", "\\frac{\\pi}{4}"],
+          exp: "Period $T = \\frac{2\\pi}{|B|} = \\frac{2\\pi}{4} = \\frac{\\pi}{2}$."
+        },
+        {
+          prompt: "Determine the fundamental period of:",
+          q: "g(x) = \\tan(3x)",
+          ans: "\\frac{\\pi}{3}",
+          dist: ["\\frac{2\\pi}{3}", "\\pi", "\\frac{\\pi}{6}"],
+          exp: "Base period of $\\tan$ is $\\pi$, so period is $\\frac{\\pi}{3}$."
+        },
+        {
+          prompt: "Determine the range of the function:",
+          q: "y = 2\\cos^2\\theta + 3",
+          ans: "[3, 5]",
+          dist: ["[1, 5]", "[2, 5]", "[3, 6]"],
+          exp: "Since $\\cos^2\\theta \\in [0, 1]$, range is $2[0, 1] + 3 = [3, 5]$."
+        }
+      ];
+
+      const item = templates[Math.floor(Math.random() * templates.length)];
+      const { options, correctIndex } = buildOptions(item.ans, item.dist);
+
+      return {
+        hashKey: `T7_${item.q}`,
+        tier: 7,
+        category: "Extrema, Ranges & Periods",
+        promptText: item.prompt || "Determine the requested property:",
+        mathLatex: item.q,
+        options,
+        correctIndex,
+        explanation: item.exp
+      };
+    }
+
+    /* --- TIER 8: JEE / Olympiad Lightning Calculations --- */
+    function generateTier8() {
+      const templates = [
+        {
+          q: "\\cos(20^\\circ)\\cos(40^\\circ)\\cos(80^\\circ)",
+          ans: "\\frac{1}{8}",
+          dist: ["\\frac{1}{4}", "\\frac{1}{16}", "\\frac{\\sqrt{3}}{8}"],
+          exp: "By Morrie's law telescoping identity: $\\prod_{k=0}^{n-1} \\cos(2^k \\theta) = \\frac{\\sin(2^n \\theta)}{2^n \\sin\\theta} = \\frac{\\sin(160^\\circ)}{8\\sin(20^\\circ)} = \\frac{1}{8}$."
+        },
+        {
+          q: "\\sin(20^\\circ)\\sin(40^\\circ)\\sin(80^\\circ)",
+          ans: "\\frac{\\sqrt{3}}{8}",
+          dist: ["\\frac{1}{8}", "\\frac{\\sqrt{3}}{4}", "\\frac{3}{8}"],
+          exp: "Use identity $\\sin\\theta\\sin(60^\\circ-\\theta)\\sin(60^\\circ+\\theta) = \\frac{1}{4}\\sin(3\\theta) = \\frac{1}{4}\\sin(60^\\circ) = \\frac{\\sqrt{3}}{8}$."
+        },
+        {
+          q: "\\cos(10^\\circ)\\cos(50^\\circ)\\cos(70^\\circ)",
+          ans: "\\frac{\\sqrt{3}}{8}",
+          dist: ["\\frac{1}{8}", "\\frac{3}{8}", "\\frac{1}{4}"],
+          exp: "Identity $\\cos\\theta\\cos(60^\\circ-\\theta)\\cos(60^\\circ+\\theta) = \\frac{1}{4}\\cos(3\\theta) = \\frac{1}{4}\\cos(30^\\circ) = \\frac{\\sqrt{3}}{8}$."
+        },
+        {
+          q: "\\tan(20^\\circ)\\tan(40^\\circ)\\tan(80^\\circ)",
+          ans: "\\sqrt{3}",
+          dist: ["1", "\\frac{1}{\\sqrt{3}}", "3"],
+          exp: "Identity $\\tan\\theta\\tan(60^\\circ-\\theta)\\tan(60^\\circ+\\theta) = \\tan(3\\theta) = \\tan(60^\\circ) = \\sqrt{3}$."
+        },
+        {
+          q: "\\sum_{k=1}^5 \\cos^2\\left(\\frac{k\\pi}{11}\\right) + \\cos^2\\left(\\frac{(11-k)\\pi}{11}\\right)",
+          ans: "\\frac{9}{2}",
+          dist: ["5", "4", "\\frac{11}{2}"],
+          exp: "Using roots of unity orthogonality: this standard symmetric sum evaluates to $\\frac{9}{2}$."
+        },
+        {
+          q: "\\lim_{x\\to 0}\\frac{1 - \\cos(x)}{x^2}",
+          ans: "\\frac{1}{2}",
+          dist: ["0", "1", "2"],
+          exp: "$\\frac{1-\\cos x}{x^2} = \\frac{2\\sin^2(x/2)}{x^2} = \\frac{1}{2} \\left(\\frac{\\sin(x/2)}{x/2}\\right)^2 \\to \\frac{1}{2}$."
+        }
+      ];
+
+      const item = templates[Math.floor(Math.random() * templates.length)];
+      const { options, correctIndex } = buildOptions(item.ans, item.dist);
+
+      return {
+        hashKey: `T8_${item.q}`,
+        tier: 8,
+        category: "JEE / Olympiad Lightning",
+        promptText: "Competitive benchmark calculation:",
+        mathLatex: item.q,
+        options,
+        correctIndex,
+        explanation: item.exp
+      };
+    }
+
+    /* =========================================================================
+       4. GAMEPLAY CONTROLLER & STATE MACHINE
+       ========================================================================= */
+    const PROMOTION_THRESHOLD = 7; // correct answers required to advance tier in campaign
+
+    let currentMode = 'campaign'; // 'campaign', 'blitz', 'suddendeath', 'zen'
+    let currentTier = 1;
+    let zenSelectedTiers = [1, 2, 3, 4, 5, 6, 7, 8];
+
+    let currentScore = 0;
+    let currentStreak = 0;
+    let maxStreakRun = 0;
+    let solvedCount = 0;
+    let sessionTotalAttempts = 0;
+    let sessionCorrectAttempts = 0;
+
+    let tierCorrectCount = 0; // for campaign progression
+    let heartsLeft = 3;
+    let blitzTimer = null;
+    let blitzTimeRemaining = 60.0;
+    let questionStartTime = 0;
+
+    let currentQuestion = null;
+    let isQuestionLocked = false;
+    let autoAdvanceTimer = null;
+
+    function startGame(mode) {
+      currentMode = mode;
+      currentScore = 0;
+      currentStreak = 0;
+      maxStreakRun = 0;
+      solvedCount = 0;
+      sessionTotalAttempts = 0;
+      sessionCorrectAttempts = 0;
+      tierCorrectCount = 0;
+      isQuestionLocked = false;
+
+      // Switch views
+      document.getElementById('lobbyView').classList.add('hidden');
+      document.getElementById('gameView').classList.remove('hidden');
+      document.getElementById('celebrationModal').classList.add('hidden');
+      document.getElementById('gameOverModal').classList.add('hidden');
+
+      // Setup mode HUD
+      const modeTitle = document.getElementById('gameModeTitle');
+      const tierPill = document.getElementById('gameTierPill');
+      const subDetail = document.getElementById('gameSubDetail');
+      const blitzBox = document.getElementById('blitzTimerContainer');
+      const heartsBox = document.getElementById('heartsContainer');
+      const campaignBox = document.getElementById('campaignMasteryBox');
+      const multiBadge = document.getElementById('multiplierBadge');
+
+      blitzBox.classList.add('hidden');
+      heartsBox.classList.add('hidden');
+      campaignBox.classList.add('hidden');
+      multiBadge.classList.add('hidden');
+
+      if (mode === 'campaign') {
+        currentTier = gameState.campaignTier;
+        modeTitle.innerText = "Infinite Ascent";
+        tierPill.innerText = `Tier ${currentTier}`;
+        subDetail.innerText = `Target: ${PROMOTION_THRESHOLD} correct to unlock Tier ${currentTier + 1}`;
+        campaignBox.classList.remove('hidden');
+        updateCampaignProgressHUD();
+      } else if (mode === 'blitz') {
+        currentTier = 3; // challenging dynamic tier mix
+        modeTitle.innerText = "60-Second Blitz";
+        tierPill.innerText = "Speed Run";
+        subDetail.innerText = "Combos boost multiplier (1x &rarr; 2x &rarr; 4x)";
+        blitzBox.classList.remove('hidden');
+        blitzBox.classList.add('flex');
+        startBlitzTimer();
+      } else if (mode === 'suddendeath') {
+        currentTier = 3;
+        heartsLeft = 3;
+        modeTitle.innerText = "Sudden Death";
+        tierPill.innerText = "Hardcore";
+        subDetail.innerText = "Begins at Tier 3. Mistake burns 1 heart.";
+        heartsBox.classList.remove('hidden');
+        heartsBox.classList.add('flex');
+        updateHeartsHUD();
+      } else if (mode === 'zen') {
+        modeTitle.innerText = "Zen Trainer";
+        tierPill.innerText = "Custom Practice";
+        subDetail.innerText = "Untimed deep focus";
+      }
+
+      updateScoreStreakHUD();
+      nextQuestion();
+    }
+
+    function quitToLobby() {
+      if (blitzTimer) clearInterval(blitzTimer);
+      if (autoAdvanceTimer) clearTimeout(autoAdvanceTimer);
+      document.getElementById('gameView').classList.add('hidden');
+      document.getElementById('celebrationModal').classList.add('hidden');
+      document.getElementById('gameOverModal').classList.add('hidden');
+      document.getElementById('zenConfigModal').classList.add('hidden');
+      document.getElementById('lobbyView').classList.remove('hidden');
+      updateGlobalHUD();
+    }
+
+    /* 60s Blitz Timer */
+    function startBlitzTimer() {
+      if (blitzTimer) clearInterval(blitzTimer);
+      blitzTimeRemaining = 60.0;
+      const display = document.getElementById('blitzTimerDisplay');
+      display.innerText = "60.0s";
+
+      blitzTimer = setInterval(() => {
+        blitzTimeRemaining -= 0.1;
+        if (blitzTimeRemaining <= 0) {
+          blitzTimeRemaining = 0;
+          clearInterval(blitzTimer);
+          display.innerText = "0.0s";
+          handleGameOver("Time's Up!", "You pushed your limits in the 60-Second Blitz.");
+        } else {
+          display.innerText = `${blitzTimeRemaining.toFixed(1)}s`;
+          if (blitzTimeRemaining <= 5.0 && Math.floor(blitzTimeRemaining * 10) % 10 === 0) {
+            audio.playCountdownTick();
+          }
+        }
+      }, 100);
+    }
+
+    /* Hearts for Sudden Death */
+    function updateHeartsHUD() {
+      document.getElementById('heart1').style.opacity = heartsLeft >= 1 ? '1' : '0.2';
+      document.getElementById('heart2').style.opacity = heartsLeft >= 2 ? '1' : '0.2';
+      document.getElementById('heart3').style.opacity = heartsLeft >= 3 ? '1' : '0.2';
+    }
+
+    /* Campaign Mastery Bar */
+    function updateCampaignProgressHUD() {
+      const pct = Math.min(100, Math.round((tierCorrectCount / PROMOTION_THRESHOLD) * 100));
+      document.getElementById('campaignProgressLabel').innerText = `${tierCorrectCount} / ${PROMOTION_THRESHOLD}`;
+      document.getElementById('campaignProgressBar').style.width = `${pct}%`;
+    }
+
+    /* Score and Streak Multiplier */
+    function getMultiplier() {
+      if (currentStreak >= 10) return 4;
+      if (currentStreak >= 5) return 2;
+      return 1;
+    }
+
+    function updateScoreStreakHUD() {
+      document.getElementById('gameScore').innerText = currentScore;
+      document.getElementById('navStreak').innerText = currentStreak;
+
+      const multiBadge = document.getElementById('multiplierBadge');
+      const mult = getMultiplier();
+      if (mult > 1) {
+        multiBadge.classList.remove('hidden');
+        multiBadge.innerText = `${mult}x MULTI`;
+      } else {
+        multiBadge.classList.add('hidden');
+      }
+    }
+
+    /* Generate and Render Next Question */
+    function nextQuestion() {
+      isQuestionLocked = false;
+      document.getElementById('explanationBanner').classList.add('hidden');
+      document.getElementById('autoAdvanceBar').style.width = '0%';
+      document.getElementById('autoAdvanceBar').style.transition = 'none';
+
+      // Reset button styles
+      for (let i = 0; i < 4; i++) {
+        const btn = document.getElementById(`optBtn${i}`);
+        btn.disabled = false;
+        btn.className = "option-btn relative glass-card p-4 sm:p-5 rounded-2xl border border-slate-800 flex items-center justify-between text-left group";
+        document.getElementById(`optIcon${i}`).className = "opacity-0 transition-opacity";
+        document.getElementById(`optIcon${i}`).innerHTML = "";
+      }
+
+      // Check Error Queue (Spaced Repetition) in Campaign or Sudden Death:
+      // 30% chance to pull from error queue if non-empty
+      let queueItem = null;
+      if (gameState.errorQueue.length > 0 && Math.random() < 0.35) {
+        queueItem = gameState.errorQueue[0];
+      }
+
+      if (queueItem) {
+        currentQuestion = queueItem.question;
+        currentQuestion.fromErrorQueue = true;
+        document.getElementById('qErrorQueueIndicator').classList.remove('hidden');
+      } else {
+        document.getElementById('qErrorQueueIndicator').classList.add('hidden');
+        let pickTier = currentTier;
+        if (currentMode === 'zen') {
+          pickTier = zenSelectedTiers[Math.floor(Math.random() * zenSelectedTiers.length)];
+        } else if (currentMode === 'blitz') {
+          // Dynamic difficulty ladder
+          pickTier = Math.min(8, Math.max(1, Math.floor(currentStreak / 3) + 1));
+        } else if (currentMode === 'suddendeath') {
+          // Progresses up to tier 8
+          pickTier = Math.min(8, 3 + Math.floor(solvedCount / 4));
+        }
+        currentQuestion = generateTrigQuestion(pickTier);
+        currentQuestion.fromErrorQueue = false;
+      }
+
+      // Render Question Prompt & KaTeX
+      document.getElementById('qCategoryPill').innerText = currentQuestion.category;
+      document.getElementById('qPromptText').innerText = currentQuestion.promptText;
+      
+      const mathContainer = document.getElementById('qMathKatex');
+      try {
+        mathContainer.innerHTML = katex.renderToString(currentQuestion.mathLatex, { displayMode: true, throwOnError: false });
+      } catch (e) {
+        mathContainer.innerText = currentQuestion.mathLatex;
+      }
+
+      // Render Options
+      currentQuestion.options.forEach((optLatex, idx) => {
+        const optTarget = document.getElementById(`optKatex${idx}`);
+        try {
+          optTarget.innerHTML = katex.renderToString(optLatex, { throwOnError: false });
+        } catch (e) {
+          optTarget.innerText = optLatex;
+        }
+      });
+
+      questionStartTime = Date.now();
+    }
+
+    /* Option Selection Handler */
+    function handleSelectOption(selectedIndex) {
+      if (isQuestionLocked) return;
+      isQuestionLocked = true;
+
+      const elapsedSec = (Date.now() - questionStartTime) / 1000;
+      sessionTotalAttempts++;
+      const isCorrect = selectedIndex === currentQuestion.correctIndex;
+
+      // Disable all option buttons
+      for (let i = 0; i < 4; i++) {
+        document.getElementById(`optBtn${i}`).disabled = true;
+      }
+
+      // Highlight options
+      const chosenBtn = document.getElementById(`optBtn${selectedIndex}`);
+      const correctBtn = document.getElementById(`optBtn${currentQuestion.correctIndex}`);
+
+      if (isCorrect) {
+        audio.playCorrect();
+        sessionCorrectAttempts++;
+        solvedCount++;
+        currentStreak++;
+        if (currentStreak > maxStreakRun) maxStreakRun = currentStreak;
+
+        audio.playStreakTick(currentStreak);
+
+        // Calculate score with speed bonus
+        const mult = getMultiplier();
+        const speedBonus = Math.max(0, Math.floor((5 - elapsedSec) * 20));
+        const pts = (100 + speedBonus) * mult;
+        currentScore += pts;
+
+        // XP gained
+        const xpGained = Math.round(pts / 10);
+        gameState.xp += xpGained;
+
+        chosenBtn.classList.remove('border-slate-800');
+        chosenBtn.classList.add('border-emerald-500', 'bg-emerald-950/40', 'shadow-lg', 'shadow-emerald-500/20');
+        document.getElementById(`optIcon${selectedIndex}`).className = "opacity-100 text-emerald-400 font-bold text-lg";
+        document.getElementById(`optIcon${selectedIndex}`).innerText = "✓";
+
+        // If from error queue, update spaced repetition progress
+        if (currentQuestion.fromErrorQueue) {
+          const qIdx = gameState.errorQueue.findIndex(q => q.id === currentQuestion.hashKey);
+          if (qIdx !== -1) {
+            gameState.errorQueue[qIdx].correctCount = (gameState.errorQueue[qIdx].correctCount || 0) + 1;
+            if (gameState.errorQueue[qIdx].correctCount >= 2) {
+              gameState.errorQueue.splice(qIdx, 1); // Mastered! Remove from queue
+            }
+          }
+        }
+
+        // Campaign progression check
+        if (currentMode === 'campaign') {
+          tierCorrectCount++;
+          updateCampaignProgressHUD();
+          if (tierCorrectCount >= PROMOTION_THRESHOLD) {
+            triggerTierCelebration();
+            saveState();
+            return;
+          }
+        }
+      } else {
+        // Wrong answer
+        audio.playWrong();
+        currentStreak = 0;
+
+        chosenBtn.classList.remove('border-slate-800');
+        chosenBtn.classList.add('border-rose-500', 'bg-rose-950/40', 'shadow-lg', 'shadow-rose-500/20');
+        document.getElementById(`optIcon${selectedIndex}`).className = "opacity-100 text-rose-400 font-bold text-lg";
+        document.getElementById(`optIcon${selectedIndex}`).innerText = "✗";
+
+        // Highlight the right one
+        correctBtn.classList.remove('border-slate-800');
+        correctBtn.classList.add('border-emerald-500/60', 'bg-emerald-950/20');
+
+        // Add to Spaced-Repetition Error Queue
+        const existing = gameState.errorQueue.find(q => q.id === currentQuestion.hashKey);
+        if (!existing) {
+          gameState.errorQueue.push({
+            id: currentQuestion.hashKey,
+            question: currentQuestion,
+            correctCount: 0
+          });
+        }
+
+        // Sudden death hearts
+        if (currentMode === 'suddendeath') {
+          heartsLeft--;
+          updateHeartsHUD();
+          if (heartsLeft <= 0) {
+            handleGameOver("Hearts Depleted", "Every mistake in Sudden Death is fatal.");
+            saveState();
+            return;
+          }
+        }
+      }
+
+      updateScoreStreakHUD();
+      saveState();
+
+      // Show KaTeX explanation banner
+      const expBanner = document.getElementById('explanationBanner');
+      expBanner.classList.remove('hidden');
+      const expIcon = document.getElementById('expStatusIcon');
+      const expStatusText = document.getElementById('expStatusText');
+      const expMath = document.getElementById('expMathKatex');
+
+      if (isCorrect) {
+        expIcon.innerText = "✓";
+        expIcon.className = "text-emerald-400 font-bold text-lg";
+        expStatusText.innerText = "Correct Verification";
+        expStatusText.className = "font-bold text-emerald-400 block mb-0.5";
+      } else {
+        expIcon.innerText = "✗";
+        expIcon.className = "text-rose-400 font-bold text-lg";
+        expStatusText.innerText = "Incorrect Option Selected";
+        expStatusText.className = "font-bold text-rose-400 block mb-0.5";
+      }
+
+      expMath.innerHTML = renderMathInText(currentQuestion.explanation);
+
+      // Smooth auto-advance progress bar (~1.2s)
+      const autoBar = document.getElementById('autoAdvanceBar');
+      autoBar.style.transition = 'width 1.25s linear';
+      autoBar.style.width = '100%';
+
+      autoAdvanceTimer = setTimeout(() => {
+        nextQuestion();
+      }, 1300);
+    }
+
+    function forceNextQuestion() {
+      if (autoAdvanceTimer) clearTimeout(autoAdvanceTimer);
+      nextQuestion();
+    }
+
+    /* Celebration Modal */
+    function triggerTierCelebration() {
+      audio.playFanfare();
+
+      // Confetti burst
+      if (window.confetti) {
+        confetti({
+          particleCount: 100,
+          spread: 70,
+          origin: { y: 0.6 }
+        });
+        setTimeout(() => {
+          confetti({
+            particleCount: 50,
+            angle: 60,
+            spread: 55,
+            origin: { x: 0 }
+          });
+          confetti({
+            particleCount: 50,
+            angle: 120,
+            spread: 55,
+            origin: { x: 1 }
+          });
+        }, 250);
+      }
+
+      const accuracy = sessionTotalAttempts > 0 
+        ? Math.round((sessionCorrectAttempts / sessionTotalAttempts) * 100)
+        : 100;
+
+      document.getElementById('celebTitle').innerText = `Tier ${currentTier} Cleared!`;
+      document.getElementById('celebSubtitle').innerText = `You have proven mastery of Tier ${currentTier} trigonometric concepts.`;
+      document.getElementById('celebAccuracy').innerText = `${accuracy}%`;
+      document.getElementById('celebXpEarned').innerText = `+${tierCorrectCount * 20} XP`;
+
+      document.getElementById('celebrationModal').classList.remove('hidden');
+    }
+
+    function advanceToNextTier() {
+      document.getElementById('celebrationModal').classList.add('hidden');
+      currentTier++;
+      if (currentTier > gameState.campaignTier) {
+        gameState.campaignTier = currentTier;
+      }
+      tierCorrectCount = 0;
+      sessionTotalAttempts = 0;
+      sessionCorrectAttempts = 0;
+      saveState();
+
+      document.getElementById('gameTierPill').innerText = `Tier ${currentTier}`;
+      document.getElementById('gameSubDetail').innerText = `Target: ${PROMOTION_THRESHOLD} correct to unlock Tier ${currentTier + 1}`;
+      updateCampaignProgressHUD();
+      nextQuestion();
+    }
+
+    /* Game Over Modal (Blitz & Sudden Death) */
+    function handleGameOver(title, subtitle) {
+      if (blitzTimer) clearInterval(blitzTimer);
+      if (autoAdvanceTimer) clearTimeout(autoAdvanceTimer);
+
+      audio.playWrong();
+
+      if (currentMode === 'blitz' && currentScore > gameState.blitzHighScore) {
+        gameState.blitzHighScore = currentScore;
+      } else if (currentMode === 'suddendeath' && solvedCount > gameState.suddenDeathHighScore) {
+        gameState.suddenDeathHighScore = solvedCount;
+      }
+      saveState();
+
+      document.getElementById('gameOverTitle').innerText = title;
+      document.getElementById('gameOverSubtitle').innerText = subtitle;
+      document.getElementById('goScore').innerText = currentScore;
+      document.getElementById('goSolved').innerText = solvedCount;
+      document.getElementById('goStreak').innerText = `${maxStreakRun}🔥`;
+
+      document.getElementById('gameOverModal').classList.remove('hidden');
+    }
+
+    function retryCurrentMode() {
+      document.getElementById('gameOverModal').classList.add('hidden');
+      startGame(currentMode);
+    }
+
+    /* Zen Setup Modal */
+    function openZenSetup() {
+      document.getElementById('zenConfigModal').classList.remove('hidden');
+    }
+
+    function closeZenSetup() {
+      document.getElementById('zenConfigModal').classList.add('hidden');
+    }
+
+    function startZenCustom() {
+      const checkboxes = document.querySelectorAll('#zenTierCheckboxes input[type="checkbox"]:checked');
+      const selected = Array.from(checkboxes).map(cb => parseInt(cb.value));
+      if (selected.length === 0) {
+        alert("Please select at least one topic tier.");
+        return;
+      }
+      zenSelectedTiers = selected;
+      closeZenSetup();
+      startGame('zen');
+    }
+
+    /* Cheatsheet Accordion & KaTeX */
+    function toggleReferenceCheatsheet() {
+      const body = document.getElementById('cheatSheetBody');
+      const chevron = document.getElementById('cheatSheetChevron');
+      if (body.classList.contains('hidden')) {
+        body.classList.remove('hidden');
+        chevron.innerText = "▲ Collapse";
+        renderCheatsheetKaTeX();
+      } else {
+        body.classList.add('hidden');
+        chevron.innerText = "▼ Expand";
+      }
+    }
+
+    function renderCheatsheetKaTeX() {
+      try {
+        katex.render("\\sin(\\pi-\\theta)=\\sin\\theta,\\quad \\cos(\\pi-\\theta)=-\\cos\\theta", document.getElementById('refAstcKatex'), { throwOnError: false, displayMode: true });
+        katex.render("\\sin^{-1}(-x)=-\\sin^{-1}x,\\quad \\cos^{-1}(-x)=\\pi-\\cos^{-1}x", document.getElementById('refInverseKatex'), { throwOnError: false, displayMode: true });
+        katex.render("-\\sqrt{a^2+b^2} \\le a\\sin\\theta + b\\cos\\theta \\le \\sqrt{a^2+b^2}", document.getElementById('refExtremaKatex'), { throwOnError: false, displayMode: true });
+      } catch (e) {
+        console.warn('Cheatsheet render error', e);
+      }
+    }
+
+    /* Keyboard Shortcuts (1, 2, 3, 4 for options; Enter/Space for advance; S for Sound) */
+    window.addEventListener('keydown', (e) => {
+      // If modal is open
+      const celebModal = document.getElementById('celebrationModal');
+      if (!celebModal.classList.contains('hidden')) {
+        if (e.key === ' ' || e.key === 'Enter') {
+          e.preventDefault();
+          advanceToNextTier();
+        }
+        return;
+      }
+
+      // If in active gameplay arena
+      const gameView = document.getElementById('gameView');
+      if (!gameView.classList.contains('hidden')) {
+        if (['1', '2', '3', '4'].includes(e.key)) {
+          e.preventDefault();
+          const idx = parseInt(e.key) - 1;
+          handleSelectOption(idx);
+        } else if (e.key === ' ' || e.key === 'Enter') {
+          // If answer selected and explanation showing, force skip
+          if (isQuestionLocked) {
+            e.preventDefault();
+            forceNextQuestion();
+          }
+        }
+      }
+
+      // Global Sound Toggle with 'S'
+      if (e.key.toLowerCase() === 's' && !e.ctrlKey && !e.metaKey) {
+        toggleSound();
+      }
+    });
+
+    /* Sound Toggle UI */
+    function toggleSound() {
+      audio.muted = !audio.muted;
+      localStorage.setItem('tmb_muted', audio.muted);
+      updateSoundUI();
+    }
+
+    function updateSoundUI() {
+      const onIcon = document.getElementById('soundIconOn');
+      const offIcon = document.getElementById('soundIconOff');
+      if (audio.muted) {
+        onIcon.classList.add('hidden');
+        offIcon.classList.remove('hidden');
+      } else {
+        onIcon.classList.remove('hidden');
+        offIcon.classList.add('hidden');
+      }
+    }
+
+    /* Initialize Application on DOM Ready */
+    window.addEventListener('DOMContentLoaded', () => {
+      loadState();
+      updateSoundUI();
+      document.getElementById('soundToggleBtn').addEventListener('click', toggleSound);
+      document.getElementById('brandBtn').addEventListener('click', quitToLobby);
+      document.getElementById('dashboardBtn').addEventListener('click', quitToLobby);
+    });
+  </script>
+</body>
+</html>

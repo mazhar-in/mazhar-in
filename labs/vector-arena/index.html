@@ -1,0 +1,3231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Vector Arena: Directional Combat Engine | Mazhar's Lab</title>
+  <meta name="description" content="Directional physics arena exploring the tactile physical weight and momentum of vectors through real-time canvas combat mechanics.">
+  <link rel="canonical" href="https://mazhar.in/labs/vector-arena/">
+  <meta name="lab-category" content="Kinetic Toys & Reflex Mechanics">
+  <meta name="lab-status" content="Playground">
+  <meta name="lab-hook" content="Exploring the physical weight of vectors through directional combat.">
+  <meta name="lab-tech" content="Canvas, SVG, Audio / TTS">
+  <meta name="lab-tags" content="Vectors, Game Loop, Combat, Physics">
+  <!-- Open Graph / SEO -->
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Vector Arena: Directional Combat Engine | Mazhar's Lab">
+  <meta property="og:description" content="Directional physics arena exploring the tactile physical weight and momentum of vectors through real-time canvas combat mechanics.">
+  <meta property="og:url" content="https://mazhar.in/labs/vector-arena/">
+  <!-- Schema.org WebApplication -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "Vector Arena: Directional Combat Engine | Mazhar's Lab",
+    "description": "Directional physics arena exploring the tactile physical weight and momentum of vectors through real-time canvas combat mechanics.",
+    "url": "https://mazhar.in/labs/vector-arena/",
+    "applicationCategory": "EducationalApplication",
+    "author": {
+      "@type": "Person",
+      "name": "Syed Mazhar Ali",
+      "url": "https://mazhar.in"
+    }
+  }
+  </script>
+
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
+  <title>Vector Arena: Directional Combat Engine | Mazhar's Lab</title>
+  
+  <!-- Fonts & Math Engine -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700;800&family=Outfit:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  
+  <!-- KaTeX for elite mathematical typesetting -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+
+  <style>
+    /* ==========================================================================
+       CYBERNETIC VECTOR COMBAT SYSTEM - 100% ZERO-SCROLLBAR ENGINE
+       ========================================================================== */
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+      user-select: none;
+    }
+
+    :root {
+      --bg-space: #030712;
+      --bg-panel: rgba(15, 23, 42, 0.78);
+      --bg-card: rgba(30, 41, 59, 0.65);
+      --border-cyan: rgba(6, 182, 212, 0.35);
+      --border-dim: rgba(71, 85, 105, 0.3);
+      --cyan-glow: #06b6d4;
+      --cyan-bright: #22d3ee;
+      --amber-glow: #f59e0b;
+      --emerald-glow: #10b981;
+      --rose-glow: #f43f5e;
+      --violet-glow: #8b5cf6;
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --font-display: 'Outfit', system-ui, sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+    }
+
+    html, body {
+      width: 100vw;
+      height: 100vh;
+      height: 100dvh;
+      overflow: hidden !important;
+      background-color: var(--bg-space);
+      background-image: 
+        radial-gradient(circle at 15% 15%, rgba(6, 182, 212, 0.08) 0%, transparent 40%),
+        radial-gradient(circle at 85% 85%, rgba(139, 92, 246, 0.08) 0%, transparent 40%),
+        linear-gradient(rgba(15, 23, 42, 0.4) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(15, 23, 42, 0.4) 1px, transparent 1px);
+      background-size: 100% 100%, 100% 100%, 32px 32px, 32px 32px;
+      color: var(--text-main);
+      font-family: var(--font-display);
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Top HUD Navigation Bar */
+    header.hud-header {
+      height: 52px;
+      min-height: 52px;
+      background: rgba(3, 7, 18, 0.88);
+      backdrop-filter: blur(14px);
+      border-bottom: 1px solid var(--border-cyan);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 14px;
+      z-index: 50;
+      gap: 10px;
+    }
+
+    .brand-cluster {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .brand-icon {
+      width: 30px;
+      height: 30px;
+      background: linear-gradient(135deg, #06b6d4, #3b82f6);
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 0 12px rgba(6, 182, 212, 0.5);
+    }
+
+    .brand-icon svg {
+      width: 18px;
+      height: 18px;
+      fill: none;
+      stroke: #fff;
+      stroke-width: 2.5;
+    }
+
+    .brand-title {
+      font-size: 1.05rem;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      background: linear-gradient(90deg, #f8fafc, #38bdf8);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .brand-badge {
+      font-family: var(--font-mono);
+      font-size: 0.62rem;
+      padding: 1px 6px;
+      background: rgba(6, 182, 212, 0.15);
+      border: 1px solid rgba(6, 182, 212, 0.4);
+      color: var(--cyan-bright);
+      border-radius: 4px;
+      text-transform: uppercase;
+      font-weight: 700;
+    }
+
+    .mode-pills {
+      display: flex;
+      background: rgba(15, 23, 42, 0.8);
+      padding: 3px;
+      border-radius: 8px;
+      border: 1px solid var(--border-dim);
+      gap: 2px;
+    }
+
+    .mode-pill {
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      font-family: var(--font-display);
+      font-size: 0.75rem;
+      font-weight: 600;
+      padding: 5px 10px;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.18s ease;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .mode-pill:hover {
+      color: var(--text-main);
+      background: rgba(255, 255, 255, 0.05);
+    }
+
+    .mode-pill.active {
+      color: #030712;
+      background: var(--cyan-bright);
+      box-shadow: 0 0 10px rgba(6, 182, 212, 0.5);
+      font-weight: 700;
+    }
+
+    .hud-telemetry {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .stat-badge {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      font-family: var(--font-mono);
+      line-height: 1;
+    }
+
+    .stat-label {
+      font-size: 0.58rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .stat-value {
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--cyan-bright);
+    }
+
+    .combo-badge {
+      background: rgba(245, 158, 11, 0.15);
+      border: 1px solid var(--amber-glow);
+      color: var(--amber-glow);
+      padding: 2px 7px;
+      border-radius: 5px;
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 3px;
+      animation: pulse-glow 2s infinite ease-in-out;
+    }
+
+    .hud-btn {
+      background: rgba(30, 41, 59, 0.7);
+      border: 1px solid var(--border-dim);
+      color: var(--text-main);
+      width: 32px;
+      height: 32px;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .hud-btn:hover {
+      border-color: var(--cyan-glow);
+      box-shadow: 0 0 8px rgba(6, 182, 212, 0.3);
+    }
+
+    .hud-btn svg {
+      width: 16px;
+      height: 16px;
+      stroke: currentColor;
+      fill: none;
+      stroke-width: 2;
+    }
+
+    /* Main Container (Strictly 100% Viewport, Zero Scroll) */
+    main#app-root {
+      flex: 1;
+      min-height: 0;
+      width: 100vw;
+      position: relative;
+      display: flex;
+      overflow: hidden !important;
+    }
+
+    /* Arena Combat View (Default 2-Column Split) */
+    .arena-grid {
+      width: 100%;
+      height: 100%;
+      display: grid;
+      grid-template-columns: 1.15fr 1fr;
+      min-height: 0;
+      overflow: hidden;
+      padding: 10px;
+      gap: 12px;
+    }
+
+    /* Left Panel: Vector Radar Visualizer */
+    .visualizer-column {
+      display: flex;
+      flex-direction: column;
+      min-height: 0;
+      height: 100%;
+      background: var(--bg-panel);
+      backdrop-filter: blur(12px);
+      border: 1px solid var(--border-cyan);
+      border-radius: 12px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .panel-header {
+      padding: 8px 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--border-dim);
+      background: rgba(3, 7, 18, 0.5);
+    }
+
+    .panel-title {
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--cyan-bright);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .radar-container {
+      flex: 1;
+      min-height: 0;
+      width: 100%;
+      position: relative;
+      overflow: hidden;
+    }
+
+    canvas#radarCanvas {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+
+    .canvas-overlay-legend {
+      position: absolute;
+      bottom: 8px;
+      left: 10px;
+      right: 10px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      pointer-events: none;
+    }
+
+    .legend-item {
+      background: rgba(3, 7, 18, 0.75);
+      backdrop-filter: blur(6px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      padding: 3px 8px;
+      border-radius: 4px;
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .legend-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+    }
+
+    /* Right Panel: Combat Dashboard & Question Console */
+    .combat-column {
+      display: flex;
+      flex-direction: column;
+      min-height: 0;
+      height: 100%;
+      background: var(--bg-panel);
+      backdrop-filter: blur(12px);
+      border: 1px solid var(--border-dim);
+      border-radius: 12px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    /* Progress & Sector Tier Bar */
+    .tier-bar {
+      padding: 8px 14px;
+      background: rgba(3, 7, 18, 0.6);
+      border-bottom: 1px solid var(--border-dim);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .tier-info {
+      display: flex;
+      align-items: baseline;
+      gap: 6px;
+    }
+
+    .tier-number {
+      font-size: 0.72rem;
+      font-family: var(--font-mono);
+      color: var(--amber-glow);
+      font-weight: 700;
+      text-transform: uppercase;
+    }
+
+    .tier-name {
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--text-main);
+    }
+
+    .sector-selector-btn {
+      background: rgba(6, 182, 212, 0.1);
+      border: 1px solid var(--border-cyan);
+      color: var(--cyan-bright);
+      font-family: var(--font-mono);
+      font-size: 0.68rem;
+      padding: 3px 8px;
+      border-radius: 4px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .tier-progress-track {
+      height: 4px;
+      width: 100%;
+      background: rgba(255, 255, 255, 0.08);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .tier-progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #06b6d4, #10b981);
+      width: 0%;
+      transition: width 0.3s ease;
+      box-shadow: 0 0 8px rgba(16, 185, 129, 0.5);
+    }
+
+    /* Question & Problem Area */
+    .problem-viewport {
+      flex: 1;
+      min-height: 0;
+      padding: 12px 16px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      overflow: hidden;
+      gap: 10px;
+    }
+
+    .question-box {
+      background: var(--bg-card);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 10px;
+      padding: 14px 16px;
+      position: relative;
+    }
+
+    .question-category {
+      font-size: 0.65rem;
+      font-family: var(--font-mono);
+      color: var(--cyan-glow);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .question-prompt {
+      font-size: 1.05rem;
+      font-weight: 600;
+      line-height: 1.45;
+      color: #fff;
+    }
+
+    .question-prompt .katex {
+      font-size: 1.15em;
+    }
+
+    /* Formula Codex (Hint) Component */
+    .codex-wrapper {
+      margin-top: 4px;
+    }
+
+    .codex-toggle-btn {
+      background: rgba(245, 158, 11, 0.1);
+      border: 1px dashed rgba(245, 158, 11, 0.5);
+      color: var(--amber-glow);
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      font-weight: 600;
+      padding: 5px 10px;
+      border-radius: 6px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.15s ease;
+    }
+
+    .codex-toggle-btn:hover {
+      background: rgba(245, 158, 11, 0.2);
+    }
+
+    .codex-content {
+      display: none;
+      margin-top: 6px;
+      background: rgba(15, 23, 42, 0.95);
+      border: 1px solid var(--amber-glow);
+      padding: 10px 14px;
+      border-radius: 8px;
+      font-size: 0.85rem;
+      color: #fed7aa;
+      line-height: 1.4;
+      animation: fadeIn 0.2s ease;
+    }
+
+    .codex-content.open {
+      display: block;
+    }
+
+    /* Options Matrix (2x2 Grid or 4 Columns) */
+    .options-matrix {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-top: auto;
+    }
+
+    .opt-btn {
+      background: rgba(30, 41, 59, 0.85);
+      border: 1px solid var(--border-dim);
+      border-radius: 8px;
+      min-height: 52px;
+      padding: 8px 12px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      text-align: left;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .opt-btn:hover:not(:disabled) {
+      border-color: var(--cyan-glow);
+      background: rgba(51, 65, 85, 0.9);
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(6, 182, 212, 0.15);
+    }
+
+    .opt-btn:active:not(:disabled) {
+      transform: translateY(0);
+    }
+
+    .opt-key {
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: var(--text-muted);
+      background: rgba(15, 23, 42, 0.9);
+      width: 22px;
+      height: 22px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 4px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      flex-shrink: 0;
+    }
+
+    .opt-content {
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: var(--text-main);
+      flex: 1;
+      display: flex;
+      align-items: center;
+    }
+
+    .opt-btn.correct {
+      background: rgba(16, 185, 129, 0.25) !important;
+      border-color: var(--emerald-glow) !important;
+      box-shadow: 0 0 16px rgba(16, 185, 129, 0.4) !important;
+    }
+
+    .opt-btn.correct .opt-key {
+      background: var(--emerald-glow);
+      color: #030712;
+    }
+
+    .opt-btn.wrong {
+      background: rgba(244, 63, 94, 0.25) !important;
+      border-color: var(--rose-glow) !important;
+      box-shadow: 0 0 16px rgba(244, 63, 94, 0.4) !important;
+    }
+
+    .opt-btn.wrong .opt-key {
+      background: var(--rose-glow);
+      color: #fff;
+    }
+
+    /* Feedback / Step-by-Step Vector Derivation Drawer */
+    .feedback-banner {
+      display: none;
+      background: rgba(15, 23, 42, 0.96);
+      border-top: 1px solid var(--border-cyan);
+      padding: 10px 14px;
+      font-size: 0.84rem;
+      position: relative;
+    }
+
+    .feedback-banner.show {
+      display: block;
+      animation: slideUp 0.2s ease;
+    }
+
+    .feedback-countdown-bar {
+      position: absolute;
+      top: 0;
+      left: 0;
+      height: 3px;
+      background: var(--cyan-bright);
+      width: 100%;
+    }
+
+    .feedback-status {
+      font-weight: 800;
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      margin-bottom: 2px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .feedback-status.correct { color: var(--emerald-glow); }
+    .feedback-status.wrong { color: var(--rose-glow); }
+
+    .feedback-derivation {
+      color: #e2e8f0;
+      font-size: 0.86rem;
+      line-height: 1.4;
+    }
+
+    .advance-hint {
+      font-family: var(--font-mono);
+      font-size: 0.68rem;
+      color: var(--text-muted);
+      cursor: pointer;
+    }
+
+    /* Interactive Sandbox Mode View (Zero Scroll) */
+    .sandbox-view {
+      display: none;
+      width: 100%;
+      height: 100%;
+      min-height: 0;
+      grid-template-columns: 1.4fr 1fr;
+      padding: 10px;
+      gap: 12px;
+      overflow: hidden;
+    }
+
+    .sandbox-view.active {
+      display: grid;
+    }
+
+    .sandbox-controls-panel {
+      background: var(--bg-panel);
+      backdrop-filter: blur(12px);
+      border: 1px solid var(--border-cyan);
+      border-radius: 12px;
+      padding: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      overflow: hidden;
+    }
+
+    .control-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-dim);
+      border-radius: 8px;
+      padding: 10px 12px;
+    }
+
+    .control-card-title {
+      font-size: 0.72rem;
+      font-family: var(--font-mono);
+      color: var(--cyan-bright);
+      text-transform: uppercase;
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .telemetry-row {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      margin-bottom: 4px;
+      font-family: var(--font-mono);
+      font-size: 0.82rem;
+    }
+
+    .telemetry-val {
+      font-weight: 700;
+      color: #fff;
+    }
+
+    .sandbox-toggle-row {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .sb-btn {
+      background: rgba(15, 23, 42, 0.8);
+      border: 1px solid var(--border-dim);
+      color: var(--text-muted);
+      font-size: 0.75rem;
+      font-family: var(--font-mono);
+      padding: 5px 9px;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .sb-btn.active, .sb-btn:hover {
+      border-color: var(--cyan-bright);
+      color: var(--cyan-bright);
+      background: rgba(6, 182, 212, 0.15);
+    }
+
+    /* Bottom Hotkey Footer */
+    footer.engine-footer {
+      height: 28px;
+      min-height: 28px;
+      background: rgba(3, 7, 18, 0.95);
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 14px;
+      font-family: var(--font-mono);
+      font-size: 0.65rem;
+      color: var(--text-muted);
+      z-index: 40;
+    }
+
+    .footer-keys {
+      display: flex;
+      gap: 12px;
+    }
+
+    .key-badge {
+      color: var(--cyan-bright);
+      font-weight: 700;
+    }
+
+    /* Modal Dialogs (Victory, Sector Select, Game Over) */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(3, 7, 18, 0.85);
+      backdrop-filter: blur(10px);
+      z-index: 100;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .modal-overlay.open {
+      display: flex;
+      animation: fadeIn 0.2s ease;
+    }
+
+    .modal-dialog {
+      background: #090e17;
+      border: 1.5px solid var(--border-cyan);
+      box-shadow: 0 0 40px rgba(6, 182, 212, 0.25);
+      border-radius: 14px;
+      max-width: 480px;
+      width: 100%;
+      padding: 24px;
+      text-align: center;
+      position: relative;
+    }
+
+    .modal-icon {
+      width: 56px;
+      height: 56px;
+      border-radius: 50%;
+      margin: 0 auto 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.6rem;
+    }
+
+    .modal-icon.victory {
+      background: rgba(16, 185, 129, 0.15);
+      border: 1px solid var(--emerald-glow);
+      color: var(--emerald-glow);
+    }
+
+    .modal-icon.gameover {
+      background: rgba(244, 63, 94, 0.15);
+      border: 1px solid var(--rose-glow);
+      color: var(--rose-glow);
+    }
+
+    .modal-title {
+      font-size: 1.3rem;
+      font-weight: 800;
+      margin-bottom: 6px;
+    }
+
+    .modal-desc {
+      font-size: 0.88rem;
+      color: var(--text-muted);
+      margin-bottom: 18px;
+      line-height: 1.4;
+    }
+
+    .modal-stats {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 8px;
+      margin-bottom: 20px;
+    }
+
+    .modal-stat-box {
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 8px;
+      padding: 8px 4px;
+      font-family: var(--font-mono);
+    }
+
+    .modal-stat-num {
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: var(--cyan-bright);
+    }
+
+    .modal-stat-label {
+      font-size: 0.62rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+    }
+
+    .modal-action-btn {
+      background: linear-gradient(135deg, #06b6d4, #0284c7);
+      border: none;
+      color: #030712;
+      font-family: var(--font-display);
+      font-size: 0.92rem;
+      font-weight: 800;
+      padding: 12px 24px;
+      border-radius: 8px;
+      cursor: pointer;
+      width: 100%;
+      transition: all 0.18s ease;
+      box-shadow: 0 4px 14px rgba(6, 182, 212, 0.4);
+    }
+
+    .modal-action-btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 20px rgba(6, 182, 212, 0.6);
+    }
+
+    /* Confetti Canvas Layer */
+    canvas#confettiCanvas {
+      position: fixed;
+      inset: 0;
+      width: 100vw;
+      height: 100vh;
+      pointer-events: none;
+      z-index: 99;
+    }
+
+    /* Sector Selector Grid Modal */
+    .sector-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+      margin: 16px 0;
+    }
+
+    .sector-card {
+      background: rgba(30, 41, 59, 0.7);
+      border: 1px solid var(--border-dim);
+      border-radius: 8px;
+      padding: 10px 6px;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .sector-card:hover {
+      border-color: var(--cyan-glow);
+      background: rgba(51, 65, 85, 0.8);
+    }
+
+    .sector-card.current {
+      border-color: var(--cyan-bright);
+      background: rgba(6, 182, 212, 0.2);
+    }
+
+    .sector-card.locked {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+
+    .sector-num {
+      font-family: var(--font-mono);
+      font-size: 0.85rem;
+      font-weight: 800;
+      color: var(--cyan-bright);
+    }
+
+    .sector-label {
+      font-size: 0.62rem;
+      color: var(--text-muted);
+      margin-top: 2px;
+      line-height: 1.1;
+    }
+
+    /* ==========================================================================
+       RESPONSIVE ADAPTATIONS (MOBILE / COMPACT DEVICES) - ZERO SCROLLBAR
+       ========================================================================== */
+    @media (max-width: 860px) {
+      .arena-grid {
+        grid-template-columns: 1fr;
+        grid-template-rows: 0.85fr 1fr;
+        padding: 6px;
+        gap: 6px;
+      }
+      .options-matrix {
+        gap: 6px;
+      }
+      .opt-btn {
+        min-height: 46px;
+        padding: 6px 10px;
+        font-size: 0.88rem;
+      }
+      .question-prompt {
+        font-size: 0.95rem;
+      }
+      .sandbox-view {
+        grid-template-columns: 1fr;
+        grid-template-rows: 1.1fr 1fr;
+        padding: 6px;
+        gap: 6px;
+      }
+      .brand-title span {
+        display: none;
+      }
+      .sector-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @keyframes pulse-glow {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.85; transform: scale(1.03); }
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; } to { opacity: 1; }
+    }
+    @keyframes slideUp {
+      from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body>
+<!-- WORKBENCH_NAV -->
+<div style="position: fixed; top: 12px; left: 16px; z-index: 99999; display: flex; align-items: center; gap: 8px;">
+  <a href="../index.html" style="display: inline-flex; align-items: center; gap: 6px; padding: 6px 14px; font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; font-size: 0.8rem; font-weight: 600; color: #00f2fe; background: rgba(10, 15, 29, 0.88); border: 1px solid rgba(0, 242, 254, 0.35); border-radius: 9999px; text-decoration: none; backdrop-filter: blur(8px); box-shadow: 0 4px 12px rgba(0,0,0,0.4); transition: all 0.2s;">
+    <span>&larr; The Workbench</span>
+  </a>
+</div>
+
+
+  <!-- TOP CYBER HUD BAR -->
+  <header class="hud-header">
+    <div class="brand-cluster">
+      <div class="brand-icon">
+        <svg viewBox="0 0 24 24"><path d="M5 19L19 5M19 5H10M19 5V14"/></svg>
+      </div>
+      <div class="brand-title">
+        VECTOR ARENA <span>// DIRECTIONAL COMBAT</span>
+      </div>
+      <span class="brand-badge" id="hudTierBadge">TIER 1</span>
+    </div>
+
+    <!-- Mode Selectors -->
+    <nav class="mode-pills" id="modeSelector">
+      <button class="mode-pill active" data-mode="campaign">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+        Campaign
+      </button>
+      <button class="mode-pill" data-mode="blitz">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+        Blitz (60s)
+      </button>
+      <button class="mode-pill" data-mode="survival">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
+        Survival
+      </button>
+      <button class="mode-pill" data-mode="sandbox">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
+        Sandbox
+      </button>
+    </nav>
+
+    <!-- Telemetry Badges & Audio/Fullscreen Buttons -->
+    <div class="hud-telemetry">
+      <div class="combo-badge" id="comboBadge" style="display: none;">
+        <span>🔥</span><span id="comboMultiplier">1x</span>
+      </div>
+
+      <div class="stat-badge" id="survivalLivesContainer" style="display: none;">
+        <span class="stat-label">CORES</span>
+        <span class="stat-value" id="survivalCores" style="color: var(--rose-glow)">❤️❤️❤️</span>
+      </div>
+
+      <div class="stat-badge" id="blitzTimerContainer" style="display: none;">
+        <span class="stat-label">TIME</span>
+        <span class="stat-value" id="blitzTimer" style="color: var(--amber-glow)">60s</span>
+      </div>
+
+      <div class="stat-badge">
+        <span class="stat-label">SCORE</span>
+        <span class="stat-value" id="hudScore">0</span>
+      </div>
+
+      <button class="hud-btn" id="audioToggleBtn" title="Toggle Audio (M)">
+        <svg viewBox="0 0 24 24" id="audioIcon"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg>
+      </button>
+
+      <button class="hud-btn" id="fullscreenToggleBtn" title="Toggle Fullscreen (F)">
+        <svg viewBox="0 0 24 24"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"></path></svg>
+      </button>
+    </div>
+  </header>
+
+  <!-- MAIN VIEWPORT (STRICTLY CONTAINED) -->
+  <main id="app-root">
+    
+    <!-- 1. ARENA COMBAT VIEW (Campaign, Blitz, Survival) -->
+    <div class="arena-grid" id="arenaCombatView">
+      
+      <!-- LEFT COLUMN: LIVE 60 FPS VECTOR RADAR CANVAS -->
+      <section class="visualizer-column">
+        <div class="panel-header">
+          <div class="panel-title">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><path d="m4.93 4.93 4.24 4.24"/><path d="m14.83 9.17 4.24-4.24"/><path d="m14.83 14.83 4.24 4.24"/><path d="m9.17 14.83-4.24 4.24"/></svg>
+            RADAR VISUALIZER // <span id="radarModeTitle">RESULTANT & COMPONENTS</span>
+          </div>
+          <button class="sector-selector-btn" id="openSectorsBtn">
+            SECTORS (1-8)
+          </button>
+        </div>
+
+        <div class="radar-container" id="radarContainer">
+          <canvas id="radarCanvas"></canvas>
+          <div class="canvas-overlay-legend" id="radarLegend">
+            <div class="legend-item"><span class="legend-dot" style="background:#06b6d4"></span><span id="legendA">Vector A</span></div>
+            <div class="legend-item"><span class="legend-dot" style="background:#f59e0b"></span><span id="legendB">Vector B</span></div>
+            <div class="legend-item" id="legendResultantItem"><span class="legend-dot" style="background:#10b981"></span><span id="legendR">R = A + B</span></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- RIGHT COLUMN: COMBAT CONSOLE & PROBLEM ENGINE -->
+      <section class="combat-column">
+        <!-- Progress Bar & Tier Summary -->
+        <div class="tier-bar">
+          <div class="tier-info">
+            <span class="tier-number" id="cardTierNumber">SECTOR 1</span>
+            <span class="tier-name" id="cardTierName">Coordinates & Magnitude</span>
+          </div>
+          <div class="stat-badge" style="align-items:flex-end;">
+            <span class="stat-label">MASTERY</span>
+            <span class="stat-value" id="cardMasteryRatio" style="color:var(--emerald-glow);font-size:0.85rem">0 / 7</span>
+          </div>
+        </div>
+        <div class="tier-progress-track">
+          <div class="tier-progress-fill" id="tierProgressBar"></div>
+        </div>
+
+        <!-- Problem Card Viewport -->
+        <div class="problem-viewport">
+          <div class="question-box">
+            <div class="question-category">
+              <span id="questionTopic">Pure Mathematics Foundations</span>
+              <span id="questionDifficulty">TARGET CLEARANCE</span>
+            </div>
+            <div class="question-prompt" id="questionPrompt">
+              Initializing Vector Matrix...
+            </div>
+
+            <!-- Formula Codex Toggle (H) -->
+            <div class="codex-wrapper">
+              <button class="codex-toggle-btn" id="codexToggleBtn">
+                <span>💡</span> FORMULA CODEX [H] (50% SCORE PENALTY)
+              </button>
+              <div class="codex-content" id="codexContent">
+                <!-- KaTeX hint injected here -->
+              </div>
+            </div>
+          </div>
+
+          <!-- Options Matrix (Keyboard 1,2,3,4) -->
+          <div class="options-matrix" id="optionsMatrix">
+            <button class="opt-btn" data-index="0">
+              <span class="opt-key">1</span>
+              <div class="opt-content" id="optText0">Option A</div>
+            </button>
+            <button class="opt-btn" data-index="1">
+              <span class="opt-key">2</span>
+              <div class="opt-content" id="optText1">Option B</div>
+            </button>
+            <button class="opt-btn" data-index="2">
+              <span class="opt-key">3</span>
+              <div class="opt-content" id="optText2">Option C</div>
+            </button>
+            <button class="opt-btn" data-index="3">
+              <span class="opt-key">4</span>
+              <div class="opt-content" id="optText3">Option D</div>
+            </button>
+          </div>
+        </div>
+
+        <!-- Step-by-Step Derivation Drawer (Reveals immediately) -->
+        <div class="feedback-banner" id="feedbackBanner">
+          <div class="feedback-countdown-bar" id="feedbackCountdownBar"></div>
+          <div class="feedback-status" id="feedbackStatus">
+            <span id="feedbackStatusText">VECTOR LOCKED</span>
+            <span class="advance-hint" id="advanceHintText">Press SPACE or Tap to Advance</span>
+          </div>
+          <div class="feedback-derivation" id="feedbackDerivation">
+            <!-- KaTeX derivation injected here -->
+          </div>
+        </div>
+      </section>
+
+    </div>
+
+    <!-- 2. INTERACTIVE SANDBOX / VECTOR PLAYGROUND VIEW -->
+    <div class="sandbox-view" id="sandboxView">
+      <!-- Interactive Canvas -->
+      <section class="visualizer-column">
+        <div class="panel-header">
+          <div class="panel-title">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 2v20M2 12h20"/></svg>
+            INTERACTIVE VECTOR LAB // DRAG VECTOR HEADS DIRECTLY
+          </div>
+          <div class="sandbox-toggle-row">
+            <button class="sb-btn active" id="sbSnapToggle">GRID SNAP: ON</button>
+            <button class="sb-btn active" id="sbProjToggle">PROJECTION: ON</button>
+            <button class="sb-btn active" id="sbCross3DToggle">CROSS 3D: ON</button>
+          </div>
+        </div>
+        <div class="radar-container" id="sbRadarContainer">
+          <canvas id="sbRadarCanvas"></canvas>
+        </div>
+      </section>
+
+      <!-- Live Telemetry Readout & Sliders -->
+      <section class="sandbox-controls-panel">
+        <div class="control-card">
+          <div class="control-card-title">
+            <span>VECTOR $\vec{A}$ TELEMETRY (CYAN)</span>
+            <span id="sbTeleAVal">(3, 4)</span>
+          </div>
+          <div class="telemetry-row">
+            <span class="text-muted">Magnitude $|\vec{A}|$:</span>
+            <span class="telemetry-val" id="sbMagA">5.00</span>
+          </div>
+          <div class="telemetry-row">
+            <span class="text-muted">Unit Vector $\hat{A}$:</span>
+            <span class="telemetry-val" id="sbUnitA">0.60î + 0.80ĵ</span>
+          </div>
+          <div style="margin-top:6px; display:flex; gap:10px;">
+            <label style="font-size:0.75rem; color:var(--text-muted); flex:1">
+              $A_x$: <span id="sbAxLabel">3</span>
+              <input type="range" id="sbAxSlider" min="-8" max="8" step="1" value="3" style="width:100%; accent-color:var(--cyan-glow)">
+            </label>
+            <label style="font-size:0.75rem; color:var(--text-muted); flex:1">
+              $A_y$: <span id="sbAyLabel">4</span>
+              <input type="range" id="sbAySlider" min="-8" max="8" step="1" value="4" style="width:100%; accent-color:var(--cyan-glow)">
+            </label>
+          </div>
+        </div>
+
+        <div class="control-card">
+          <div class="control-card-title">
+            <span>VECTOR $\vec{B}$ TELEMETRY (AMBER)</span>
+            <span id="sbTeleBVal">(4, 0)</span>
+          </div>
+          <div class="telemetry-row">
+            <span class="text-muted">Magnitude $|\vec{B}|$:</span>
+            <span class="telemetry-val" id="sbMagB">4.00</span>
+          </div>
+          <div class="telemetry-row">
+            <span class="text-muted">Unit Vector $\hat{B}$:</span>
+            <span class="telemetry-val" id="sbUnitB">1.00î + 0.00ĵ</span>
+          </div>
+          <div style="margin-top:6px; display:flex; gap:10px;">
+            <label style="font-size:0.75rem; color:var(--text-muted); flex:1">
+              $B_x$: <span id="sbBxLabel">4</span>
+              <input type="range" id="sbBxSlider" min="-8" max="8" step="1" value="4" style="width:100%; accent-color:var(--amber-glow)">
+            </label>
+            <label style="font-size:0.75rem; color:var(--text-muted); flex:1">
+              $B_y$: <span id="sbByLabel">0</span>
+              <input type="range" id="sbBySlider" min="-8" max="8" step="1" value="0" style="width:100%; accent-color:var(--amber-glow)">
+            </label>
+          </div>
+        </div>
+
+        <div class="control-card">
+          <div class="control-card-title">
+            <span>INTERACTION PRODUCTS</span>
+            <span id="sbAngleVal">$\theta = 53.1^\circ$</span>
+          </div>
+          <div class="telemetry-row">
+            <span class="text-muted">Dot Product $\vec{A}\cdot\vec{B}$:</span>
+            <span class="telemetry-val" style="color:var(--cyan-bright)" id="sbDotVal">12.00</span>
+          </div>
+          <div class="telemetry-row">
+            <span class="text-muted">Scalar Proj $\text{proj}_{\vec{B}}\vec{A}$:</span>
+            <span class="telemetry-val" style="color:#38bdf8" id="sbProjVal">3.00</span>
+          </div>
+          <div class="telemetry-row">
+            <span class="text-muted">Cross Product $\vec{A}\times\vec{B}$:</span>
+            <span class="telemetry-val" style="color:var(--rose-glow)" id="sbCrossVal">-16.00 k̂ (⊗ Into Page)</span>
+          </div>
+          <div class="telemetry-row">
+            <span class="text-muted">Resultant $|\vec{A}+\vec{B}|$:</span>
+            <span class="telemetry-val" style="color:var(--emerald-glow)" id="sbResVal">8.06</span>
+          </div>
+        </div>
+
+        <div style="display:flex; gap:6px;">
+          <button class="sb-btn" id="sbPresetPerp" style="flex:1">Make 90° (⊥)</button>
+          <button class="sb-btn" id="sbPresetCollinear" style="flex:1">Make 0° (∥)</button>
+          <button class="sb-btn" id="sbPresetAnti" style="flex:1">Make 180°</button>
+        </div>
+      </section>
+    </div>
+
+  </main>
+
+  <!-- BOTTOM STATUS & KEYBINDING BAR -->
+  <footer class="engine-footer">
+    <div class="footer-keys">
+      <span><span class="key-badge">1-4</span> Select</span>
+      <span><span class="key-badge">H</span> Codex</span>
+      <span><span class="key-badge">SPACE</span> Advance</span>
+      <span><span class="key-badge">M</span> Mute</span>
+      <span><span class="key-badge">F</span> Fullscreen</span>
+    </div>
+    <div id="statusFooterText">SYSTEM OPERATIONAL // JEE ADVANCED & AP PHYSICS READY</div>
+  </footer>
+
+  <!-- CANVAS CONFETTI LAYER -->
+  <canvas id="confettiCanvas"></canvas>
+
+  <!-- VICTORY CELEBRATION MODAL -->
+  <div class="modal-overlay" id="victoryModal">
+    <div class="modal-dialog">
+      <div class="modal-icon victory">🏆</div>
+      <h2 class="modal-title" id="victoryTitle">SECTOR CONQUERED</h2>
+      <p class="modal-desc" id="victoryDesc">Directional mastery threshold achieved with precision execution.</p>
+      <div class="modal-stats">
+        <div class="modal-stat-box">
+          <div class="modal-stat-num" id="victoryAccuracy">100%</div>
+          <div class="modal-stat-label">Accuracy</div>
+        </div>
+        <div class="modal-stat-box">
+          <div class="modal-stat-num" id="victoryScore">+1,400</div>
+          <div class="modal-stat-label">Score</div>
+        </div>
+        <div class="modal-stat-box">
+          <div class="modal-stat-num" id="victoryStreak">7x</div>
+          <div class="modal-stat-label">Max Streak</div>
+        </div>
+      </div>
+      <button class="modal-action-btn" id="nextTierBtn">ENGAGE NEXT SECTOR [SPACE]</button>
+    </div>
+  </div>
+
+  <!-- SECTOR OVERRIDE MODAL -->
+  <div class="modal-overlay" id="sectorModal">
+    <div class="modal-dialog" style="max-width: 540px;">
+      <h2 class="modal-title">MISSION SECTOR SELECTOR</h2>
+      <p class="modal-desc">Engage any unlocked or targeted vector discipline for tactical drills.</p>
+      <div class="sector-grid" id="sectorGrid">
+        <!-- 8 sectors dynamically populated -->
+      </div>
+      <button class="modal-action-btn" id="closeSectorModalBtn" style="background:#334155; color:#fff;">CLOSE SELECTOR</button>
+    </div>
+  </div>
+
+  <!-- GAME OVER / REPLAY MODAL -->
+  <div class="modal-overlay" id="gameOverModal">
+    <div class="modal-dialog">
+      <div class="modal-icon gameover">💥</div>
+      <h2 class="modal-title" id="gameOverTitle">CORE DEPLETED</h2>
+      <p class="modal-desc" id="gameOverDesc">Energy shields broke under directional strain.</p>
+      <div class="modal-stats">
+        <div class="modal-stat-box">
+          <div class="modal-stat-num" id="goFinalScore">0</div>
+          <div class="modal-stat-label">Final Score</div>
+        </div>
+        <div class="modal-stat-box">
+          <div class="modal-stat-num" id="goQuestionsCleared">0</div>
+          <div class="modal-stat-label">Vectors Solved</div>
+        </div>
+        <div class="modal-stat-box">
+          <div class="modal-stat-num" id="goBestStreak">0</div>
+          <div class="modal-stat-label">Top Combo</div>
+        </div>
+      </div>
+      <button class="modal-action-btn" id="retryGameBtn">RE-INITIALIZE ARENA [ENTER]</button>
+    </div>
+  </div>
+
+  <!-- ==========================================================================
+       VECTOR ARENA JAVASCRIPT ENGINE
+       ========================================================================== -->
+  <script>
+  (() => {
+    'use strict';
+
+    /* ==========================================================================
+       1. WEB AUDIO SYNTHESIZER MODULE
+       ========================================================================== */
+    class SoundEngine {
+      constructor() {
+        this.ctx = null;
+        this.muted = localStorage.getItem('va_muted') === 'true';
+        this.updateIcon();
+      }
+
+      init() {
+        if (!this.ctx) {
+          const AudioCtx = window.AudioContext || window.webkitAudioContext;
+          if (AudioCtx) this.ctx = new AudioCtx();
+        }
+        if (this.ctx && this.ctx.state === 'suspended') {
+          this.ctx.resume();
+        }
+      }
+
+      toggleMute() {
+        this.muted = !this.muted;
+        localStorage.setItem('va_muted', this.muted);
+        this.updateIcon();
+        if (!this.muted) this.playTone(520, 'sine', 0.08, 0.1);
+      }
+
+      updateIcon() {
+        const icon = document.getElementById('audioIcon');
+        if (!icon) return;
+        if (this.muted) {
+          icon.innerHTML = `<line x1="1" y1="1" x2="23" y2="23"></line><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>`;
+        } else {
+          icon.innerHTML = `<polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path>`;
+        }
+      }
+
+      playTone(freq, type = 'sine', duration = 0.1, gainVal = 0.15) {
+        if (this.muted) return;
+        this.init();
+        if (!this.ctx) return;
+        try {
+          const osc = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+          osc.type = type;
+          osc.frequency.setValueAtTime(freq, this.ctx.currentTime);
+          gain.gain.setValueAtTime(gainVal, this.ctx.currentTime);
+          gain.gain.exponentialRampToValueAtTime(0.0001, this.ctx.currentTime + duration);
+          osc.connect(gain);
+          gain.connect(this.ctx.destination);
+          osc.start();
+          osc.stop(this.ctx.currentTime + duration);
+        } catch(e) {}
+      }
+
+      correct() {
+        if (this.muted) return;
+        this.init();
+        if (!this.ctx) return;
+        const now = this.ctx.currentTime;
+        [587.33, 880, 1174.66].forEach((f, idx) => {
+          try {
+            const osc = this.ctx.createOscillator();
+            const gain = this.ctx.createGain();
+            osc.type = 'triangle';
+            osc.frequency.setValueAtTime(f, now + idx * 0.05);
+            gain.gain.setValueAtTime(0.12, now + idx * 0.05);
+            gain.gain.exponentialRampToValueAtTime(0.0001, now + idx * 0.05 + 0.2);
+            osc.connect(gain);
+            gain.connect(this.ctx.destination);
+            osc.start(now + idx * 0.05);
+            osc.stop(now + idx * 0.05 + 0.2);
+          } catch(e) {}
+        });
+      }
+
+      wrong() {
+        if (this.muted) return;
+        this.init();
+        if (!this.ctx) return;
+        const now = this.ctx.currentTime;
+        try {
+          const osc = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+          osc.type = 'sawtooth';
+          osc.frequency.setValueAtTime(140, now);
+          osc.frequency.linearRampToValueAtTime(80, now + 0.25);
+          gain.gain.setValueAtTime(0.18, now);
+          gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.25);
+          osc.connect(gain);
+          gain.connect(this.ctx.destination);
+          osc.start(now);
+          osc.stop(now + 0.25);
+        } catch(e) {}
+      }
+
+      fanfare() {
+        if (this.muted) return;
+        const notes = [523.25, 659.25, 783.99, 1046.50];
+        notes.forEach((f, i) => {
+          setTimeout(() => this.playTone(f, 'triangle', 0.35, 0.2), i * 90);
+        });
+      }
+    }
+
+    const sound = new SoundEngine();
+
+    /* ==========================================================================
+       2. VECTOR MATHEMATICS ENGINE & UTILITIES
+       ========================================================================== */
+    class Vector3 {
+      constructor(x = 0, y = 0, z = 0) {
+        this.x = x;
+        this.y = y;
+        this.z = z;
+      }
+      mag() { return Math.sqrt(this.x * this.x + this.y * this.y + this.z * this.z); }
+      dot(v) { return this.x * v.x + this.y * v.y + this.z * v.z; }
+      cross(v) {
+        return new Vector3(
+          this.y * v.z - this.z * v.y,
+          this.z * v.x - this.x * v.z,
+          this.x * v.y - this.y * v.x
+        );
+      }
+      add(v) { return new Vector3(this.x + v.x, this.y + v.y, this.z + v.z); }
+      sub(v) { return new Vector3(this.x - v.x, this.y - v.y, this.z - v.z); }
+      scale(s) { return new Vector3(this.x * s, this.y * s, this.z * s); }
+      unit() {
+        const m = this.mag();
+        return m === 0 ? new Vector3() : this.scale(1 / m);
+      }
+      toLatex() {
+        let str = '';
+        if (this.x !== 0) str += `${this.x === 1 ? '' : (this.x === -1 ? '-' : this.x)}\\hat{i}`;
+        if (this.y !== 0) {
+          const sign = this.y > 0 ? (str ? ' + ' : '') : (str ? ' - ' : '-');
+          const val = Math.abs(this.y);
+          str += `${sign}${val === 1 ? '' : val}\\hat{j}`;
+        }
+        if (this.z !== 0) {
+          const sign = this.z > 0 ? (str ? ' + ' : '') : (str ? ' - ' : '-');
+          const val = Math.abs(this.z);
+          str += `${sign}${val === 1 ? '' : val}\\hat{k}`;
+        }
+        return str || '\\vec{0}';
+      }
+    }
+
+    // Helper math utilities
+    const randInt = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min;
+    const choice = (arr) => arr[Math.floor(Math.random() * arr.length)];
+    const shuffle = (arr) => {
+      const copy = [...arr];
+      for (let i = copy.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [copy[i], copy[j]] = [copy[j], copy[i]];
+      }
+      return copy;
+    };
+
+    /* ==========================================================================
+       3. 8-TIER PROCEDURAL QUESTION GENERATION ENGINE
+       ========================================================================== */
+    const TIER_METADATA = [
+      { id: 1, name: "Coordinates & Magnitude", category: "Pure Math Foundations" },
+      { id: 2, name: "Dot Product & Orthogonality", category: "Pure Math Foundations" },
+      { id: 3, name: "Cross Product & RHR", category: "Pure Math Foundations" },
+      { id: 4, name: "Projections & Geometry", category: "Advanced Vector Geometry" },
+      { id: 5, name: "Triple Products & Coplanarity", category: "Advanced Vector Geometry" },
+      { id: 6, name: "Work, Power & Flux", category: "Competitive Physics" },
+      { id: 7, name: "Torque & Lorentz Force", category: "Competitive Physics" },
+      { id: 8, name: "Relative Motion & JEE Dynamics", category: "JEE Advanced Mastery" }
+    ];
+
+    function generateVectorQuestion(tier) {
+      let q = null;
+      switch (tier) {
+        case 1: q = genTier1(); break;
+        case 2: q = genTier2(); break;
+        case 3: q = genTier3(); break;
+        case 4: q = genTier4(); break;
+        case 5: q = genTier5(); break;
+        case 6: q = genTier6(); break;
+        case 7: q = genTier7(); break;
+        case 8: q = genTier8(); break;
+        default: q = genTier1(); break;
+      }
+      return q;
+    }
+
+    // TIER 1: Magnitude, Unit Vectors, Direction Cosines, Linear Combos
+    function genTier1() {
+      const type = choice(['mag3d', 'unit', 'sum', 'dircos']);
+      if (type === 'mag3d') {
+        const triples = [
+          { a: 3, b: 4, c: 0, m: 5 },
+          { a: 1, b: 2, c: 2, m: 3 },
+          { a: 2, b: 3, c: 6, m: 7 },
+          { a: 1, b: 4, c: 8, m: 9 },
+          { a: 4, b: 4, c: 7, m: 9 }
+        ];
+        const t = choice(triples);
+        const sx = choice([1, -1]), sy = choice([1, -1]), sz = choice([1, -1]);
+        const v = new Vector3(t.a * sx, t.b * sy, t.c * sz);
+        const correct = `${t.m}`;
+        const distractors = [`${t.m + 2}`, `${Math.max(1, t.m - 2)}`, `${Math.round(Math.sqrt(t.a*t.a + t.b*t.b))}`];
+        return {
+          tier: 1,
+          topic: "Magnitude in 3D Space",
+          prompt: `Calculate the magnitude of vector $\\vec{A} = ${v.toLatex()}$.`,
+          visual: { vA: v, vB: null, mode: 'single' },
+          correct,
+          distractors,
+          derivation: `Using the 3D Pythagorean metric: $|\\vec{A}| = \\sqrt{(${v.x})^2 + (${v.y})^2 + (${v.z})^2} = \\sqrt{${t.m * t.m}} = ${t.m}$.`,
+          hint: `Formula: $|\\vec{A}| = \\sqrt{A_x^2 + A_y^2 + A_z^2}$. Sum the squared components and take the square root.`
+        };
+      } else if (type === 'unit') {
+        const triples = [{ a: 3, b: 4, m: 5 }, { a: 6, b: 8, m: 10 }, { a: 1, b: 2, c: 2, m: 3 }];
+        const t = choice(triples);
+        const zVal = t.c || 0;
+        const v = new Vector3(t.a, t.b, zVal);
+        const correct = `\\frac{1}{${t.m}}(${v.toLatex()})`;
+        const distractors = [
+          `\\frac{1}{${t.m * t.m}}(${v.toLatex()})`,
+          `${t.m}(${v.toLatex()})`,
+          `\\frac{1}{${t.m}}(${new Vector3(v.b, v.a, zVal).toLatex()})`
+        ];
+        return {
+          tier: 1,
+          topic: "Unit Vector Construction",
+          prompt: `Determine the unit vector $\\hat{A}$ parallel to $\\vec{A} = ${v.toLatex()}$.`,
+          visual: { vA: v, vB: null, mode: 'single' },
+          correct,
+          distractors,
+          derivation: `$\\hat{A} = \\frac{\\vec{A}}{|\\vec{A}|}$. Since $|\\vec{A}| = ${t.m}$, $\\hat{A} = \\frac{1}{${t.m}}(${v.toLatex()})$.`,
+          hint: `Unit vector formula: $\\hat{A} = \\frac{\\vec{A}}{|\\vec{A}|}$, where $|\\hat{A}| = 1$.`
+        };
+      } else if (type === 'sum') {
+        const vA = new Vector3(randInt(-3, 4), randInt(-3, 4), 0);
+        const vB = new Vector3(randInt(-3, 4), randInt(-3, 4), 0);
+        const vR = vA.add(vB);
+        const correct = `${vR.toLatex()}`;
+        const distractors = [
+          `${vA.sub(vB).toLatex()}`,
+          `${new Vector3(vR.x + 1, vR.y, 0).toLatex()}`,
+          `${new Vector3(-vR.x, vR.y, 0).toLatex()}`
+        ];
+        return {
+          tier: 1,
+          topic: "Vector Addition (Resultant)",
+          prompt: `Find the resultant $\\vec{R} = \\vec{A} + \\vec{B}$ for $\\vec{A} = ${vA.toLatex()}$ and $\\vec{B} = ${vB.toLatex()}$.`,
+          visual: { vA, vB, mode: 'resultant' },
+          correct,
+          distractors,
+          derivation: `Add corresponding Cartesian components: $\\vec{R} = (${vA.x} + ${vB.x})\\hat{i} + (${vA.y} + ${vB.y})\\hat{j} = ${vR.toLatex()}$.`,
+          hint: `Components add independently: $R_x = A_x + B_x$ and $R_y = A_y + B_y$.`
+        };
+      } else {
+        // Direction Cosines
+        const t = { a: 1, b: 2, c: 2, m: 3 };
+        const v = new Vector3(t.a, t.b, t.c);
+        const correct = `\\cos^2\\alpha + \\cos^2\\beta + \\cos^2\\gamma = 1`;
+        const distractors = [
+          `\\cos^2\\alpha + \\cos^2\\beta + \\cos^2\\gamma = 0`,
+          `\\cos\\alpha + \\cos\\beta + \\cos\\gamma = 1`,
+          `\\cos^2\\alpha + \\cos^2\\beta + \\cos^2\\gamma = 3`
+        ];
+        return {
+          tier: 1,
+          topic: "Direction Cosines Identity",
+          prompt: `For any vector with direction cosines $\\cos\\alpha, \\cos\\beta, \\cos\\gamma$, what fundamental identity holds?`,
+          visual: { vA: v, vB: null, mode: 'single' },
+          correct,
+          distractors,
+          derivation: `$\\cos\\alpha = \\frac{A_x}{|A|}, \\cos\\beta = \\frac{A_y}{|A|}, \\cos\\gamma = \\frac{A_z}{|A|}$. Thus $\\sum \\cos^2 = \\frac{A_x^2+A_y^2+A_z^2}{|A|^2} = 1$.`,
+          hint: `Sum of squares of direction cosines always equals 1: $l^2 + m^2 + n^2 = 1$.`
+        };
+      }
+    }
+
+    // TIER 2: Scalar (Dot) Product, Orthogonality, Angle Between Vectors
+    function genTier2() {
+      const type = choice(['dotCalc', 'orthoLambda', 'angleCos']);
+      if (type === 'dotCalc') {
+        const vA = new Vector3(randInt(-4, 5), randInt(-4, 5), randInt(-3, 3));
+        const vB = new Vector3(randInt(-4, 5), randInt(-4, 5), randInt(-3, 3));
+        const dot = vA.dot(vB);
+        const correct = `${dot}`;
+        const distractors = [`${dot + 4}`, `${dot - 6}`, `${-dot}`];
+        return {
+          tier: 2,
+          topic: "Scalar Product Calculation",
+          prompt: `Evaluate the dot product $\\vec{A}\\cdot\\vec{B}$ for $\\vec{A} = ${vA.toLatex()}$ and $\\vec{B} = ${vB.toLatex()}$.`,
+          visual: { vA, vB, mode: 'dot' },
+          correct,
+          distractors,
+          derivation: `$\\vec{A}\\cdot\\vec{B} = (${vA.x})(${vB.x}) + (${vA.y})(${vB.y}) + (${vA.z})(${vB.z}) = ${vA.x*vB.x} + ${vA.y*vB.y} + ${vA.z*vB.z} = ${dot}$.`,
+          hint: `Algebraic Dot Product: $\\vec{A}\\cdot\\vec{B} = A_x B_x + A_y B_y + A_z B_z$. Result is a scalar quantity.`
+        };
+      } else if (type === 'orthoLambda') {
+        // A . B = 0 -> A_x*B_x + A_y*B_y + A_z*lambda = 0
+        const ax = randInt(1, 4), ay = randInt(1, 4);
+        const bx = randInt(1, 4);
+        // choose by such that ax*bx is divisible
+        const prodX = ax * bx;
+        // let by = -prodX / ay if possible or simple integer
+        const lamInt = randInt(1, 5);
+        // vA = (ax, ay, 1), vB = (bx, - (ax*bx + lamInt)/ay , lambda)
+        // Let's create guaranteed clean integers:
+        const x1 = randInt(2, 5), y1 = randInt(1, 4);
+        const x2 = randInt(1, 4);
+        // x1*x2 + y1*lambda = 0 -> lambda = -(x1*x2)/y1
+        // Make divisible:
+        const mult = randInt(1, 3);
+        const Y1 = mult;
+        const total = x1 * x2;
+        // lambda = -total/Y1
+        const lambdaAns = - (total / Y1);
+        const vA = new Vector3(x1, Y1, 0);
+        const correct = `${lambdaAns}`;
+        const distractors = [`${-lambdaAns}`, `${lambdaAns + 2}`, `${Math.round(lambdaAns / 2)}`];
+        return {
+          tier: 2,
+          topic: "Orthogonality Condition (\\lambda)",
+          prompt: `Vectors $\\vec{A} = ${x1}\\hat{i} + ${Y1}\\hat{j}$ and $\\vec{B} = ${x2}\\hat{i} + \\lambda\\hat{j}$ are perpendicular ($\\vec{A} \\perp \\vec{B}$). Find $\\lambda$.`,
+          visual: { vA, vB: new Vector3(x2, lambdaAns, 0), mode: 'dot' },
+          correct,
+          distractors,
+          derivation: `Orthogonality requires $\\vec{A}\\cdot\\vec{B} = 0 \\implies (${x1})(${x2}) + (${Y1})(\\lambda) = 0 \\implies ${x1*x2} + ${Y1}\\lambda = 0 \\implies \\lambda = ${lambdaAns}$.`,
+          hint: `Condition for orthogonality: $\\vec{A}\\cdot\\vec{B} = 0$. Solve for the unknown scalar $\\lambda$.`
+        };
+      } else {
+        // Angle between vectors
+        const presets = [
+          { a: new Vector3(1, 0, 0), b: new Vector3(0, 1, 0), cos: '0', deg: '90^\\circ' },
+          { a: new Vector3(1, 1, 0), b: new Vector3(1, 0, 0), cos: '\\frac{1}{\\sqrt{2}}', deg: '45^\\circ' },
+          { a: new Vector3(1, 0, 0), b: new Vector3(1, Math.sqrt(3), 0), cos: '\\frac{1}{2}', deg: '60^\\circ' },
+          { a: new Vector3(2, 0, 0), b: new Vector3(-2, 0, 0), cos: '-1', deg: '180^\\circ' }
+        ];
+        const p = choice(presets);
+        const correct = `${p.deg}`;
+        const distractors = ['30^\\circ', '60^\\circ', '120^\\circ', '90^\\circ'].filter(d => d !== p.deg).slice(0, 3);
+        return {
+          tier: 2,
+          topic: "Angle Between Vectors",
+          prompt: `Calculate the acute/collinear angle $\\theta$ between $\\vec{A} = ${p.a.x}\\hat{i} + ${p.a.y === 0 ? '' : (p.a.y === 1 ? '\\hat{j}' : '\\sqrt{3}\\hat{j}')}$ and $\\vec{B} = ${p.b.x}\\hat{i} + ${p.b.y === 0 ? '' : (p.b.y === 1 ? '\\hat{j}' : '\\sqrt{3}\\hat{j}')}$.`,
+          visual: { vA: p.a, vB: p.b, mode: 'dot' },
+          correct,
+          distractors,
+          derivation: `$\\cos\\theta = \\frac{\\vec{A}\\cdot\\vec{B}}{|\\vec{A}||\\vec{B}|} = ${p.cos} \\implies \\theta = ${p.deg}$.`,
+          hint: `Angle formula: $\\cos\\theta = \\frac{\\vec{A}\\cdot\\vec{B}}{|\\vec{A}||\\vec{B}|}$.`
+        };
+      }
+    }
+
+    // TIER 3: Vector (Cross) Product, Cyclic Rules, Right-Hand Rule
+    function genTier3() {
+      const type = choice(['cyclic', 'cross2d', 'antiCommute']);
+      if (type === 'cyclic') {
+        const rules = [
+          { q: '\\hat{i} \\times \\hat{j}', a: '\\hat{k}', dist: ['-\\hat{k}', '\\vec{0}', '1'] },
+          { q: '\\hat{j} \\times \\hat{i}', a: '-\\hat{k}', dist: ['\\hat{k}', '\\vec{0}', '-1'] },
+          { q: '\\hat{j} \\times \\hat{k}', a: '\\hat{i}', dist: ['-\\hat{i}', '\\hat{k}', '\\vec{0}'] },
+          { q: '\\hat{k} \\times \\hat{i}', a: '\\hat{j}', dist: ['-\\hat{j}', '\\hat{k}', '\\vec{0}'] },
+          { q: '\\hat{i} \\times \\hat{i}', a: '\\vec{0}', dist: ['1', '\\hat{k}', '-\\hat{k}'] }
+        ];
+        const r = choice(rules);
+        return {
+          tier: 3,
+          topic: "Cyclic Unit Vector Cross Products",
+          prompt: `Evaluate the fundamental cross product: $${r.q}$.`,
+          visual: { vA: new Vector3(1, 0, 0), vB: new Vector3(0, 1, 0), mode: 'cross' },
+          correct: `${r.a}`,
+          distractors: r.dist,
+          derivation: `Right-Hand Rule cycle: $\\hat{i} \\to \\hat{j} \\to \\hat{k} \\to \\hat{i}$. Clockwise gives positive; counter-clockwise gives negative; parallel is zero.`,
+          hint: `Cyclic convention: $\\hat{i} \\times \\hat{j} = \\hat{k}$, $\\hat{j} \\times \\hat{k} = \\hat{i}$, $\\hat{k} \\times \\hat{i} = \\hat{j}$. Anti-cyclic flips sign.`
+        };
+      } else if (type === 'cross2d') {
+        const ax = randInt(1, 4), ay = randInt(1, 4);
+        const bx = randInt(1, 4), by = randInt(-4, 4);
+        const crossK = ax * by - ay * bx;
+        const vA = new Vector3(ax, ay, 0);
+        const vB = new Vector3(bx, by, 0);
+        const correct = `${crossK}\\hat{k}`;
+        const distractors = [
+          `${-crossK}\\hat{k}`,
+          `${crossK + 4}\\hat{k}`,
+          `${crossK}\\hat{i}`
+        ];
+        return {
+          tier: 3,
+          topic: "Determinant Cross Product (2D)",
+          prompt: `Compute $\\vec{A} \\times \\vec{B}$ for $\\vec{A} = ${vA.toLatex()}$ and $\\vec{B} = ${vB.toLatex()}$.`,
+          visual: { vA, vB, mode: 'cross' },
+          correct,
+          distractors,
+          derivation: `$\\vec{A} \\times \\vec{B} = (A_x B_y - A_y B_x)\\hat{k} = [(${ax})(${by}) - (${ay})(${bx})]\\hat{k} = ${crossK}\\hat{k}$.`,
+          hint: `In the xy-plane: $\\vec{A}\\times\\vec{B} = (A_x B_y - A_y B_x)\\hat{k}$. Check signs carefully.`
+        };
+      } else {
+        return {
+          tier: 3,
+          topic: "Anti-Commutative Property",
+          prompt: `Given non-zero vectors $\\vec{A}$ and $\\vec{B}$, how does $\\vec{B} \\times \\vec{A}$ relate to $\\vec{A} \\times \\vec{B}$?`,
+          visual: { vA: new Vector3(3, 1, 0), vB: new Vector3(1, 3, 0), mode: 'cross' },
+          correct: `\\vec{B} \\times \\vec{A} = -(\\vec{A} \\times \\vec{B})`,
+          distractors: [
+            `\\vec{B} \\times \\vec{A} = \\vec{A} \\times \\vec{B}`,
+            `\\vec{B} \\times \\vec{A} = \\frac{1}{\\vec{A} \\times \\vec{B}}`,
+            `\\vec{B} \\times \\vec{A} = \\vec{0}`
+          ],
+          derivation: `Cross product is anti-commutative: reversing operand order reverses the right-hand curl, producing an opposite direction: $\\vec{B} \\times \\vec{A} = -(\\vec{A} \\times \\vec{B})$.`,
+          hint: `Swapping two rows in a determinant multiplies the value by $-1$. Hence $\\vec{B}\\times\\vec{A} = -\\vec{A}\\times\\vec{B}$.`
+        };
+      }
+    }
+
+    // TIER 4: Projections & Geometric Applications (Areas)
+    function genTier4() {
+      const type = choice(['scalarProj', 'areaParallelogram', 'areaTriangle']);
+      if (type === 'scalarProj') {
+        const vA = new Vector3(3, 4, 0);
+        const vB = new Vector3(4, 0, 0); // |B| = 4, A.B = 12 -> proj = 3
+        const dot = vA.dot(vB);
+        const magB = vB.mag();
+        const proj = dot / magB;
+        return {
+          tier: 4,
+          topic: "Scalar Projection",
+          prompt: `Find the scalar projection of $\\vec{A} = 3\\hat{i} + 4\\hat{j}$ onto $\\vec{B} = 4\\hat{i}$.`,
+          visual: { vA, vB, mode: 'projection' },
+          correct: `${proj}`,
+          distractors: [`${dot}`, `\\frac{${dot}}{${magB * magB}}`, `${proj + 2}`],
+          derivation: `$\\text{proj}_{\\vec{B}}\\vec{A} = \\frac{\\vec{A}\\cdot\\vec{B}}{|\\vec{B}|} = \\frac{12}{4} = 3$.`,
+          hint: `Scalar projection of $\\vec{A}$ onto $\\vec{B}$ is $\\frac{\\vec{A}\\cdot\\vec{B}}{|\\vec{B}|} = |\\vec{A}|\\cos\\theta$.`
+        };
+      } else if (type === 'areaParallelogram') {
+        const ax = 3, ay = 0;
+        const bx = 1, by = 4;
+        const vA = new Vector3(ax, ay, 0);
+        const vB = new Vector3(bx, by, 0);
+        const area = Math.abs(ax * by - ay * bx);
+        return {
+          tier: 4,
+          topic: "Area of Parallelogram",
+          prompt: `Calculate the area of the parallelogram formed by adjacent side vectors $\\vec{A} = 3\\hat{i}$ and $\\vec{B} = \\hat{i} + 4\\hat{j}$.`,
+          visual: { vA, vB, mode: 'area' },
+          correct: `${area}\\text{ sq units}`,
+          distractors: [`${area / 2}\\text{ sq units}`, `${area * 2}\\text{ sq units}`, `${area + 5}\\text{ sq units}`],
+          derivation: `$\\text{Area} = |\\vec{A} \\times \\vec{B}| = |(3)(4) - (0)(1)| = 12\\text{ sq units}$.`,
+          hint: `Area of parallelogram spanned by $\\vec{A}$ and $\\vec{B}$ is $|\\vec{A}\\times\\vec{B}|$.`
+        };
+      } else {
+        const ax = 4, ay = 0;
+        const bx = 0, by = 6;
+        const vA = new Vector3(ax, ay, 0);
+        const vB = new Vector3(bx, by, 0);
+        const area = 0.5 * Math.abs(ax * by);
+        return {
+          tier: 4,
+          topic: "Area of Triangle",
+          prompt: `Find the area of the triangle with adjacent sides $\\vec{A} = 4\\hat{i}$ and $\\vec{B} = 6\\hat{j}$.`,
+          visual: { vA, vB, mode: 'area' },
+          correct: `${area}\\text{ sq units}`,
+          distractors: [`${area * 2}\\text{ sq units}`, `${area / 2}\\text{ sq units}`, `${area + 4}\\text{ sq units}`],
+          derivation: `$\\text{Area} = \\frac{1}{2}|\\vec{A} \\times \\vec{B}| = \\frac{1}{2}|24\\hat{k}| = 12\\text{ sq units}$.`,
+          hint: `Triangle area is half the magnitude of the cross product: $\\frac{1}{2}|\\vec{A}\\times\\vec{B}|$.`
+        };
+      }
+    }
+
+    // TIER 5: Triple Products & Coplanarity
+    function genTier5() {
+      const type = choice(['boxProduct', 'baccab', 'coplanar']);
+      if (type === 'boxProduct') {
+        const vA = new Vector3(1, 0, 0);
+        const vB = new Vector3(0, 2, 0);
+        const vC = new Vector3(0, 0, 3);
+        const box = vA.dot(vB.cross(vC));
+        return {
+          tier: 5,
+          topic: "Scalar Triple Product (Box Product)",
+          prompt: `Evaluate the scalar triple product $[\\vec{A}\\ \\vec{B}\\ \\vec{C}] = \\vec{A}\\cdot(\\vec{B}\\times\\vec{C})$ for $\\vec{A} = \\hat{i}$, $\\vec{B} = 2\\hat{j}$, $\\vec{C} = 3\\hat{k}$.`,
+          visual: { vA, vB, mode: 'cross' },
+          correct: `${box}`,
+          distractors: [`0`, `${box * 2}`, `${-box}`],
+          derivation: `$\\vec{B}\\times\\vec{C} = 2\\hat{j} \\times 3\\hat{k} = 6\\hat{i}$. Thus $\\vec{A}\\cdot(6\\hat{i}) = 6$. It represents the volume of the spanned parallelepiped.`,
+          hint: `$[\\vec{A}\\ \\vec{B}\\ \\vec{C}] = \\det([\\vec{A}, \\vec{B}, \\vec{C}])$. Equals volume of parallelepiped.`
+        };
+      } else if (type === 'baccab') {
+        return {
+          tier: 5,
+          topic: "Vector Triple Product (BAC-CAB Rule)",
+          prompt: `According to the vector triple product identity, $\\vec{A} \\times (\\vec{B} \\times \\vec{C}) = $`,
+          visual: { vA: new Vector3(2, 1, 0), vB: new Vector3(0, 2, 0), mode: 'cross' },
+          correct: `\\vec{B}(\\vec{A}\\cdot\\vec{C}) - \\vec{C}(\\vec{A}\\cdot\\vec{B})`,
+          distractors: [
+            `\\vec{A}(\\vec{B}\\cdot\\vec{C}) - \\vec{B}(\\vec{A}\\cdot\\vec{C})`,
+            `\\vec{C}(\\vec{A}\\cdot\\vec{B}) - \\vec{B}(\\vec{A}\\cdot\\vec{C})`,
+            `(\\vec{A}\\cdot\\vec{B})\\vec{C} + (\\vec{A}\\cdot\\vec{C})\\vec{B}`
+          ],
+          derivation: `BAC-CAB expansion: Middle vector $\\vec{B}$ times dot product of others minus last vector $\\vec{C}$ times dot product of others: $\\vec{B}(\\vec{A}\\cdot\\vec{C}) - \\vec{C}(\\vec{A}\\cdot\\vec{B})$.`,
+          hint: `Remember mnemonic: BAC minus CAB.`
+        };
+      } else {
+        return {
+          tier: 5,
+          topic: "Coplanarity Condition",
+          prompt: `Three vectors $\\vec{A}, \\vec{B}, \\vec{C}$ lie in the same geometric plane (coplanar) if and only if:`,
+          visual: { vA: new Vector3(3, 1, 0), vB: new Vector3(1, 3, 0), mode: 'dot' },
+          correct: `[\\vec{A}\\ \\vec{B}\\ \\vec{C}] = 0`,
+          distractors: [
+            `\\vec{A}\\cdot\\vec{B} = 0`,
+            `\\vec{A}\\times\\vec{B} = \\vec{C}`,
+            `|\\vec{A}| + |\\vec{B}| = |\\vec{C}|`
+          ],
+          derivation: `Volume of the parallelepiped formed by coplanar vectors is zero: $[\\vec{A}\\ \\vec{B}\\ \\vec{C}] = \\vec{A}\\cdot(\\vec{B}\\times\\vec{C}) = 0$.`,
+          hint: `Coplanar vectors span zero 3D volume, so their scalar triple product is identically 0.`
+        };
+      }
+    }
+
+    // TIER 6: Work, Power & Flux (Physics Dot Product)
+    function genTier6() {
+      const type = choice(['work', 'power', 'flux', 'dipoleU']);
+      if (type === 'work') {
+        const Fx = randInt(2, 6), Fy = randInt(-3, 5);
+        const dx = randInt(2, 5), dy = randInt(-2, 4);
+        const vF = new Vector3(Fx, Fy, 0);
+        const vD = new Vector3(dx, dy, 0);
+        const W = vF.dot(vD);
+        return {
+          tier: 6,
+          topic: "Mechanical Work Done",
+          prompt: `A force $\\vec{F} = (${vF.toLatex()})\\text{ N}$ displaces a mass along $\\Delta\\vec{r} = (${vD.toLatex()})\\text{ m}$. Calculate total work done $W$.`,
+          visual: { vA: vF, vB: vD, mode: 'workPhysics' },
+          correct: `${W}\\text{ J}`,
+          distractors: [`${W + 10}\\text{ J}`, `${-W}\\text{ J}`, `${W - 8}\\text{ J}`],
+          derivation: `$W = \\vec{F}\\cdot\\Delta\\vec{r} = (${Fx})(${dx}) + (${Fy})(${dy}) = ${Fx*dx + Fy*dy} = ${W}\\text{ J}$.`,
+          hint: `Work is scalar dot product of force and displacement: $W = \\vec{F}\\cdot\\Delta\\vec{r}$.`
+        };
+      } else if (type === 'power') {
+        const Fx = 4, Fy = 2;
+        const vx = 3, vy = -1;
+        const vF = new Vector3(Fx, Fy, 0);
+        const vV = new Vector3(vx, vy, 0);
+        const P = vF.dot(vV);
+        return {
+          tier: 6,
+          topic: "Instantaneous Power",
+          prompt: `Find the instantaneous power delivered by $\\vec{F} = (4\\hat{i} + 2\\hat{j})\\text{ N}$ to a body moving with velocity $\\vec{v} = (3\\hat{i} - \\hat{j})\\text{ m/s}$.`,
+          visual: { vA: vF, vB: vV, mode: 'dot' },
+          correct: `${P}\\text{ W}`,
+          distractors: [`${P + 4}\\text{ W}`, `${-P}\\text{ W}`, `${P * 2}\\text{ W}`],
+          derivation: `$P = \\vec{F}\\cdot\\vec{v} = (4)(3) + (2)(-1) = 12 - 2 = 10\\text{ W}$.`,
+          hint: `Instantaneous power: $P = \\frac{dW}{dt} = \\vec{F}\\cdot\\vec{v}$.`
+        };
+      } else if (type === 'flux') {
+        return {
+          tier: 6,
+          topic: "Electric Flux \\Phi",
+          prompt: `A uniform electric field $\\vec{E} = 100\\hat{k}\\text{ N/C}$ passes through an area $\\vec{A} = (0.2\\hat{j} + 0.5\\hat{k})\\text{ m}^2$. What is the electric flux $\\Phi_E$?`,
+          visual: { vA: new Vector3(0, 0, 3), vB: new Vector3(0, 1, 2), mode: 'dot' },
+          correct: `50\\text{ N}\\cdot\\text{m}^2/\\text{C}`,
+          distractors: [`70\\text{ N}\\cdot\\text{m}^2/\\text{C}`, `0\\text{ N}\\cdot\\text{m}^2/\\text{C}`, `20\\text{ N}\\cdot\\text{m}^2/\\text{C}`],
+          derivation: `$\\Phi_E = \\vec{E}\\cdot\\vec{A} = (100)(0.5) = 50\\text{ N}\\cdot\\text{m}^2/\\text{C}$ since $E_x = E_y = 0$.`,
+          hint: `Flux formula: $\\Phi = \\vec{E}\\cdot\\vec{A}$. Only parallel field to normal area vector contributes.`
+        };
+      } else {
+        return {
+          tier: 6,
+          topic: "Dipole Potential Energy",
+          prompt: `The potential energy $U$ of an electric dipole $\\vec{p}$ placed in an external uniform electric field $\\vec{E}$ is given by:`,
+          visual: { vA: new Vector3(2, 2, 0), vB: new Vector3(3, 0, 0), mode: 'dot' },
+          correct: `U = -\\vec{p}\\cdot\\vec{E}`,
+          distractors: [
+            `U = +\\vec{p}\\cdot\\vec{E}`,
+            `U = |\\vec{p}\\times\\vec{E}|`,
+            `U = -(\\vec{p}\\times\\vec{E})`
+          ],
+          derivation: `Work done by field is $-\\Delta U = \\int \\vec{\\tau}\\cdot d\\vec{\\theta}$. Hence $U = -\\vec{p}\\cdot\\vec{E} = -p E \\cos\\theta$. Minimum (stable) at $\\theta = 0$.`,
+          hint: `Dipole potential energy is negative dot product: $U = -\\vec{p}\\cdot\\vec{E}$.`
+        };
+      }
+    }
+
+    // TIER 7: Torque, Angular Momentum & Lorentz Force (Physics Cross Product)
+    function genTier7() {
+      const type = choice(['torque', 'lorentz', 'angMom']);
+      if (type === 'torque') {
+        const rx = 2, ry = 0;
+        const Fx = 0, Fy = 10;
+        const vR = new Vector3(rx, ry, 0);
+        const vF = new Vector3(Fx, Fy, 0);
+        const tau = rx * Fy - ry * Fx;
+        return {
+          tier: 7,
+          topic: "Torque Vector \\vec{\\tau}",
+          prompt: `A force $\\vec{F} = 10\\hat{j}\\text{ N}$ acts at position $\\vec{r} = 2\\hat{i}\\text{ m}$ relative to the origin. Find torque $\\vec{\\tau}$ about the origin.`,
+          visual: { vA: vR, vB: vF, mode: 'torquePhysics' },
+          correct: `20\\hat{k}\\text{ N}\\cdot\\text{m}`,
+          distractors: [`-20\\hat{k}\\text{ N}\\cdot\\text{m}`, `20\\hat{i}\\text{ N}\\cdot\\text{m}`, `0\\text{ N}\\cdot\\text{m}`],
+          derivation: `$\\vec{\\tau} = \\vec{r} \\times \\vec{F} = (2\\hat{i}) \\times (10\\hat{j}) = 20(\\hat{i}\\times\\hat{j}) = 20\\hat{k}\\text{ N}\\cdot\\text{m}$.`,
+          hint: `Torque definition: $\\vec{\\tau} = \\vec{r} \\times \\vec{F}$. Order matters! $\\vec{r}\\times\\vec{F} \\neq \\vec{F}\\times\\vec{r}$.`
+        };
+      } else if (type === 'lorentz') {
+        const q = choice([2, -2]);
+        const vx = 3;
+        const Bz = 4;
+        const vV = new Vector3(vx, 0, 0);
+        const vB = new Vector3(0, 0, Bz);
+        // F = q (v x B) = q (3i x 4k) = q (-12 j) = -12*q j
+        const fy = -12 * q;
+        const signStr = q > 0 ? `+${q}` : `${q}`;
+        return {
+          tier: 7,
+          topic: "Magnetic Lorentz Force",
+          prompt: `A charge $q = ${signStr}\\text{ C}$ moves with velocity $\\vec{v} = 3\\hat{i}\\text{ m/s}$ in magnetic field $\\vec{B} = 4\\hat{k}\\text{ T}$. Calculate magnetic force $\\vec{F}_m$.`,
+          visual: { vA: vV, vB: vB, mode: 'lorentzPhysics', qSign: q > 0 ? 1 : -1 },
+          correct: `${fy}\\hat{j}\\text{ N}`,
+          distractors: [`${-fy}\\hat{j}\\text{ N}`, `${fy}\\hat{k}\\text{ N}`, `0\\text{ N}`],
+          derivation: `$\\vec{F} = q(\\vec{v}\\times\\vec{B}) = (${q})[(3\\hat{i})\\times(4\\hat{k})] = (${q})(-12\\hat{j}) = ${fy}\\hat{j}\\text{ N}$. Remember $\\hat{i}\\times\\hat{k} = -\\hat{j}$.`,
+          hint: `Magnetic force: $\\vec{F} = q(\\vec{v}\\times\\vec{B})$. Take note of the charge's algebraic sign.`
+        };
+      } else {
+        const m = 2;
+        const rx = 4, ry = 0;
+        const vx = 0, vy = 5;
+        const Lz = m * (rx * vy - ry * vx);
+        return {
+          tier: 7,
+          topic: "Angular Momentum",
+          prompt: `A particle of mass $m = 2\\text{ kg}$ has position $\\vec{r} = 4\\hat{i}\\text{ m}$ and velocity $\\vec{v} = 5\\hat{j}\\text{ m/s}$. Find its angular momentum $\\vec{L}$ about the origin.`,
+          visual: { vA: new Vector3(rx, ry, 0), vB: new Vector3(vx, vy, 0), mode: 'cross' },
+          correct: `${Lz}\\hat{k}\\text{ kg}\\cdot\\text{m}^2/\\text{s}`,
+          distractors: [`${-Lz}\\hat{k}\\text{ kg}\\cdot\\text{m}^2/\\text{s}`, `${Lz / 2}\\hat{k}\\text{ kg}\\cdot\\text{m}^2/\\text{s}`, `0\\hat{k}`],
+          derivation: `$\\vec{L} = \\vec{r} \\times \\vec{p} = m(\\vec{r}\\times\\vec{v}) = (2)[(4\\hat{i})\\times(5\\hat{j})] = 2(20\\hat{k}) = 40\\hat{k}\\text{ kg}\\cdot\\text{m}^2/\\text{s}$.`,
+          hint: `Angular momentum: $\\vec{L} = \\vec{r}\\times\\vec{p} = m(\\vec{r}\\times\\vec{v})$.`
+        };
+      }
+    }
+
+    // TIER 8: Relative Motion, Lami's Theorem, Minimum Distance
+    function genTier8() {
+      const type = choice(['relVel', 'lami', 'minDist']);
+      if (type === 'relVel') {
+        const vA = new Vector3(10, 0, 0); // car moving east
+        const vB = new Vector3(0, -10, 0); // rain falling vertically
+        const vRel = vB.sub(vA); // rain relative to car = -10 i - 10 j
+        return {
+          tier: 8,
+          topic: "Relative Velocity (Rain-Car)",
+          prompt: `Rain falls vertically downward at $\\vec{v}_r = -10\\hat{j}\\text{ m/s}$. A vehicle travels east at $\\vec{v}_c = 10\\hat{i}\\text{ m/s}$. What is the relative velocity of rain $\\vec{v}_{r/c}$?`,
+          visual: { vA, vB, mode: 'relativePhysics' },
+          correct: `-10\\hat{i} - 10\\hat{j}\\text{ m/s}`,
+          distractors: [
+            `10\\hat{i} - 10\\hat{j}\\text{ m/s}`,
+            `-10\\hat{i} + 10\\hat{j}\\text{ m/s}`,
+            `0\\text{ m/s}`
+          ],
+          derivation: `$\\vec{v}_{r/c} = \\vec{v}_r - \\vec{v}_c = (-10\\hat{j}) - (10\\hat{i}) = -10\\hat{i} - 10\\hat{j}\\text{ m/s}$. Angle with vertical is $\\tan\\theta = 1 \\implies 45^\\circ$ west of vertical.`,
+          hint: `Relative velocity formula: $\\vec{v}_{A/B} = \\vec{v}_A - \\vec{v}_B$.`
+        };
+      } else if (type === 'lami') {
+        return {
+          tier: 8,
+          topic: "Lami's Theorem for Equilibrium",
+          prompt: `For three coplanar concurrent forces $\\vec{F}_1, \\vec{F}_2, \\vec{F}_3$ in static equilibrium with opposite angles $\\alpha, \\beta, \\gamma$, which statement is true?`,
+          visual: { vA: new Vector3(0, 5, 0), vB: new Vector3(-4, -3, 0), mode: 'lamiPhysics' },
+          correct: `\\frac{F_1}{\\sin\\alpha} = \\frac{F_2}{\\sin\\beta} = \\frac{F_3}{\\sin\\gamma}`,
+          distractors: [
+            `\\frac{F_1}{\\cos\\alpha} = \\frac{F_2}{\\cos\\beta} = \\frac{F_3}{\\cos\\gamma}`,
+            `F_1\\sin\\alpha + F_2\\sin\\beta + F_3\\sin\\gamma = 0`,
+            `F_1 + F_2 + F_3 = 0`
+          ],
+          derivation: `By sine rule applied to the closed triangle of forces in equilibrium: $\\frac{F_1}{\\sin\\alpha} = \\frac{F_2}{\\sin\\beta} = \\frac{F_3}{\\sin\\gamma}$.`,
+          hint: `Lami's theorem relates each force magnitude to the sine of the angle between the other two forces.`
+        };
+      } else {
+        return {
+          tier: 8,
+          topic: "Condition for Conservative Force",
+          prompt: `A force field $\\vec{F}(\\vec{r})$ in 3D space is conservative if and only if its curl vanishes everywhere:`,
+          visual: { vA: new Vector3(2, 2, 0), vB: new Vector3(-2, 2, 0), mode: 'cross' },
+          correct: `\\vec{\\nabla} \\times \\vec{F} = \\vec{0}`,
+          distractors: [
+            `\\vec{\\nabla} \\cdot \\vec{F} = 0`,
+            `|\\vec{F}| = \\text{constant}`,
+            `\\vec{F} \\cdot d\\vec{r} = 0`
+          ],
+          derivation: `A force is conservative iff the work over any closed loop is zero $\\oint \\vec{F}\\cdot d\\vec{r} = 0$, which by Stokes' Theorem requires $\\vec{\\nabla}\\times\\vec{F} = \\vec{0}$.`,
+          hint: `Conservative forces can be expressed as negative gradient of a scalar potential: $\\vec{F} = -\\vec{\\nabla} U \\implies \\vec{\\nabla}\\times\\vec{F} = \\vec{0}$.`
+        };
+      }
+    }
+
+    /* ==========================================================================
+       4. 60 FPS HTML5 CANVAS VECTOR RADAR VISUALIZER
+       ========================================================================== */
+    class RadarVisualizer {
+      constructor(canvasId, containerId) {
+        this.canvas = document.getElementById(canvasId);
+        this.container = document.getElementById(containerId);
+        this.ctx = this.canvas.getContext('2d');
+        this.scanAngle = 0;
+        this.activeVisual = null;
+        this.scale = 26; // pixels per unit
+        this.resize();
+        window.addEventListener('resize', () => this.resize());
+        this.animate = this.animate.bind(this);
+        requestAnimationFrame(this.animate);
+      }
+
+      resize() {
+        if (!this.container || !this.canvas) return;
+        const rect = this.container.getBoundingClientRect();
+        const dpr = window.devicePixelRatio || 1;
+        this.width = rect.width;
+        this.height = rect.height;
+        this.canvas.width = rect.width * dpr;
+        this.canvas.height = rect.height * dpr;
+        this.ctx.resetTransform();
+        this.ctx.scale(dpr, dpr);
+        // Dynamically adjust scale based on canvas size
+        this.scale = Math.min(this.width, this.height) / 18;
+      }
+
+      setVisual(visualConfig) {
+        this.activeVisual = visualConfig;
+      }
+
+      toCanvasCoords(x, y) {
+        const cx = this.width / 2;
+        const cy = this.height / 2;
+        return {
+          cx: cx + x * this.scale,
+          cy: cy - y * this.scale
+        };
+      }
+
+      drawGrid() {
+        const cx = this.width / 2;
+        const cy = this.height / 2;
+        const ctx = this.ctx;
+
+        // Background radar rings
+        ctx.strokeStyle = 'rgba(6, 182, 212, 0.12)';
+        ctx.lineWidth = 1;
+        const maxR = Math.max(this.width, this.height);
+        for (let r = this.scale * 2; r < maxR; r += this.scale * 2) {
+          ctx.beginPath();
+          ctx.arc(cx, cy, r, 0, Math.PI * 2);
+          ctx.stroke();
+        }
+
+        // Radar Crosshairs
+        ctx.strokeStyle = 'rgba(71, 85, 105, 0.4)';
+        ctx.beginPath();
+        ctx.moveTo(0, cy); ctx.lineTo(this.width, cy);
+        ctx.moveTo(cx, 0); ctx.lineTo(cx, this.height);
+        ctx.stroke();
+
+        // Origin Dot
+        ctx.fillStyle = '#06b6d4';
+        ctx.beginPath();
+        ctx.arc(cx, cy, 3, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Rotating Radar Scan Line
+        ctx.save();
+        ctx.translate(cx, cy);
+        ctx.rotate(this.scanAngle);
+        const grad = ctx.createRadialGradient(0, 0, 0, 0, 0, maxR / 2);
+        grad.addColorStop(0, 'rgba(6, 182, 212, 0.25)');
+        grad.addColorStop(1, 'rgba(6, 182, 212, 0)');
+        ctx.fillStyle = grad;
+        ctx.beginPath();
+        ctx.moveTo(0, 0);
+        ctx.arc(0, 0, maxR / 2, -0.2, 0);
+        ctx.closePath();
+        ctx.fill();
+        ctx.restore();
+      }
+
+      drawVector(originX, originY, targetX, targetY, color, label, dashed = false) {
+        const ctx = this.ctx;
+        const start = this.toCanvasCoords(originX, originY);
+        const end = this.toCanvasCoords(targetX, targetY);
+
+        ctx.strokeStyle = color;
+        ctx.fillStyle = color;
+        ctx.lineWidth = 2.5;
+        if (dashed) ctx.setLineDash([4, 4]);
+        else ctx.setLineDash([]);
+
+        ctx.beginPath();
+        ctx.moveTo(start.cx, start.cy);
+        ctx.lineTo(end.cx, end.cy);
+        ctx.stroke();
+        ctx.setLineDash([]);
+
+        // Arrowhead
+        const angle = Math.atan2(end.cy - start.cy, end.cx - start.cx);
+        const headLen = 10;
+        ctx.beginPath();
+        ctx.moveTo(end.cx, end.cy);
+        ctx.lineTo(end.cx - headLen * Math.cos(angle - Math.PI / 6), end.cy - headLen * Math.sin(angle - Math.PI / 6));
+        ctx.lineTo(end.cx - headLen * Math.cos(angle + Math.PI / 6), end.cy - headLen * Math.sin(angle + Math.PI / 6));
+        ctx.closePath();
+        ctx.fill();
+
+        // Label
+        if (label) {
+          ctx.font = 'bold 12px "JetBrains Mono", monospace';
+          ctx.fillStyle = '#fff';
+          ctx.shadowColor = color;
+          ctx.shadowBlur = 8;
+          ctx.fillText(label, end.cx + 8, end.cy - 6);
+          ctx.shadowBlur = 0;
+        }
+      }
+
+      draw3DCrossIndicator(signK) {
+        const cx = this.width - 50;
+        const cy = 50;
+        const ctx = this.ctx;
+
+        ctx.strokeStyle = signK >= 0 ? '#10b981' : '#f43f5e';
+        ctx.lineWidth = 2;
+        ctx.fillStyle = 'rgba(15, 23, 42, 0.8)';
+        ctx.beginPath();
+        ctx.arc(cx, cy, 18, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.stroke();
+
+        ctx.fillStyle = signK >= 0 ? '#10b981' : '#f43f5e';
+        ctx.strokeStyle = signK >= 0 ? '#10b981' : '#f43f5e';
+
+        if (signK >= 0) {
+          // Out of page: Dot (.)
+          ctx.beginPath();
+          ctx.arc(cx, cy, 5, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.font = 'bold 10px monospace';
+          ctx.fillText('⊙ +k̂ (OUT)', cx - 24, cy + 30);
+        } else {
+          // Into page: Cross (X)
+          ctx.beginPath();
+          ctx.moveTo(cx - 7, cy - 7); ctx.lineTo(cx + 7, cy + 7);
+          ctx.moveTo(cx + 7, cy - 7); ctx.lineTo(cx - 7, cy + 7);
+          ctx.stroke();
+          ctx.font = 'bold 10px monospace';
+          ctx.fillText('⊗ -k̂ (IN)', cx - 20, cy + 30);
+        }
+      }
+
+      animate() {
+        this.scanAngle += 0.015;
+        this.ctx.clearRect(0, 0, this.width, this.height);
+        this.drawGrid();
+
+        if (this.activeVisual) {
+          const vA = this.activeVisual.vA;
+          const vB = this.activeVisual.vB;
+          const mode = this.activeVisual.mode;
+
+          // Render Vector A (Cyan)
+          if (vA) {
+            this.drawVector(0, 0, vA.x, vA.y, '#06b6d4', 'A');
+            // Component projections
+            if (mode === 'single' || mode === 'resultant') {
+              this.drawVector(vA.x, 0, vA.x, vA.y, 'rgba(6, 182, 212, 0.4)', '', true);
+              this.drawVector(0, vA.y, vA.x, vA.y, 'rgba(6, 182, 212, 0.4)', '', true);
+            }
+          }
+
+          // Render Vector B (Amber)
+          if (vB) {
+            this.drawVector(0, 0, vB.x, vB.y, '#f59e0b', 'B');
+          }
+
+          // Render Resultant R = A + B (Emerald)
+          if (mode === 'resultant' && vA && vB) {
+            const vR = vA.add(vB);
+            this.drawVector(0, 0, vR.x, vR.y, '#10b981', 'R = A + B');
+            // Parallelogram dashed lines
+            this.drawVector(vA.x, vA.y, vR.x, vR.y, 'rgba(245, 158, 11, 0.35)', '', true);
+            this.drawVector(vB.x, vB.y, vR.x, vR.y, 'rgba(6, 182, 212, 0.35)', '', true);
+          }
+
+          // Render Projection Shadow
+          if (mode === 'projection' && vA && vB) {
+            const dot = vA.dot(vB);
+            const magB2 = vB.x * vB.x + vB.y * vB.y;
+            if (magB2 > 0) {
+              const projScale = dot / magB2;
+              const projX = vB.x * projScale;
+              const projY = vB.y * projScale;
+              this.drawVector(0, 0, projX, projY, '#38bdf8', 'proj');
+              this.drawVector(vA.x, vA.y, projX, projY, 'rgba(248, 250, 252, 0.4)', '', true);
+            }
+          }
+
+          // Render Cross Product / Torque 3D Symbol
+          if (mode === 'cross' || mode === 'torquePhysics') {
+            if (vA && vB) {
+              const k = vA.x * vB.y - vA.y * vB.x;
+              this.draw3DCrossIndicator(k);
+            }
+          }
+
+          // Physics Mode: Torque lever arm
+          if (mode === 'torquePhysics' && vA && vB) {
+            const ctx = this.ctx;
+            const start = this.toCanvasCoords(0, 0);
+            const end = this.toCanvasCoords(vA.x, vA.y);
+            ctx.strokeStyle = '#64748b';
+            ctx.lineWidth = 6;
+            ctx.beginPath();
+            ctx.moveTo(start.cx, start.cy);
+            ctx.lineTo(end.cx, end.cy);
+            ctx.stroke();
+            // Pivot ring
+            ctx.fillStyle = '#f59e0b';
+            ctx.beginPath();
+            ctx.arc(start.cx, start.cy, 6, 0, Math.PI * 2);
+            ctx.fill();
+          }
+
+          // Physics Mode: Lorentz moving charge
+          if (mode === 'lorentzPhysics') {
+            const ctx = this.ctx;
+            const pt = this.toCanvasCoords(0, 0);
+            ctx.fillStyle = this.activeVisual.qSign > 0 ? '#10b981' : '#f43f5e';
+            ctx.beginPath();
+            ctx.arc(pt.cx, pt.cy, 8, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.fillStyle = '#fff';
+            ctx.font = 'bold 11px monospace';
+            ctx.fillText(this.activeVisual.qSign > 0 ? '+q' : '-q', pt.cx - 6, pt.cy + 4);
+          }
+        }
+
+        requestAnimationFrame(this.animate);
+      }
+    }
+
+    /* ==========================================================================
+       5. INTERACTIVE SANDBOX ENGINE (DIRECT DRAG & TELEMETRY)
+       ========================================================================== */
+    class SandboxEngine {
+      constructor() {
+        this.canvas = document.getElementById('sbRadarCanvas');
+        this.container = document.getElementById('sbRadarContainer');
+        this.ctx = this.canvas.getContext('2d');
+        this.vA = new Vector3(3, 4, 0);
+        this.vB = new Vector3(4, 0, 0);
+        this.dragTarget = null; // 'A' or 'B'
+        this.snapGrid = true;
+        this.showProj = true;
+        this.showCross3D = true;
+        this.scale = 26;
+
+        this.initDOM();
+        this.resize();
+        window.addEventListener('resize', () => this.resize());
+        this.attachPointerEvents();
+        this.animate = this.animate.bind(this);
+        requestAnimationFrame(this.animate);
+        this.updateTelemetry();
+      }
+
+      initDOM() {
+        document.getElementById('sbSnapToggle').addEventListener('click', (e) => {
+          this.snapGrid = !this.snapGrid;
+          e.target.classList.toggle('active', this.snapGrid);
+          e.target.textContent = `GRID SNAP: ${this.snapGrid ? 'ON' : 'OFF'}`;
+        });
+        document.getElementById('sbProjToggle').addEventListener('click', (e) => {
+          this.showProj = !this.showProj;
+          e.target.classList.toggle('active', this.showProj);
+          e.target.textContent = `PROJECTION: ${this.showProj ? 'ON' : 'OFF'}`;
+        });
+        document.getElementById('sbCross3DToggle').addEventListener('click', (e) => {
+          this.showCross3D = !this.showCross3D;
+          e.target.classList.toggle('active', this.showCross3D);
+          e.target.textContent = `CROSS 3D: ${this.showCross3D ? 'ON' : 'OFF'}`;
+        });
+
+        // Sliders
+        const bindSlider = (id, labelId, obj, key) => {
+          const slider = document.getElementById(id);
+          slider.addEventListener('input', (e) => {
+            const val = parseFloat(e.target.value);
+            obj[key] = val;
+            document.getElementById(labelId).textContent = val;
+            this.updateTelemetry();
+          });
+        };
+        bindSlider('sbAxSlider', 'sbAxLabel', this.vA, 'x');
+        bindSlider('sbAySlider', 'sbAyLabel', this.vA, 'y');
+        bindSlider('sbBxSlider', 'sbBxLabel', this.vB, 'x');
+        bindSlider('sbBySlider', 'sbByLabel', this.vB, 'y');
+
+        // Presets
+        document.getElementById('sbPresetPerp').addEventListener('click', () => {
+          this.vA = new Vector3(0, 4, 0);
+          this.vB = new Vector3(4, 0, 0);
+          this.syncSliders();
+        });
+        document.getElementById('sbPresetCollinear').addEventListener('click', () => {
+          this.vA = new Vector3(3, 3, 0);
+          this.vB = new Vector3(4, 4, 0);
+          this.syncSliders();
+        });
+        document.getElementById('sbPresetAnti').addEventListener('click', () => {
+          this.vA = new Vector3(4, 0, 0);
+          this.vB = new Vector3(-4, 0, 0);
+          this.syncSliders();
+        });
+      }
+
+      syncSliders() {
+        document.getElementById('sbAxSlider').value = this.vA.x;
+        document.getElementById('sbAxLabel').textContent = this.vA.x;
+        document.getElementById('sbAySlider').value = this.vA.y;
+        document.getElementById('sbAyLabel').textContent = this.vA.y;
+        document.getElementById('sbBxSlider').value = this.vB.x;
+        document.getElementById('sbBxLabel').textContent = this.vB.x;
+        document.getElementById('sbBySlider').value = this.vB.y;
+        document.getElementById('sbByLabel').textContent = this.vB.y;
+        this.updateTelemetry();
+      }
+
+      resize() {
+        if (!this.container || !this.canvas) return;
+        const rect = this.container.getBoundingClientRect();
+        const dpr = window.devicePixelRatio || 1;
+        this.width = rect.width;
+        this.height = rect.height;
+        this.canvas.width = rect.width * dpr;
+        this.canvas.height = rect.height * dpr;
+        this.ctx.resetTransform();
+        this.ctx.scale(dpr, dpr);
+        this.scale = Math.min(this.width, this.height) / 18;
+      }
+
+      toCanvasCoords(x, y) {
+        return {
+          cx: this.width / 2 + x * this.scale,
+          cy: this.height / 2 - y * this.scale
+        };
+      }
+
+      fromCanvasCoords(px, py) {
+        let x = (px - this.width / 2) / this.scale;
+        let y = (this.height / 2 - py) / this.scale;
+        if (this.snapGrid) {
+          x = Math.round(x);
+          y = Math.round(y);
+        } else {
+          x = Math.round(x * 10) / 10;
+          y = Math.round(y * 10) / 10;
+        }
+        return { x, y };
+      }
+
+      attachPointerEvents() {
+        const handleStart = (clientX, clientY) => {
+          const rect = this.canvas.getBoundingClientRect();
+          const px = clientX - rect.left;
+          const py = clientY - rect.top;
+          const posA = this.toCanvasCoords(this.vA.x, this.vA.y);
+          const posB = this.toCanvasCoords(this.vB.x, this.vB.y);
+
+          const distA = Math.hypot(px - posA.cx, py - posA.cy);
+          const distB = Math.hypot(px - posB.cx, py - posB.cy);
+
+          if (distA < 28) this.dragTarget = 'A';
+          else if (distB < 28) this.dragTarget = 'B';
+        };
+
+        const handleMove = (clientX, clientY) => {
+          if (!this.dragTarget) return;
+          const rect = this.canvas.getBoundingClientRect();
+          const { x, y } = this.fromCanvasCoords(clientX - rect.left, clientY - rect.top);
+          if (this.dragTarget === 'A') {
+            this.vA.x = Math.max(-8, Math.min(8, x));
+            this.vA.y = Math.max(-8, Math.min(8, y));
+          } else if (this.dragTarget === 'B') {
+            this.vB.x = Math.max(-8, Math.min(8, x));
+            this.vB.y = Math.max(-8, Math.min(8, y));
+          }
+          this.syncSliders();
+        };
+
+        const handleEnd = () => { this.dragTarget = null; };
+
+        this.canvas.addEventListener('mousedown', (e) => handleStart(e.clientX, e.clientY));
+        window.addEventListener('mousemove', (e) => handleMove(e.clientX, e.clientY));
+        window.addEventListener('mouseup', handleEnd);
+
+        this.canvas.addEventListener('touchstart', (e) => {
+          if (e.touches.length > 0) handleStart(e.touches[0].clientX, e.touches[0].clientY);
+        }, { passive: true });
+        window.addEventListener('touchmove', (e) => {
+          if (e.touches.length > 0) handleMove(e.touches[0].clientX, e.touches[0].clientY);
+        }, { passive: true });
+        window.addEventListener('touchend', handleEnd);
+      }
+
+      updateTelemetry() {
+        const magA = this.vA.mag();
+        const magB = this.vB.mag();
+        const dot = this.vA.dot(this.vB);
+        const crossK = this.vA.x * this.vB.y - this.vA.y * this.vB.x;
+        const vR = this.vA.add(this.vB);
+
+        let thetaDeg = 0;
+        if (magA > 0 && magB > 0) {
+          const cosTheta = Math.max(-1, Math.min(1, dot / (magA * magB)));
+          thetaDeg = (Math.acos(cosTheta) * 180 / Math.PI).toFixed(1);
+        }
+
+        document.getElementById('sbTeleAVal').textContent = `(${this.vA.x}, ${this.vA.y})`;
+        document.getElementById('sbMagA').textContent = magA.toFixed(2);
+        document.getElementById('sbUnitA').textContent = magA > 0 ? `${(this.vA.x / magA).toFixed(2)}î + ${(this.vA.y / magA).toFixed(2)}ĵ` : '0';
+
+        document.getElementById('sbTeleBVal').textContent = `(${this.vB.x}, ${this.vB.y})`;
+        document.getElementById('sbMagB').textContent = magB.toFixed(2);
+        document.getElementById('sbUnitB').textContent = magB > 0 ? `${(this.vB.x / magB).toFixed(2)}î + ${(this.vB.y / magB).toFixed(2)}ĵ` : '0';
+
+        document.getElementById('sbAngleVal').textContent = `θ = ${thetaDeg}°`;
+        document.getElementById('sbDotVal').textContent = dot.toFixed(2);
+        document.getElementById('sbProjVal').textContent = magB > 0 ? (dot / magB).toFixed(2) : '0';
+        document.getElementById('sbCrossVal').textContent = `${crossK.toFixed(2)} k̂ (${crossK >= 0 ? '⊙ Out of Page' : '⊗ Into Page'})`;
+        document.getElementById('sbResVal').textContent = vR.mag().toFixed(2);
+      }
+
+      animate() {
+        this.ctx.clearRect(0, 0, this.width, this.height);
+        const cx = this.width / 2;
+        const cy = this.height / 2;
+        const ctx = this.ctx;
+
+        // Draw Coordinate Grid
+        ctx.strokeStyle = 'rgba(71, 85, 105, 0.25)';
+        ctx.lineWidth = 1;
+        for (let x = cx % this.scale; x < this.width; x += this.scale) {
+          ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, this.height); ctx.stroke();
+        }
+        for (let y = cy % this.scale; y < this.height; y += this.scale) {
+          ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(this.width, y); ctx.stroke();
+        }
+
+        // Axes
+        ctx.strokeStyle = 'rgba(6, 182, 212, 0.4)';
+        ctx.lineWidth = 1.5;
+        ctx.beginPath();
+        ctx.moveTo(0, cy); ctx.lineTo(this.width, cy);
+        ctx.moveTo(cx, 0); ctx.lineTo(cx, this.height);
+        ctx.stroke();
+
+        // Draw Projection
+        if (this.showProj && this.vB.mag() > 0) {
+          const dot = this.vA.dot(this.vB);
+          const magB2 = this.vB.mag() * this.vB.mag();
+          const px = this.vB.x * (dot / magB2);
+          const py = this.vB.y * (dot / magB2);
+          const start = this.toCanvasCoords(0, 0);
+          const end = this.toCanvasCoords(px, py);
+          const aEnd = this.toCanvasCoords(this.vA.x, this.vA.y);
+
+          ctx.strokeStyle = '#38bdf8';
+          ctx.lineWidth = 4;
+          ctx.beginPath();
+          ctx.moveTo(start.cx, start.cy);
+          ctx.lineTo(end.cx, end.cy);
+          ctx.stroke();
+
+          ctx.setLineDash([4, 4]);
+          ctx.strokeStyle = 'rgba(248, 250, 252, 0.5)';
+          ctx.beginPath();
+          ctx.moveTo(aEnd.cx, aEnd.cy);
+          ctx.lineTo(end.cx, end.cy);
+          ctx.stroke();
+          ctx.setLineDash([]);
+        }
+
+        // Draw Resultant R
+        const vR = this.vA.add(this.vB);
+        const rEnd = this.toCanvasCoords(vR.x, vR.y);
+        ctx.strokeStyle = 'rgba(16, 185, 129, 0.8)';
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.moveTo(cx, cy);
+        ctx.lineTo(rEnd.cx, rEnd.cy);
+        ctx.stroke();
+
+        // Draw Vectors A and B
+        const drawVec = (v, color, label) => {
+          const end = this.toCanvasCoords(v.x, v.y);
+          ctx.strokeStyle = color;
+          ctx.fillStyle = color;
+          ctx.lineWidth = 3;
+          ctx.beginPath();
+          ctx.moveTo(cx, cy);
+          ctx.lineTo(end.cx, end.cy);
+          ctx.stroke();
+
+          // Arrowhead
+          const angle = Math.atan2(end.cy - cy, end.cx - cx);
+          ctx.beginPath();
+          ctx.moveTo(end.cx, end.cy);
+          ctx.lineTo(end.cx - 12 * Math.cos(angle - Math.PI / 6), end.cy - 12 * Math.sin(angle - Math.PI / 6));
+          ctx.lineTo(end.cx - 12 * Math.cos(angle + Math.PI / 6), end.cy - 12 * Math.sin(angle + Math.PI / 6));
+          ctx.closePath();
+          ctx.fill();
+
+          // Draggable Ring
+          ctx.beginPath();
+          ctx.arc(end.cx, end.cy, 9, 0, Math.PI * 2);
+          ctx.fillStyle = 'rgba(15, 23, 42, 0.9)';
+          ctx.fill();
+          ctx.stroke();
+
+          ctx.fillStyle = '#fff';
+          ctx.font = 'bold 12px "JetBrains Mono"';
+          ctx.fillText(label, end.cx + 12, end.cy - 8);
+        };
+
+        drawVec(this.vB, '#f59e0b', 'B');
+        drawVec(this.vA, '#06b6d4', 'A');
+
+        // Draw 3D Cross Indicator
+        if (this.showCross3D) {
+          const crossK = this.vA.x * this.vB.y - this.vA.y * this.vB.x;
+          const indX = this.width - 45;
+          const indY = 45;
+          ctx.strokeStyle = crossK >= 0 ? '#10b981' : '#f43f5e';
+          ctx.fillStyle = 'rgba(15, 23, 42, 0.85)';
+          ctx.lineWidth = 2;
+          ctx.beginPath();
+          ctx.arc(indX, indY, 18, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.stroke();
+
+          if (crossK >= 0) {
+            ctx.fillStyle = '#10b981';
+            ctx.beginPath();
+            ctx.arc(indX, indY, 5, 0, Math.PI * 2);
+            ctx.fill();
+          } else {
+            ctx.strokeStyle = '#f43f5e';
+            ctx.beginPath();
+            ctx.moveTo(indX - 6, indY - 6); ctx.lineTo(indX + 6, indY + 6);
+            ctx.moveTo(indX + 6, indY - 6); ctx.lineTo(indX - 6, indY + 6);
+            ctx.stroke();
+          }
+        }
+
+        requestAnimationFrame(this.animate);
+      }
+    }
+
+    /* ==========================================================================
+       6. DUAL-CANNON CANVAS CONFETTI ENGINE
+       ========================================================================== */
+    class ConfettiEngine {
+      constructor() {
+        this.canvas = document.getElementById('confettiCanvas');
+        this.ctx = this.canvas.getContext('2d');
+        this.particles = [];
+        this.running = false;
+        this.resize();
+        window.addEventListener('resize', () => this.resize());
+      }
+
+      resize() {
+        this.canvas.width = window.innerWidth;
+        this.canvas.height = window.innerHeight;
+      }
+
+      blast() {
+        this.particles = [];
+        const colors = ['#06b6d4', '#10b981', '#f59e0b', '#8b5cf6', '#ec4899', '#38bdf8'];
+        // Left Cannon
+        for (let i = 0; i < 70; i++) {
+          this.particles.push({
+            x: 0,
+            y: this.canvas.height * 0.75,
+            vx: randInt(6, 16) + Math.random() * 4,
+            vy: -randInt(8, 20) - Math.random() * 4,
+            color: choice(colors),
+            size: randInt(6, 12),
+            rotation: Math.random() * 360,
+            rotSpeed: randInt(-8, 8),
+            gravity: 0.35,
+            life: 1
+          });
+        }
+        // Right Cannon
+        for (let i = 0; i < 70; i++) {
+          this.particles.push({
+            x: this.canvas.width,
+            y: this.canvas.height * 0.75,
+            vx: -randInt(6, 16) - Math.random() * 4,
+            vy: -randInt(8, 20) - Math.random() * 4,
+            color: choice(colors),
+            size: randInt(6, 12),
+            rotation: Math.random() * 360,
+            rotSpeed: randInt(-8, 8),
+            gravity: 0.35,
+            life: 1
+          });
+        }
+        if (!this.running) {
+          this.running = true;
+          this.loop();
+        }
+      }
+
+      loop() {
+        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+        this.particles.forEach((p) => {
+          p.x += p.vx;
+          p.y += p.vy;
+          p.vy += p.gravity;
+          p.rotation += p.rotSpeed;
+          p.life -= 0.008;
+
+          this.ctx.save();
+          this.ctx.translate(p.x, p.y);
+          this.ctx.rotate(p.rotation * Math.PI / 180);
+          this.ctx.fillStyle = p.color;
+          this.ctx.globalAlpha = Math.max(0, p.life);
+          this.ctx.fillRect(-p.size / 2, -p.size / 2, p.size, p.size);
+          this.ctx.restore();
+        });
+
+        this.particles = this.particles.filter(p => p.life > 0);
+        if (this.particles.length > 0) {
+          requestAnimationFrame(() => this.loop());
+        } else {
+          this.running = false;
+          this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+        }
+      }
+    }
+
+    const confetti = new ConfettiEngine();
+
+    /* ==========================================================================
+       7. ARENA COMBAT CORE ENGINE & CONTROLLER
+       ========================================================================== */
+    class ArenaEngine {
+      constructor() {
+        this.mode = 'campaign'; // 'campaign', 'blitz', 'survival', 'sandbox'
+        this.activeTier = 1;
+        this.maxUnlockedTier = parseInt(localStorage.getItem('va_unlocked_tier') || '1', 10);
+        this.score = 0;
+        this.streak = 0;
+        this.bestStreak = 0;
+        this.tierClears = 0;
+        this.targetTierClears = 7;
+        this.activeQuestion = null;
+        this.isLocked = false;
+        this.usedCodex = false;
+
+        // Spaced Repetition Queue & LRU Cache
+        this.errorQueue = [];
+        this.lruSignatures = [];
+
+        // Blitz Mode Timer
+        this.blitzSeconds = 60;
+        this.blitzInterval = null;
+
+        // Survival Mode Cores
+        this.survivalLives = 3;
+
+        // Auto-advance Timer
+        this.advanceTimer = null;
+        this.advanceRemaining = 0;
+
+        // Visualizer instance
+        this.radar = new RadarVisualizer('radarCanvas', 'radarContainer');
+        this.sandbox = null;
+
+        this.initDOM();
+        this.renderSectorGrid();
+        this.loadNextQuestion();
+      }
+
+      initDOM() {
+        // Mode switching
+        document.querySelectorAll('#modeSelector .mode-pill').forEach(btn => {
+          btn.addEventListener('click', (e) => {
+            const mode = e.currentTarget.dataset.mode;
+            this.switchMode(mode);
+          });
+        });
+
+        // Option click handlers
+        document.querySelectorAll('#optionsMatrix .opt-btn').forEach(btn => {
+          btn.addEventListener('click', (e) => {
+            const idx = parseInt(e.currentTarget.dataset.index, 10);
+            this.handleAnswer(idx);
+          });
+        });
+
+        // Codex button
+        document.getElementById('codexToggleBtn').addEventListener('click', () => {
+          this.toggleCodex();
+        });
+
+        // Sector selector modal
+        document.getElementById('openSectorsBtn').addEventListener('click', () => {
+          document.getElementById('sectorModal').classList.add('open');
+        });
+        document.getElementById('closeSectorModalBtn').addEventListener('click', () => {
+          document.getElementById('sectorModal').classList.remove('open');
+        });
+
+        // Victory modal next tier
+        document.getElementById('nextTierBtn').addEventListener('click', () => {
+          document.getElementById('victoryModal').classList.remove('open');
+          this.advanceToNextTier();
+        });
+
+        // Game over retry
+        document.getElementById('retryGameBtn').addEventListener('click', () => {
+          document.getElementById('gameOverModal').classList.remove('open');
+          this.resetGame();
+        });
+
+        // Advance click on feedback drawer
+        document.getElementById('feedbackBanner').addEventListener('click', () => {
+          if (this.isLocked) this.forceAdvance();
+        });
+
+        // Audio and Fullscreen buttons
+        document.getElementById('audioToggleBtn').addEventListener('click', () => sound.toggleMute());
+        document.getElementById('fullscreenToggleBtn').addEventListener('click', () => this.toggleFullscreen());
+
+        // Keyboard navigation
+        window.addEventListener('keydown', (e) => this.handleKeyDown(e));
+      }
+
+      handleKeyDown(e) {
+        if (e.key === '1' || e.key === '2' || e.key === '3' || e.key === '4') {
+          if (!this.isLocked && this.mode !== 'sandbox') {
+            this.handleAnswer(parseInt(e.key, 10) - 1);
+          }
+        } else if (e.key.toLowerCase() === 'h') {
+          if (!this.isLocked && this.mode !== 'sandbox') {
+            this.toggleCodex();
+          }
+        } else if (e.key === ' ' || e.key === 'Enter') {
+          if (document.getElementById('victoryModal').classList.contains('open')) {
+            document.getElementById('nextTierBtn').click();
+          } else if (document.getElementById('gameOverModal').classList.contains('open')) {
+            document.getElementById('retryGameBtn').click();
+          } else if (this.isLocked) {
+            this.forceAdvance();
+          }
+        } else if (e.key.toLowerCase() === 'm') {
+          sound.toggleMute();
+        } else if (e.key.toLowerCase() === 'f') {
+          this.toggleFullscreen();
+        } else if (e.key === 'Escape') {
+          document.getElementById('sectorModal').classList.remove('open');
+        }
+      }
+
+      toggleFullscreen() {
+        if (!document.fullscreenElement) {
+          document.documentElement.requestFullscreen().catch(() => {});
+        } else {
+          document.exitFullscreen().catch(() => {});
+        }
+      }
+
+      switchMode(newMode) {
+        if (this.mode === newMode) return;
+        this.mode = newMode;
+        sound.playTone(440, 'sine', 0.08);
+
+        // Update pills
+        document.querySelectorAll('#modeSelector .mode-pill').forEach(btn => {
+          btn.classList.toggle('active', btn.dataset.mode === newMode);
+        });
+
+        // Toggle layout views
+        const combatView = document.getElementById('arenaCombatView');
+        const sandboxView = document.getElementById('sandboxView');
+        const blitzBadge = document.getElementById('blitzTimerContainer');
+        const survivalBadge = document.getElementById('survivalLivesContainer');
+
+        if (this.blitzInterval) {
+          clearInterval(this.blitzInterval);
+          this.blitzInterval = null;
+        }
+
+        if (newMode === 'sandbox') {
+          combatView.style.display = 'none';
+          sandboxView.classList.add('active');
+          if (!this.sandbox) this.sandbox = new SandboxEngine();
+          else this.sandbox.resize();
+          blitzBadge.style.display = 'none';
+          survivalBadge.style.display = 'none';
+        } else {
+          combatView.style.display = 'grid';
+          sandboxView.classList.remove('active');
+          this.radar.resize();
+
+          if (newMode === 'blitz') {
+            blitzBadge.style.display = 'flex';
+            survivalBadge.style.display = 'none';
+            this.startBlitzTimer();
+          } else if (newMode === 'survival') {
+            survivalBadge.style.display = 'flex';
+            blitzBadge.style.display = 'none';
+            this.survivalLives = 3;
+            this.updateSurvivalCoresUI();
+            if (this.activeTier < 3) this.activeTier = 3;
+          } else {
+            blitzBadge.style.display = 'none';
+            survivalBadge.style.display = 'none';
+          }
+          this.loadNextQuestion();
+        }
+      }
+
+      startBlitzTimer() {
+        this.blitzSeconds = 60;
+        document.getElementById('blitzTimer').textContent = `${this.blitzSeconds}s`;
+        this.blitzInterval = setInterval(() => {
+          this.blitzSeconds--;
+          document.getElementById('blitzTimer').textContent = `${this.blitzSeconds}s`;
+          if (this.blitzSeconds <= 10) {
+            sound.playTone(320, 'sine', 0.05, 0.1);
+          }
+          if (this.blitzSeconds <= 0) {
+            clearInterval(this.blitzInterval);
+            this.triggerGameOver("Time Expired! 60-second Blitz run concluded.");
+          }
+        }, 1000);
+      }
+
+      updateSurvivalCoresUI() {
+        const hearts = '❤️'.repeat(Math.max(0, this.survivalLives)) + '🖤'.repeat(Math.max(0, 3 - this.survivalLives));
+        document.getElementById('survivalCores').textContent = hearts;
+      }
+
+      loadNextQuestion() {
+        this.isLocked = false;
+        this.usedCodex = false;
+        clearTimeout(this.advanceTimer);
+
+        // Hide feedback banner & reset options
+        document.getElementById('feedbackBanner').classList.remove('show');
+        document.getElementById('codexContent').classList.remove('open');
+        document.getElementById('codexToggleBtn').style.opacity = '1';
+
+        // Check spaced repetition queue first
+        if (this.errorQueue.length > 0 && Math.random() < 0.4) {
+          this.activeQuestion = this.errorQueue.shift();
+        } else {
+          // Generate with anti-repetition check
+          let attempts = 0;
+          let q = null;
+          while (attempts < 10) {
+            q = generateVectorQuestion(this.activeTier);
+            const sig = `${q.topic}_${q.correct}`;
+            if (!this.lruSignatures.includes(sig)) {
+              this.lruSignatures.push(sig);
+              if (this.lruSignatures.length > 16) this.lruSignatures.shift();
+              break;
+            }
+            attempts++;
+          }
+          this.activeQuestion = q;
+        }
+
+        this.renderQuestion();
+      }
+
+      renderQuestion() {
+        const q = this.activeQuestion;
+        const meta = TIER_METADATA[this.activeTier - 1];
+
+        // Header info
+        document.getElementById('hudTierBadge').textContent = `TIER ${this.activeTier}`;
+        document.getElementById('cardTierNumber').textContent = `SECTOR ${this.activeTier}`;
+        document.getElementById('cardTierName').textContent = meta.name;
+        document.getElementById('questionTopic').textContent = meta.category + ` // ${q.topic}`;
+        document.getElementById('radarModeTitle').textContent = q.topic.toUpperCase();
+
+        // Mastery Ratio & Progress
+        document.getElementById('cardMasteryRatio').textContent = `${this.tierClears} / ${this.targetTierClears}`;
+        const pct = Math.min(100, (this.tierClears / this.targetTierClears) * 100);
+        document.getElementById('tierProgressBar').style.width = `${pct}%`;
+
+        // Render Prompt with KaTeX
+        const promptEl = document.getElementById('questionPrompt');
+        this.renderMathInElement(promptEl, q.prompt);
+
+        // Render Codex Hint
+        const codexEl = document.getElementById('codexContent');
+        this.renderMathInElement(codexEl, q.hint);
+
+        // Prepare 4 Shuffled Options
+        const allOpts = shuffle([
+          { text: q.correct, isCorrect: true },
+          ...q.distractors.map(d => ({ text: d, isCorrect: false }))
+        ]);
+        this.activeQuestion.renderedOptions = allOpts;
+
+        // Render Option Buttons
+        document.querySelectorAll('#optionsMatrix .opt-btn').forEach((btn, idx) => {
+          btn.className = 'opt-btn';
+          btn.disabled = false;
+          const textEl = document.getElementById(`optText${idx}`);
+          this.renderOption(textEl, allOpts[idx].text);
+        });
+
+        // Update Radar Visualizer
+        this.radar.setVisual(q.visual);
+      }
+
+      renderOption(el, text) {
+        if (!el) return;
+        if (!text && text !== 0) { el.innerHTML = ''; return; }
+        let mathStr = String(text).trim();
+        if (mathStr.startsWith('$') && mathStr.endsWith('$')) {
+          mathStr = mathStr.slice(1, -1).trim();
+        }
+        if (typeof katex !== 'undefined') {
+          try {
+            el.innerHTML = katex.renderToString(mathStr, { throwOnError: false, displayMode: false });
+            return;
+          } catch (e) {
+            console.warn('KaTeX option formatting error:', e);
+          }
+        }
+        el.textContent = mathStr;
+      }
+
+      renderMathInElement(el, text) {
+        if (!el) return;
+        if (!text) { el.innerHTML = ''; return; }
+        const trimmed = String(text).trim();
+
+        if (typeof katex !== 'undefined') {
+          if (trimmed.includes('$')) {
+            const html = trimmed.replace(/\$([^$]+)\$/g, (match, formula) => {
+              try {
+                return katex.renderToString(formula.trim(), { throwOnError: false, displayMode: false });
+              } catch (e) {
+                return match;
+              }
+            });
+            el.innerHTML = html;
+            return;
+          }
+          if (/(\\[a-zA-Z]+|\^|_|=|\+|-|\*|\/)/.test(trimmed)) {
+            try {
+              el.innerHTML = katex.renderToString(trimmed, { throwOnError: false, displayMode: false });
+              return;
+            } catch (e) {}
+          }
+        }
+        el.textContent = trimmed;
+      }
+
+      toggleCodex() {
+        const codex = document.getElementById('codexContent');
+        const isOpen = codex.classList.toggle('open');
+        if (isOpen) {
+          this.usedCodex = true;
+          sound.playTone(350, 'triangle', 0.1);
+          document.getElementById('codexToggleBtn').style.opacity = '0.6';
+        }
+      }
+
+      handleAnswer(idx) {
+        if (this.isLocked) return;
+        this.isLocked = true;
+
+        const opt = this.activeQuestion.renderedOptions[idx];
+        const buttons = document.querySelectorAll('#optionsMatrix .opt-btn');
+        buttons.forEach(b => b.disabled = true);
+
+        const banner = document.getElementById('feedbackBanner');
+        const statusText = document.getElementById('feedbackStatusText');
+        const statusContainer = document.getElementById('feedbackStatus');
+        const derivationEl = document.getElementById('feedbackDerivation');
+
+        if (opt.isCorrect) {
+          // Correct answer
+          buttons[idx].classList.add('correct');
+          sound.correct();
+          this.streak++;
+          if (this.streak > this.bestStreak) this.bestStreak = this.streak;
+          this.tierClears++;
+
+          // Score Calculation
+          const basePoints = 100 * this.activeTier;
+          const comboMult = Math.min(4, 1 + Math.floor(this.streak / 3));
+          const hintPenalty = this.usedCodex ? 0.5 : 1.0;
+          const addedScore = Math.round(basePoints * comboMult * hintPenalty);
+          this.score += addedScore;
+
+          // UI updates
+          this.updateScoreUI();
+          statusContainer.className = 'feedback-status correct';
+          statusText.innerHTML = `✓ TARGET CONFIRMED (+${addedScore})`;
+        } else {
+          // Wrong answer
+          buttons[idx].classList.add('wrong');
+          // Highlight the actual correct option
+          this.activeQuestion.renderedOptions.forEach((o, i) => {
+            if (o.isCorrect) buttons[i].classList.add('correct');
+          });
+          sound.wrong();
+          this.streak = 0;
+          this.updateScoreUI();
+
+          // Spaced Repetition: re-queue failed question
+          this.errorQueue.push(this.activeQuestion);
+
+          statusContainer.className = 'feedback-status wrong';
+          statusText.innerHTML = `✕ DIRECTION MISALIGNMENT`;
+
+          // Survival Mode Core Loss
+          if (this.mode === 'survival') {
+            this.survivalLives--;
+            this.updateSurvivalCoresUI();
+            if (this.survivalLives <= 0) {
+              setTimeout(() => this.triggerGameOver("Shield cores extinguished. Vector field collapse."), 600);
+              return;
+            }
+          }
+        }
+
+        // Render Step-by-Step Derivation
+        this.renderMathInElement(derivationEl, this.activeQuestion.derivation);
+        banner.classList.add('show');
+
+        // Check Tier Completion in Campaign
+        if (this.mode === 'campaign' && this.tierClears >= this.targetTierClears) {
+          clearTimeout(this.advanceTimer);
+          setTimeout(() => this.triggerVictoryModal(), 800);
+          return;
+        }
+
+        // Smart Auto-Advance: 2.2s countdown bar with hover pause
+        this.startAutoAdvanceCountdown(2200);
+      }
+
+      startAutoAdvanceCountdown(durationMs) {
+        const bar = document.getElementById('feedbackCountdownBar');
+        bar.style.transition = `width ${durationMs}ms linear`;
+        bar.style.width = '100%';
+        setTimeout(() => { bar.style.width = '0%'; }, 20);
+
+        this.advanceTimer = setTimeout(() => {
+          this.forceAdvance();
+        }, durationMs);
+      }
+
+      forceAdvance() {
+        clearTimeout(this.advanceTimer);
+        const bar = document.getElementById('feedbackCountdownBar');
+        bar.style.transition = 'none';
+        bar.style.width = '0%';
+        this.loadNextQuestion();
+      }
+
+      updateScoreUI() {
+        document.getElementById('hudScore').textContent = this.score.toLocaleString();
+        const comboBadge = document.getElementById('comboBadge');
+        const comboText = document.getElementById('comboMultiplier');
+        const mult = Math.min(4, 1 + Math.floor(this.streak / 3));
+
+        if (this.streak >= 2) {
+          comboBadge.style.display = 'flex';
+          comboText.textContent = `${mult}x (${this.streak})`;
+        } else {
+          comboBadge.style.display = 'none';
+        }
+      }
+
+      triggerVictoryModal() {
+        sound.fanfare();
+        confetti.blast();
+
+        // Unlock next tier if applicable
+        if (this.activeTier >= this.maxUnlockedTier && this.activeTier < 8) {
+          this.maxUnlockedTier = this.activeTier + 1;
+          localStorage.setItem('va_unlocked_tier', this.maxUnlockedTier);
+          this.renderSectorGrid();
+        }
+
+        document.getElementById('victoryTitle').textContent = `SECTOR ${this.activeTier} MASTERED`;
+        document.getElementById('victoryDesc').textContent = `${TIER_METADATA[this.activeTier - 1].name} cleared with authoritative directional accuracy.`;
+        document.getElementById('victoryAccuracy').textContent = '100%';
+        document.getElementById('victoryScore').textContent = `+${this.score}`;
+        document.getElementById('victoryStreak').textContent = `${this.bestStreak}x`;
+
+        const nextBtn = document.getElementById('nextTierBtn');
+        if (this.activeTier < 8) {
+          nextBtn.textContent = `ENGAGE SECTOR ${this.activeTier + 1} [SPACE]`;
+        } else {
+          nextBtn.textContent = `RE-ENGAGE MASTER SECTORS [SPACE]`;
+        }
+
+        document.getElementById('victoryModal').classList.add('open');
+      }
+
+      advanceToNextTier() {
+        if (this.activeTier < 8) {
+          this.activeTier++;
+        }
+        this.tierClears = 0;
+        this.loadNextQuestion();
+      }
+
+      triggerGameOver(reason) {
+        sound.wrong();
+        document.getElementById('gameOverDesc').textContent = reason;
+        document.getElementById('goFinalScore').textContent = this.score;
+        document.getElementById('goQuestionsCleared').textContent = this.tierClears;
+        document.getElementById('goBestStreak').textContent = `${this.bestStreak}x`;
+        document.getElementById('gameOverModal').classList.add('open');
+      }
+
+      resetGame() {
+        this.score = 0;
+        this.streak = 0;
+        this.tierClears = 0;
+        this.updateScoreUI();
+        if (this.mode === 'survival') {
+          this.survivalLives = 3;
+          this.updateSurvivalCoresUI();
+        } else if (this.mode === 'blitz') {
+          this.startBlitzTimer();
+        }
+        this.loadNextQuestion();
+      }
+
+      renderSectorGrid() {
+        const grid = document.getElementById('sectorGrid');
+        grid.innerHTML = '';
+        TIER_METADATA.forEach((t) => {
+          const card = document.createElement('div');
+          card.className = `sector-card ${t.id === this.activeTier ? 'current' : ''}`;
+          card.innerHTML = `
+            <div class="sector-num">SECTOR ${t.id}</div>
+            <div class="sector-label">${t.name}</div>
+          `;
+          card.addEventListener('click', () => {
+            this.activeTier = t.id;
+            this.tierClears = 0;
+            document.getElementById('sectorModal').classList.remove('open');
+            this.renderSectorGrid();
+            this.loadNextQuestion();
+            sound.playTone(520, 'sine', 0.1);
+          });
+          grid.appendChild(card);
+        });
+      }
+    }
+
+    // Initialize application when DOM is ready
+    window.addEventListener('DOMContentLoaded', () => {
+      window.arenaApp = new ArenaEngine();
+    });
+
+  })();
+  </script>
+</body>
+</html>

@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <!-- Labs Auto-Discovery Meta Tags -->
+  <title>Lab Title | The Experimental Workbench | Mazhar's Lab</title>
+  <meta name="description" content="Interactive browser-based laboratory experiment and mechanical thought toy by Syed Mazhar Ali.">
+  <link rel="canonical" href="https://mazhar.in/labs/_template/">
+  <meta name="lab-category" content="Kinetic Toys & Reflex Mechanics">
+  <meta name="lab-status" content="Living Prototype">
+  <meta name="lab-hook" content="Exploring dynamic forces and tactile state loops through direct canvas interaction.">
+  <meta name="lab-tech" content="Canvas, Tailwind, KaTeX, Vanilla JS">
+  <meta name="lab-tags" content="Sandbox, Kinetic, Experiment">
+  
+  <!-- OpenGraph -->
+  <meta property="og:title" content="Lab Title | The Experimental Workbench | Mazhar's Lab">
+  <meta property="og:description" content="Interactive browser-based laboratory experiment and mechanical thought toy by Syed Mazhar Ali.">
+  <meta property="og:type" content="website">
+
+  <!-- Tailwind CSS (CDN) -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              dark: '#090c10',
+              card: '#0e131b',
+              panel: '#161e2b',
+              border: 'rgba(255, 255, 255, 0.1)',
+              cyan: '#38bdf8',
+              emerald: '#10b981',
+              purple: '#a855f7'
+            }
+          },
+          fontFamily: {
+            sans: ['Inter', 'system-ui', 'sans-serif'],
+            mono: ['JetBrains Mono', 'monospace']
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+  <!-- KaTeX for Mathematical Physics Rendering -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css" crossorigin="anonymous">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js" crossorigin="anonymous"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js" crossorigin="anonymous"
+          onload="renderMathInElement(document.body, {
+            delimiters: [
+              {left: '$$', right: '$$', display: true},
+              {left: '$', right: '$', display: false},
+              {left: '\\(', right: '\\)', display: false},
+              {left: '\\[', right: '\\]', display: true}
+            ],
+            throwOnError: false
+          });"></script>
+
+  <style>
+    body {
+      background-color: #090c10;
+      color: #f8fafc;
+      font-family: 'Inter', sans-serif;
+    }
+    .grid-bg {
+      background-image: radial-gradient(rgba(56, 189, 248, 0.07) 1px, transparent 1px);
+      background-size: 24px 24px;
+    }
+  </style>
+</head>
+<body class="min-h-screen grid-bg flex flex-col">
+
+  <!-- Sticky Top Navigation Bar -->
+  <header class="sticky top-0 z-50 bg-[#0e131b]/90 backdrop-blur-md border-b border-white/10 px-4 py-3">
+    <div class="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-3 text-xs sm:text-sm">
+      <div class="flex items-center gap-2 font-mono">
+        <span class="text-amber-400">⚡</span>
+        <span class="text-slate-300 font-semibold">Lab Experiment</span>
+        <span class="text-slate-500">by Syed Mazhar Ali</span>
+        <span class="text-slate-600 hidden md:inline">|</span>
+        <a href="../index.html" class="text-sky-400 hover:text-sky-300 transition-colors flex items-center gap-1 font-sans">
+          <span>← Back to mazhar.in/labs</span>
+        </a>
+      </div>
+
+      <div class="flex items-center gap-2">
+        <a href="https://lockinrank.com" target="_blank" rel="noopener noreferrer" 
+           class="px-3 py-1.5 rounded-md bg-purple-500/10 hover:bg-purple-500/20 text-purple-300 border border-purple-500/30 transition-all font-mono text-xs flex items-center gap-1">
+          <span>Practice on LockInRank CBT</span>
+          <span>↗</span>
+        </a>
+        <a href="https://smaphysics.com" target="_blank" rel="noopener noreferrer" 
+           class="px-3 py-1.5 rounded-md bg-sky-500/10 hover:bg-sky-500/20 text-sky-300 border border-sky-500/30 transition-all font-mono text-xs flex items-center gap-1">
+          <span>SMA Physics</span>
+          <span>↗</span>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Interactive Lab Workspace -->
+  <main class="max-w-7xl mx-auto w-full px-4 py-6 flex-1 flex flex-col gap-8">
+    
+    <!-- Title & Status Header -->
+    <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-white/10 pb-4">
+      <div>
+        <div class="flex items-center gap-2 mb-2 font-mono text-xs">
+          <span class="px-2 py-0.5 rounded bg-sky-500/10 text-sky-400 border border-sky-500/20">Physics Simulators</span>
+          <span class="text-emerald-400 flex items-center gap-1">
+            <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span> Live Canvas
+          </span>
+        </div>
+        <h1 class="text-2xl sm:text-3xl font-bold tracking-tight text-white">Interactive Experiment Title</h1>
+        <p class="text-slate-400 text-sm mt-1 max-w-2xl">
+          Adjust physical parameters in real-time to observe dynamic numerical integration, phase trajectories, and vector telemetry.
+        </p>
+      </div>
+
+      <!-- Quick Telemetry Chips -->
+      <div class="flex items-center gap-2 font-mono text-xs text-slate-300 bg-[#161e2b] px-3 py-2 rounded-lg border border-white/5">
+        <div>FPS: <span id="fpsReadout" class="text-emerald-400 font-bold">60</span></div>
+        <span class="text-slate-600">•</span>
+        <div>Time $t$: <span id="timeReadout" class="text-sky-400">0.00s</span></div>
+      </div>
+    </div>
+
+    <!-- Interactive Simulation Container -->
+    <div class="grid grid-cols-1 lg:grid-cols-4 gap-6 items-start">
+      
+      <!-- Canvas Stage (Left 3 cols) -->
+      <div class="lg:col-span-3 bg-[#0e131b] border border-white/10 rounded-xl overflow-hidden shadow-2xl relative flex flex-col">
+        <div class="bg-[#161e2b]/80 border-b border-white/5 px-4 py-2 flex items-center justify-between text-xs font-mono text-slate-400">
+          <span>Simulation Viewport (60 FPS Engine)</span>
+          <div class="flex items-center gap-2">
+            <button id="btnReset" class="hover:text-white px-2 py-0.5 rounded bg-white/5 hover:bg-white/10 transition-colors">Reset</button>
+            <button id="btnPause" class="hover:text-white px-2 py-0.5 rounded bg-sky-500/20 text-sky-300 hover:bg-sky-500/30 transition-colors">Pause</button>
+          </div>
+        </div>
+        <div class="relative w-full h-[380px] sm:h-[460px] bg-[#090c10] flex items-center justify-center">
+          <canvas id="simCanvas" class="w-full h-full block cursor-crosshair"></canvas>
+        </div>
+      </div>
+
+      <!-- Control Panel (Right 1 col) -->
+      <div class="bg-[#0e131b] border border-white/10 rounded-xl p-5 shadow-xl flex flex-col gap-5 text-sm">
+        <h3 class="font-semibold text-white tracking-wide border-b border-white/10 pb-2 flex items-center gap-2 font-mono text-xs uppercase text-slate-400">
+          <span>Simulation Controls</span>
+        </h3>
+
+        <!-- Control 1 -->
+        <div class="flex flex-col gap-1.5">
+          <div class="flex justify-between text-xs font-mono">
+            <label for="param1" class="text-slate-300">Parameter Alpha ($\alpha$)</label>
+            <span id="valParam1" class="text-sky-400 font-semibold">15.0</span>
+          </div>
+          <input type="range" id="param1" min="1" max="50" value="15" step="0.5" 
+                 class="w-full accent-sky-400 bg-slate-800 rounded h-1.5 cursor-pointer">
+        </div>
+
+        <!-- Control 2 -->
+        <div class="flex flex-col gap-1.5">
+          <div class="flex justify-between text-xs font-mono">
+            <label for="param2" class="text-slate-300">Parameter Beta ($\beta$)</label>
+            <span id="valParam2" class="text-emerald-400 font-semibold">9.8</span>
+          </div>
+          <input type="range" id="param2" min="1" max="25" value="9.8" step="0.1" 
+                 class="w-full accent-emerald-400 bg-slate-800 rounded h-1.5 cursor-pointer">
+        </div>
+
+        <!-- Telemetry Details Box -->
+        <div class="bg-[#161e2b] p-3 rounded-lg border border-white/5 font-mono text-xs flex flex-col gap-2 mt-2">
+          <div class="text-slate-400 text-[11px] uppercase tracking-wider">Computed Metrics</div>
+          <div class="flex justify-between">
+            <span class="text-slate-400">State Vector:</span>
+            <span id="metricState" class="text-sky-300">$\vec{r}(t)$</span>
+          </div>
+          <div class="flex justify-between">
+            <span class="text-slate-400">Total Energy:</span>
+            <span id="metricEnergy" class="text-emerald-300">0.00 J</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Structured SEO Content Section ("Concept & Formula Breakdown") -->
+    <article class="bg-[#0e131b] border border-white/10 rounded-xl p-6 sm:p-8 mt-2 shadow-lg max-w-4xl">
+      <div class="flex items-center gap-2 font-mono text-xs text-sky-400 uppercase tracking-widest mb-2">
+        <span>Theory &amp; Mechanics</span>
+      </div>
+      <h2 class="text-xl sm:text-2xl font-bold text-white mb-4">Concept &amp; Formula Breakdown</h2>
+      
+      <div class="prose prose-invert prose-slate max-w-none text-slate-300 space-y-4 text-sm sm:text-base leading-relaxed">
+        <p>
+          This micro-tool computes the exact kinematic and dynamic evolution of the system using numerical integration.
+          In a conservative field, the mechanical energy remains invariant:
+        </p>
+
+        <div class="my-4 p-4 rounded-lg bg-[#161e2b] border border-white/5 text-center font-mono">
+          $$E = K + U = \frac{1}{2} m v^2 + U(\vec{r}) = \text{constant}$$
+        </div>
+
+        <h3 class="text-lg font-semibold text-white mt-6 mb-2">Equations of Motion</h3>
+        <p>
+          The governing differential equations are solved at each discrete frame time $\Delta t$:
+        </p>
+
+        <div class="my-4 p-4 rounded-lg bg-[#161e2b] border border-white/5 text-center font-mono">
+          $$\frac{d^2\vec{r}}{dt^2} = \frac{\vec{F}_{\text{net}}(\vec{r}, \vec{v})}{m}$$
+        </div>
+
+        <h3 class="text-lg font-semibold text-white mt-6 mb-2">Key Pedagogical Insights</h3>
+        <ul class="list-disc list-inside space-y-1 text-slate-400">
+          <li>Observe how velocity vectors and acceleration decouple during non-linear trajectories.</li>
+          <li>Notice the phase-space conservation under conservative initial boundaries.</li>
+          <li>Designed for competitive physics aspirants preparing for JEE Advanced and Olympiads.</li>
+        </ul>
+      </div>
+    </article>
+
+  </main>
+
+  <!-- Minimal Lab Footer -->
+  <footer class="border-t border-white/10 bg-[#090c10] py-6 px-4 text-center text-xs text-slate-500 font-mono">
+    <div class="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-3">
+      <span>Designed &amp; Engineered by <a href="https://mazhar.in" class="text-sky-400 hover:underline">Syed Mazhar Ali</a></span>
+      <div class="flex gap-4">
+        <a href="https://lockinrank.com" target="_blank" rel="noopener noreferrer" class="hover:text-slate-300">LockInRank CBT ↗</a>
+        <a href="https://smaphysics.com" target="_blank" rel="noopener noreferrer" class="hover:text-slate-300">SMA Physics ↗</a>
+        <a href="../index.html" class="hover:text-slate-300">All Lab Tools</a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Simulation JavaScript Logic -->
+  <script>
+    const canvas = document.getElementById('simCanvas');
+    const ctx = canvas.getContext('2d');
+    let isPaused = false;
+    let t = 0;
+
+    function resizeCanvas() {
+      const rect = canvas.getBoundingClientRect();
+      canvas.width = rect.width * window.devicePixelRatio;
+      canvas.height = rect.height * window.devicePixelRatio;
+      ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
+    }
+    window.addEventListener('resize', resizeCanvas);
+    resizeCanvas();
+
+    function draw() {
+      if (!isPaused) {
+        t += 0.016;
+        document.getElementById('timeReadout').textContent = t.toFixed(2) + 's';
+      }
+
+      const rect = canvas.getBoundingClientRect();
+      const w = rect.width;
+      const h = rect.height;
+
+      ctx.clearRect(0, 0, w, h);
+
+      // Grid background
+      ctx.strokeStyle = 'rgba(255, 255, 255, 0.05)';
+      ctx.lineWidth = 1;
+      for (let x = 0; x < w; x += 40) {
+        ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, h); ctx.stroke();
+      }
+      for (let y = 0; y < h; y += 40) {
+        ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(w, y); ctx.stroke();
+      }
+
+      // Placeholder oscillating particle
+      const p1 = parseFloat(document.getElementById('param1').value);
+      const p2 = parseFloat(document.getElementById('param2').value);
+      const cx = w / 2 + Math.cos(t * (p1 / 10)) * (w * 0.3);
+      const cy = h / 2 + Math.sin(t * (p2 / 10)) * (h * 0.25);
+
+      // Trajectory glow
+      const grad = ctx.createRadialGradient(cx, cy, 2, cx, cy, 25);
+      grad.addColorStop(0, 'rgba(56, 189, 248, 0.8)');
+      grad.addColorStop(1, 'rgba(56, 189, 248, 0)');
+      ctx.fillStyle = grad;
+      ctx.beginPath();
+      ctx.arc(cx, cy, 25, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Particle
+      ctx.fillStyle = '#38bdf8';
+      ctx.beginPath();
+      ctx.arc(cx, cy, 6, 0, Math.PI * 2);
+      ctx.fill();
+
+      requestAnimationFrame(draw);
+    }
+
+    requestAnimationFrame(draw);
+
+    document.getElementById('param1').addEventListener('input', (e) => {
+      document.getElementById('valParam1').textContent = parseFloat(e.target.value).toFixed(1);
+    });
+    document.getElementById('param2').addEventListener('input', (e) => {
+      document.getElementById('valParam2').textContent = parseFloat(e.target.value).toFixed(1);
+    });
+    document.getElementById('btnPause').addEventListener('click', () => {
+      isPaused = !isPaused;
+      document.getElementById('btnPause').textContent = isPaused ? 'Resume' : 'Pause';
+    });
+    document.getElementById('btnReset').addEventListener('click', () => {
+      t = 0;
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,3064 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>IntegralForge: The Accumulation Engine | Mazhar's Lab</title>
+  <meta name="description" content="Interactive calculus engine visually modeling Riemann sums, continuous area accumulation, and dynamic integral transformations.">
+  <link rel="canonical" href="https://mazhar.in/labs/integralforge/">
+  <meta name="lab-category" content="Calculus & Math Machines">
+  <meta name="lab-status" content="Playground">
+  <meta name="lab-hook" content="The accumulation engine: visual Riemann sums, area transformations, and continuous calculus.">
+  <meta name="lab-tech" content="Canvas, KaTeX, Audio / TTS">
+  <meta name="lab-tags" content="Calculus, Riemann Sums, Area Under Curve, Math Visualization">
+  <!-- Open Graph / SEO -->
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="IntegralForge: The Accumulation Engine | Mazhar's Lab">
+  <meta property="og:description" content="Interactive calculus engine visually modeling Riemann sums, continuous area accumulation, and dynamic integral transformations.">
+  <meta property="og:url" content="https://mazhar.in/labs/integralforge/">
+  <!-- Schema.org WebApplication -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "IntegralForge: The Accumulation Engine | Mazhar's Lab",
+    "description": "Interactive calculus engine visually modeling Riemann sums, continuous area accumulation, and dynamic integral transformations.",
+    "url": "https://mazhar.in/labs/integralforge/",
+    "applicationCategory": "EducationalApplication",
+    "author": {
+      "@type": "Person",
+      "name": "Syed Mazhar Ali",
+      "url": "https://mazhar.in"
+    }
+  }
+  </script>
+
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>IntegralForge: The Accumulation Engine | Mazhar's Lab</title>
+  
+  <!-- Modern Typography & Icons -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;800&family=Outfit:wght@400;500;600;700;900&display=swap" rel="stylesheet">
+  
+  <!-- KaTeX for High-Performance LaTeX Math Typesetting -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+
+  <style>
+    /* ==========================================================================
+       1. CORE DESIGN SYSTEM & TOKENS (DARK PLASMA TELEMETRY)
+       ========================================================================== */
+    :root {
+      --bg-space: #030712;
+      --bg-cockpit: #080d1a;
+      --bg-panel: rgba(15, 23, 42, 0.75);
+      --bg-card: rgba(30, 41, 59, 0.55);
+      --border-glow: rgba(56, 189, 248, 0.25);
+      --border-subtle: rgba(148, 163, 184, 0.12);
+      
+      --cyan-neon: #06b6d4;
+      --cyan-glow: rgba(6, 182, 212, 0.4);
+      --violet-neon: #8b5cf6;
+      --violet-glow: rgba(139, 92, 246, 0.35);
+      --emerald-neon: #10b981;
+      --emerald-glow: rgba(16, 185, 129, 0.35);
+      --rose-neon: #f43f5e;
+      --rose-glow: rgba(244, 63, 94, 0.35);
+      --amber-neon: #f59e0b;
+      --amber-glow: rgba(245, 158, 11, 0.35);
+
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --text-dim: #64748b;
+      
+      --font-ui: 'Outfit', -apple-system, BlinkMacSystemFont, sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      user-select: none;
+      -webkit-user-select: none;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    /* FULLSCREEN STRICT: ZERO SCROLLING ON MOBILE */
+    html, body {
+      width: 100vw;
+      height: 100vh;
+      height: 100dvh;
+      overflow: hidden;
+      background-color: var(--bg-space);
+      color: var(--text-main);
+      font-family: var(--font-ui);
+      display: flex;
+      flex-direction: column;
+      position: fixed;
+      inset: 0;
+    }
+
+    /* Subtle Animated Plasma Grid Background */
+    body::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: 
+        radial-gradient(circle at 20% 20%, rgba(6, 182, 212, 0.08) 0%, transparent 40%),
+        radial-gradient(circle at 80% 80%, rgba(139, 92, 246, 0.08) 0%, transparent 45%),
+        linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+      background-size: 100% 100%, 100% 100%, 32px 32px, 32px 32px;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* ==========================================================================
+       2. COCKPIT HEADER / TELEMETRY STATUS BAR
+       ========================================================================== */
+    .cockpit-header {
+      position: relative;
+      z-index: 10;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 48px;
+      padding: 0 12px;
+      background: var(--bg-panel);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border-subtle);
+      flex-shrink: 0;
+    }
+
+    .brand-group {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .brand-icon {
+      width: 26px;
+      height: 26px;
+      border-radius: 6px;
+      background: linear-gradient(135deg, var(--cyan-neon), var(--violet-neon));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 900;
+      font-size: 14px;
+      color: #fff;
+      box-shadow: 0 0 10px var(--cyan-glow);
+    }
+
+    .brand-title {
+      font-size: 14px;
+      font-weight: 800;
+      letter-spacing: 0.5px;
+      background: linear-gradient(90deg, #38bdf8, #c084fc);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .brand-subtitle {
+      font-size: 9px;
+      color: var(--text-dim);
+      font-family: var(--font-mono);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    /* Mode Selector Pills */
+    .mode-pills {
+      display: flex;
+      background: rgba(15, 23, 42, 0.8);
+      padding: 2px;
+      border-radius: 8px;
+      border: 1px solid var(--border-subtle);
+    }
+
+    .mode-btn {
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      font-size: 11px;
+      font-weight: 600;
+      padding: 4px 8px;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .mode-btn.active {
+      background: linear-gradient(135deg, rgba(6, 182, 212, 0.25), rgba(139, 92, 246, 0.25));
+      color: #fff;
+      border: 1px solid var(--cyan-neon);
+      box-shadow: 0 0 8px var(--cyan-glow);
+    }
+
+    /* Header Controls */
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .icon-btn {
+      background: rgba(30, 41, 59, 0.6);
+      border: 1px solid var(--border-subtle);
+      color: var(--text-main);
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 13px;
+      transition: all 0.15s ease;
+    }
+
+    .icon-btn:hover {
+      border-color: var(--cyan-neon);
+      box-shadow: 0 0 8px var(--cyan-glow);
+    }
+
+    .codex-btn-trigger {
+      background: rgba(245, 158, 11, 0.15);
+      border: 1px solid rgba(245, 158, 11, 0.4);
+      color: var(--amber-neon);
+      padding: 0 10px;
+      height: 32px;
+      border-radius: 8px;
+      font-size: 11px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .codex-btn-trigger:hover {
+      background: rgba(245, 158, 11, 0.3);
+      box-shadow: 0 0 10px var(--amber-glow);
+    }
+
+    /* ==========================================================================
+       3. TELEMETRY SUB-BAR (STREAK, FLUX SCORE, TIER PROGRESS, LIVES/TIMER)
+       ========================================================================== */
+    .telemetry-bar {
+      position: relative;
+      z-index: 9;
+      height: 34px;
+      padding: 0 12px;
+      background: rgba(8, 13, 26, 0.85);
+      border-bottom: 1px solid var(--border-subtle);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      flex-shrink: 0;
+    }
+
+    .telemetry-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .badge-tier {
+      background: linear-gradient(90deg, rgba(6, 182, 212, 0.2), rgba(139, 92, 246, 0.2));
+      border: 1px solid var(--border-glow);
+      padding: 2px 7px;
+      border-radius: 6px;
+      font-size: 10px;
+      font-weight: 700;
+      color: var(--cyan-neon);
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .tier-progress-track {
+      width: 50px;
+      height: 6px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 3px;
+      overflow: hidden;
+      display: inline-block;
+      margin-left: 4px;
+    }
+
+    .tier-progress-fill {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, var(--cyan-neon), var(--emerald-neon));
+      transition: width 0.3s ease;
+    }
+
+    .streak-container {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      color: var(--amber-neon);
+      font-weight: 700;
+    }
+
+    .multiplier-tag {
+      background: var(--amber-neon);
+      color: #000;
+      padding: 1px 4px;
+      border-radius: 4px;
+      font-size: 9px;
+      font-weight: 800;
+    }
+
+    .flux-score {
+      color: #38bdf8;
+      font-weight: 700;
+      text-shadow: 0 0 6px rgba(56, 189, 248, 0.5);
+    }
+
+    /* Core / Timer Indicator */
+    .mode-special-status {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .core-node {
+      display: inline-block;
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--cyan-neon);
+      box-shadow: 0 0 8px var(--cyan-neon);
+      transition: all 0.3s ease;
+    }
+
+    .core-node.burned {
+      background: #475569;
+      box-shadow: none;
+    }
+
+    .blitz-timer-display {
+      font-size: 13px;
+      font-weight: 800;
+      color: var(--rose-neon);
+      text-shadow: 0 0 8px var(--rose-glow);
+    }
+
+    /* ==========================================================================
+       4. MAIN DYNAMIC HYBRID LAYOUT (ZERO SCROLLING COCKPIT)
+       ========================================================================== */
+    .viewport-main {
+      position: relative;
+      flex: 1 1 0;
+      min-height: 0; /* CRITICAL for flex containment */
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      z-index: 5;
+    }
+
+    @media (min-width: 920px) {
+      .viewport-main {
+        flex-direction: row;
+      }
+    }
+
+    /* --- CANVAS SIMULATOR CONTAINER --- */
+    .sim-panel {
+      position: relative;
+      flex: 0 0 38%;
+      min-height: 150px;
+      max-height: 44%;
+      background: radial-gradient(circle at 50% 50%, rgba(15, 23, 42, 0.9) 0%, rgba(3, 7, 18, 0.95) 100%);
+      border-bottom: 1px solid var(--border-glow);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    @media (min-width: 920px) {
+      .sim-panel {
+        flex: 1 1 52%;
+        max-height: 100%;
+        border-bottom: none;
+        border-right: 1px solid var(--border-glow);
+      }
+    }
+
+    .canvas-hud-overlay {
+      position: absolute;
+      top: 6px;
+      left: 10px;
+      right: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      pointer-events: none;
+      z-index: 3;
+    }
+
+    .canvas-badge {
+      background: rgba(8, 13, 26, 0.85);
+      border: 1px solid var(--border-subtle);
+      backdrop-filter: blur(4px);
+      padding: 3px 8px;
+      border-radius: 6px;
+      font-family: var(--font-mono);
+      font-size: 10px;
+      color: var(--cyan-neon);
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .canvas-telemetry-pill {
+      background: rgba(8, 13, 26, 0.85);
+      border: 1px solid var(--border-subtle);
+      padding: 3px 8px;
+      border-radius: 6px;
+      font-family: var(--font-mono);
+      font-size: 10px;
+      color: var(--text-muted);
+    }
+
+    #integralCanvas {
+      width: 100%;
+      height: 100%;
+      display: block;
+      touch-action: none;
+    }
+
+    /* Top auto-advance countdown bar */
+    .auto-advance-progress {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      height: 3px;
+      width: 0%;
+      background: linear-gradient(90deg, var(--cyan-neon), var(--emerald-neon));
+      box-shadow: 0 0 6px var(--cyan-neon);
+      transition: width linear;
+      z-index: 10;
+    }
+
+    /* --- QUESTION & INTERACTION DECK --- */
+    .interaction-deck {
+      position: relative;
+      flex: 1 1 62%;
+      min-height: 0; /* CRITICAL */
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 10px 12px;
+      background: rgba(8, 13, 26, 0.6);
+      backdrop-filter: blur(8px);
+      overflow: hidden;
+    }
+
+    @media (min-width: 920px) {
+      .interaction-deck {
+        flex: 1 1 48%;
+        padding: 18px 24px;
+      }
+    }
+
+    /* Question Header & Meta */
+    .question-card {
+      position: relative;
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: 12px;
+      padding: 10px 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      flex-shrink: 0;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+      transition: border-color 0.2s ease;
+    }
+
+    .q-meta {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 10px;
+      font-family: var(--font-mono);
+      color: var(--text-muted);
+    }
+
+    .q-badge {
+      background: rgba(139, 92, 246, 0.15);
+      border: 1px solid rgba(139, 92, 246, 0.3);
+      color: #c084fc;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-weight: 600;
+    }
+
+    .penalty-warning-badge {
+      display: none;
+      background: rgba(245, 158, 11, 0.2);
+      border: 1px solid var(--amber-neon);
+      color: var(--amber-neon);
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-size: 10px;
+      font-weight: 700;
+    }
+
+    /* Math Equation Prompt Box */
+    .math-prompt-box {
+      min-height: 48px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      font-size: 1.15rem;
+      padding: 4px 0;
+      overflow: hidden !important;
+      scrollbar-width: none !important;
+      -ms-overflow-style: none !important;
+      color: #f1f5f9;
+      line-height: 1.4;
+    }
+
+    .math-prompt-box::-webkit-scrollbar,
+    .math-prompt-box *::-webkit-scrollbar {
+      display: none !important;
+      width: 0 !important;
+      height: 0 !important;
+    }
+
+    .math-prompt-box .katex {
+      font-size: 1.2em !important;
+      max-width: 100%;
+    }
+
+    .physics-subtext {
+      font-size: 11px;
+      color: var(--text-muted);
+      text-align: center;
+      margin-top: -2px;
+    }
+
+    /* Step-by-Step Derivation Overlay / Drawer */
+    .derivation-banner {
+      display: none;
+      background: rgba(15, 23, 42, 0.95);
+      border-radius: 8px;
+      border-left: 3px solid var(--cyan-neon);
+      padding: 6px 10px;
+      font-size: 11.5px;
+      line-height: 1.45;
+      color: #cbd5e1;
+      margin-top: 4px;
+      animation: fadeIn 0.2s ease-out;
+      overflow: hidden !important;
+      scrollbar-width: none !important;
+    }
+
+    .derivation-banner .katex {
+      font-size: 1.05em !important;
+      padding: 0 1px;
+    }
+
+    .derivation-banner.correct {
+      border-left-color: var(--emerald-neon);
+    }
+
+    .derivation-banner.incorrect {
+      border-left-color: var(--rose-neon);
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-4px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Answer Choices Grid - Mobile First 2x2 or Stacked */
+    .choices-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-top: 8px;
+      flex-shrink: 0;
+    }
+
+    @media (max-width: 400px) {
+      .choices-grid {
+        gap: 6px;
+      }
+    }
+
+    .choice-btn {
+      position: relative;
+      min-height: 52px;
+      background: rgba(15, 23, 42, 0.7);
+      border: 1px solid var(--border-subtle);
+      border-radius: 10px;
+      color: var(--text-main);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 4px 6px;
+      text-align: center;
+      transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+      font-family: var(--font-ui);
+      overflow: hidden !important;
+      scrollbar-width: none !important;
+      -ms-overflow-style: none !important;
+    }
+
+    .choice-btn::-webkit-scrollbar,
+    .choice-btn *::-webkit-scrollbar {
+      display: none !important;
+      width: 0 !important;
+      height: 0 !important;
+    }
+
+    .choice-btn:active {
+      transform: scale(0.97);
+    }
+
+    .choice-btn:hover {
+      border-color: var(--cyan-neon);
+      background: rgba(30, 41, 59, 0.8);
+      box-shadow: 0 0 10px rgba(6, 182, 212, 0.25);
+    }
+
+    .choice-key {
+      position: absolute;
+      top: 4px;
+      left: 6px;
+      font-family: var(--font-mono);
+      font-size: 9px;
+      color: var(--text-dim);
+      font-weight: 700;
+    }
+
+    .choice-math {
+      font-size: 0.95rem;
+      pointer-events: none;
+      width: 100%;
+      max-width: 100%;
+      overflow: hidden !important;
+      scrollbar-width: none !important;
+      -ms-overflow-style: none !important;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .choice-math::-webkit-scrollbar,
+    .choice-math *::-webkit-scrollbar {
+      display: none !important;
+      width: 0 !important;
+      height: 0 !important;
+    }
+
+    .choice-math .katex {
+      font-size: 0.98em !important;
+      max-width: 100%;
+      overflow: hidden !important;
+    }
+
+    .choice-math .katex-html {
+      overflow: hidden !important;
+      max-width: 100%;
+      scrollbar-width: none !important;
+    }
+
+    /* Choice States */
+    .choice-btn.correct-reveal {
+      background: rgba(16, 185, 129, 0.25) !important;
+      border-color: var(--emerald-neon) !important;
+      color: #34d399 !important;
+      box-shadow: 0 0 14px var(--emerald-glow) !important;
+    }
+
+    .choice-btn.wrong-reveal {
+      background: rgba(244, 63, 94, 0.25) !important;
+      border-color: var(--rose-neon) !important;
+      color: #fb7185 !important;
+      box-shadow: 0 0 14px var(--rose-glow) !important;
+    }
+
+    .choice-btn.disabled {
+      pointer-events: none;
+      opacity: 0.6;
+    }
+
+    /* Footer Navigation / Ergonomics Bar */
+    .deck-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-top: 6px;
+      font-size: 10px;
+      font-family: var(--font-mono);
+      color: var(--text-dim);
+      flex-shrink: 0;
+    }
+
+    /* ==========================================================================
+       5. SANDBOX / RIEMANN SUM LAB CONTROLS
+       ========================================================================== */
+    .sandbox-panel {
+      display: none;
+      flex-direction: column;
+      gap: 8px;
+      background: var(--bg-card);
+      border: 1px solid var(--border-glow);
+      border-radius: 10px;
+      padding: 8px 10px;
+      margin-top: 6px;
+    }
+
+    .sandbox-panel.active {
+      display: flex;
+    }
+
+    .sandbox-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      font-size: 11px;
+      font-family: var(--font-mono);
+    }
+
+    .sandbox-label {
+      color: var(--text-muted);
+      white-space: nowrap;
+    }
+
+    .sandbox-select {
+      background: #0f172a;
+      border: 1px solid var(--border-subtle);
+      color: #f8fafc;
+      padding: 4px 6px;
+      border-radius: 6px;
+      font-size: 11px;
+      font-family: var(--font-mono);
+      outline: none;
+    }
+
+    .sandbox-slider {
+      flex: 1;
+      accent-color: var(--cyan-neon);
+      height: 4px;
+      cursor: pointer;
+    }
+
+    .sandbox-btn-group {
+      display: flex;
+      gap: 4px;
+    }
+
+    .sandbox-rule-btn {
+      background: rgba(15, 23, 42, 0.8);
+      border: 1px solid var(--border-subtle);
+      color: var(--text-muted);
+      font-size: 10px;
+      padding: 3px 6px;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    .sandbox-rule-btn.active {
+      background: rgba(6, 182, 212, 0.25);
+      border-color: var(--cyan-neon);
+      color: #fff;
+    }
+
+    /* ==========================================================================
+       6. MODALS & SLIDE-UP DRAWERS (FORMULA CODEX & VICTORY CELEBRATION)
+       ========================================================================== */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(3, 7, 18, 0.82);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      z-index: 100;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      animation: modalFadeIn 0.2s ease-out;
+    }
+
+    .modal-overlay.active {
+      display: flex;
+    }
+
+    @keyframes modalFadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    /* Formula Codex Slide-Up Bottom Sheet */
+    .codex-sheet {
+      width: 100%;
+      max-width: 480px;
+      background: #090e1c;
+      border: 1px solid var(--border-glow);
+      border-radius: 16px;
+      padding: 16px;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.8), 0 0 20px var(--cyan-glow);
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      max-height: 85vh;
+      overflow-y: auto;
+    }
+
+    .modal-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--border-subtle);
+      padding-bottom: 8px;
+    }
+
+    .modal-title {
+      font-size: 15px;
+      font-weight: 800;
+      color: #f8fafc;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .codex-formula-box {
+      background: rgba(15, 23, 42, 0.8);
+      border: 1px solid rgba(56, 189, 248, 0.3);
+      border-radius: 10px;
+      padding: 14px 10px;
+      text-align: center;
+      font-size: 1.15rem;
+      color: #38bdf8;
+    }
+
+    .codex-explanation {
+      font-size: 12px;
+      color: var(--text-muted);
+      line-height: 1.4;
+    }
+
+    .codex-penalty-notice {
+      background: rgba(245, 158, 11, 0.15);
+      border: 1px solid rgba(245, 158, 11, 0.4);
+      padding: 8px 10px;
+      border-radius: 8px;
+      font-size: 11px;
+      color: var(--amber-neon);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .modal-close-btn {
+      background: linear-gradient(135deg, var(--cyan-neon), var(--violet-neon));
+      border: none;
+      color: #fff;
+      padding: 10px;
+      border-radius: 8px;
+      font-weight: 700;
+      font-size: 12px;
+      cursor: pointer;
+      text-align: center;
+    }
+
+    /* Victory Celebration Modal */
+    .victory-card {
+      width: 100%;
+      max-width: 440px;
+      background: #090e1c;
+      border: 1px solid var(--emerald-neon);
+      border-radius: 18px;
+      padding: 20px;
+      text-align: center;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.9), 0 0 30px var(--emerald-glow);
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .victory-title {
+      font-size: 20px;
+      font-weight: 900;
+      background: linear-gradient(90deg, #34d399, #38bdf8);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      letter-spacing: 0.5px;
+    }
+
+    .victory-stats-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin: 8px 0;
+    }
+
+    .stat-pill {
+      background: rgba(15, 23, 42, 0.85);
+      border: 1px solid var(--border-subtle);
+      border-radius: 8px;
+      padding: 8px;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .stat-pill-label {
+      font-size: 10px;
+      color: var(--text-dim);
+      font-family: var(--font-mono);
+      text-transform: uppercase;
+    }
+
+    .stat-pill-value {
+      font-size: 15px;
+      font-weight: 800;
+      color: #f8fafc;
+      font-family: var(--font-mono);
+    }
+
+    .engage-btn {
+      background: linear-gradient(135deg, var(--emerald-neon), var(--cyan-neon));
+      border: none;
+      color: #030712;
+      padding: 12px;
+      border-radius: 10px;
+      font-weight: 800;
+      font-size: 13px;
+      letter-spacing: 0.5px;
+      cursor: pointer;
+      box-shadow: 0 0 15px var(--emerald-glow);
+      transition: all 0.2s;
+    }
+
+    .engage-btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 0 20px var(--emerald-glow);
+    }
+
+    /* Confetti Canvas Overlay */
+    #confettiCanvas {
+      position: fixed;
+      inset: 0;
+      width: 100vw;
+      height: 100vh;
+      pointer-events: none;
+      z-index: 200;
+    }
+  </style>
+</head>
+<body>
+<!-- WORKBENCH_NAV -->
+<div style="position: fixed; top: 12px; left: 16px; z-index: 99999; display: flex; align-items: center; gap: 8px;">
+  <a href="../index.html" style="display: inline-flex; align-items: center; gap: 6px; padding: 6px 14px; font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; font-size: 0.8rem; font-weight: 600; color: #00f2fe; background: rgba(10, 15, 29, 0.88); border: 1px solid rgba(0, 242, 254, 0.35); border-radius: 9999px; text-decoration: none; backdrop-filter: blur(8px); box-shadow: 0 4px 12px rgba(0,0,0,0.4); transition: all 0.2s;">
+    <span>&larr; The Workbench</span>
+  </a>
+</div>
+
+
+  <!-- Fullscreen Particle Confetti Canvas -->
+  <canvas id="confettiCanvas"></canvas>
+
+  <!-- ==========================================================================
+       1. COCKPIT HEADER / TELEMETRY STATUS BAR
+       ========================================================================== -->
+  <header class="cockpit-header">
+    <div class="brand-group">
+      <div class="brand-icon">∫</div>
+      <div>
+        <div class="brand-title">INTEGRALFORGE <span style="font-size:10px; color:var(--cyan-neon);">v2.0</span></div>
+        <div class="brand-subtitle">THE ACCUMULATION ENGINE</div>
+      </div>
+    </div>
+
+    <!-- Mode Selector -->
+    <div class="mode-pills">
+      <button class="mode-btn active" id="modeCampaignBtn" onclick="game.setMode('campaign')">
+        <span>⚔️</span> <span>Campaign</span>
+      </button>
+      <button class="mode-btn" id="modeBlitzBtn" onclick="game.setMode('blitz')">
+        <span>⚡</span> <span>Blitz</span>
+      </button>
+      <button class="mode-btn" id="modeCoreBtn" onclick="game.setMode('core')">
+        <span>🛡️</span> <span>Core</span>
+      </button>
+      <button class="mode-btn" id="modeSandboxBtn" onclick="game.setMode('sandbox')">
+        <span>🔬</span> <span>Sandbox</span>
+      </button>
+    </div>
+
+    <!-- Right HUD Controls -->
+    <div class="header-actions">
+      <button class="codex-btn-trigger" id="openCodexBtn" onclick="game.openCodex()">
+        <span>💡</span> <span>Codex (H)</span>
+      </button>
+      <button class="icon-btn" id="audioToggleBtn" title="Toggle Sound" onclick="audio.toggleMute()">
+        <span id="audioIcon">🔊</span>
+      </button>
+      <button class="icon-btn" id="resetDataBtn" title="Reset Session / State" onclick="game.resetPrompt()">
+        <span>⚙️</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- ==========================================================================
+       2. TELEMETRY SUB-BAR
+       ========================================================================== -->
+  <div class="telemetry-bar">
+    <div class="telemetry-item">
+      <div class="badge-tier" id="tierDisplayBadge">
+        <span id="tierLabel">TIER 1</span>
+        <div class="tier-progress-track">
+          <div class="tier-progress-fill" id="tierProgressFill"></div>
+        </div>
+        <span id="tierProgressCount" style="margin-left:4px;">0/6</span>
+      </div>
+    </div>
+
+    <div class="telemetry-item">
+      <div class="streak-container">
+        <span>🔥 <span id="streakCount">0</span></span>
+        <span class="multiplier-tag" id="multiplierBadge">1x</span>
+      </div>
+    </div>
+
+    <div class="telemetry-item">
+      <div>FLUX: <span class="flux-score" id="fluxScore">0</span></div>
+    </div>
+
+    <div class="telemetry-item">
+      <div class="mode-special-status" id="modeSpecialContainer">
+        <!-- Rendered based on mode (Cores for Sudden Death, Timer for Blitz) -->
+      </div>
+    </div>
+  </div>
+
+  <!-- ==========================================================================
+       3. VIEWPORT MAIN: 60 FPS CANVAS SIMULATOR + QUESTION COCKPIT DECK
+       ========================================================================== -->
+  <main class="viewport-main">
+    
+    <!-- 60 FPS HTML5 Accumulation Canvas -->
+    <div class="sim-panel">
+      <div class="canvas-hud-overlay">
+        <div class="canvas-badge" id="canvasModeBadge">
+          <span style="color:var(--cyan-neon);">●</span> <span id="canvasModeText">AREA ACCUMULATION ∫ f(x) dx</span>
+        </div>
+        <div class="canvas-telemetry-pill" id="canvasTelemetryReadout">
+          S_n: 0.00 | Exact: 0.00
+        </div>
+      </div>
+      
+      <canvas id="integralCanvas"></canvas>
+      <div class="auto-advance-progress" id="countdownBar"></div>
+    </div>
+
+    <!-- Question & Interaction Deck -->
+    <div class="interaction-deck">
+      
+      <div class="question-card">
+        <div class="q-meta">
+          <span class="q-badge" id="topicBadge">POWER RULE & RADICALS</span>
+          <span class="penalty-warning-badge" id="penaltyBadge">⚠️ CODEX 50% FLUX PENALTY ACTIVE</span>
+          <span id="qIndexLabel">ACCUMULATOR #1</span>
+        </div>
+
+        <div class="math-prompt-box" id="mathPrompt">
+          <!-- Rendered dynamically by KaTeX -->
+        </div>
+
+        <div class="physics-subtext" id="physicsSubtext"></div>
+
+        <div class="derivation-banner" id="derivationBox">
+          <strong id="derivationTitle">DERIVATION:</strong> <span id="derivationText"></span>
+        </div>
+      </div>
+
+      <!-- Choices 2x2 Grid -->
+      <div class="choices-grid" id="choicesGrid">
+        <button class="choice-btn" id="choice0" onclick="game.handleChoice(0)">
+          <span class="choice-key">[1]</span>
+          <div class="choice-math" id="choiceText0"></div>
+        </button>
+        <button class="choice-btn" id="choice1" onclick="game.handleChoice(1)">
+          <span class="choice-key">[2]</span>
+          <div class="choice-math" id="choiceText1"></div>
+        </button>
+        <button class="choice-btn" id="choice2" onclick="game.handleChoice(2)">
+          <span class="choice-key">[3]</span>
+          <div class="choice-math" id="choiceText2"></div>
+        </button>
+        <button class="choice-btn" id="choice3" onclick="game.handleChoice(3)">
+          <span class="choice-key">[4]</span>
+          <div class="choice-math" id="choiceText3"></div>
+        </button>
+      </div>
+
+      <!-- Sandbox Interactive Controls Drawer (Active only in Sandbox mode) -->
+      <div class="sandbox-panel" id="sandboxControls">
+        <div class="sandbox-row">
+          <span class="sandbox-label">Curve:</span>
+          <select class="sandbox-select" id="sandboxCurveSelect" onchange="canvasEngine.setSandboxPreset(this.value)">
+            <option value="parabola">Parabola: f(x) = x²</option>
+            <option value="cubic">Cubic: f(x) = x³ - 2x + 1</option>
+            <option value="sine">Trig: f(x) = sin(x) + 1.2</option>
+            <option value="exponential">Exp: f(x) = e^(0.5x)</option>
+            <option value="spring">Spring Force: F = kx</option>
+            <option value="grav">Inverse Square: F = 1/x²</option>
+          </select>
+          <span class="sandbox-label" style="margin-left:6px;">Method:</span>
+          <div class="sandbox-btn-group">
+            <button class="sandbox-rule-btn active" id="ruleLeft" onclick="canvasEngine.setRiemannMethod('left')">Left</button>
+            <button class="sandbox-rule-btn" id="ruleRight" onclick="canvasEngine.setRiemannMethod('right')">Right</button>
+            <button class="sandbox-rule-btn" id="ruleMid" onclick="canvasEngine.setRiemannMethod('midpoint')">Mid</button>
+            <button class="sandbox-rule-btn" id="ruleTrap" onclick="canvasEngine.setRiemannMethod('trapezoid')">Trap</button>
+          </div>
+        </div>
+        <div class="sandbox-row">
+          <span class="sandbox-label">Partitions (n): <b id="partitionLabel" style="color:var(--cyan-neon)">16</b></span>
+          <input type="range" class="sandbox-slider" id="partitionSlider" min="4" max="100" value="16" oninput="canvasEngine.setPartitionCount(this.value)">
+          <span class="sandbox-label" style="margin-left:6px;">Bounds:</span>
+          <span style="color:#38bdf8; font-size:10px;">[<span id="boundALabel">0.0</span>, <span id="boundBLabel">3.0</span>]</span>
+        </div>
+      </div>
+
+      <!-- Ergonomics Footer -->
+      <div class="deck-footer">
+        <span>KEYS: <b>1-4</b> CHOOSE | <b>H</b> CODEX | <b>SPACE</b> ADVANCE</span>
+        <span id="accuracyLabel">ACCURACY: 100%</span>
+      </div>
+
+    </div>
+
+  </main>
+
+  <!-- ==========================================================================
+       4. FORMULA CODEX MODAL / BOTTOM SHEET (HINT SYSTEM)
+       ========================================================================== -->
+  <div class="modal-overlay" id="codexModal">
+    <div class="codex-sheet">
+      <div class="modal-header">
+        <div class="modal-title">
+          <span>💡</span> <span>FORMULA CODEX & IDENTITY ARCHIVE</span>
+        </div>
+        <button class="icon-btn" onclick="game.closeCodex()">✕</button>
+      </div>
+
+      <div class="codex-penalty-notice">
+        <span>⚠️</span>
+        <span><b>Tactical Notice:</b> Consulting the Codex on an active problem applies a <b>50% score penalty</b> without breaking your active streak.</span>
+      </div>
+
+      <div class="codex-formula-box" id="codexFormulaBox">
+        <!-- Rendered by KaTeX -->
+      </div>
+
+      <div class="codex-explanation" id="codexExplanationText">
+        <!-- Conceptual hint & derivation notes -->
+      </div>
+
+      <button class="modal-close-btn" onclick="game.closeCodex()">
+        RETURN TO COCKPIT (ESC / H / SPACE)
+      </button>
+    </div>
+  </div>
+
+  <!-- ==========================================================================
+       5. VICTORY CELEBRATION MODAL (TIER CLEAR / BLITZ COMPLETE)
+       ========================================================================== -->
+  <div class="modal-overlay" id="victoryModal">
+    <div class="victory-card">
+      <div style="font-size: 32px;">🏆</div>
+      <div class="victory-title" id="victoryHeader">TIER CLEARED!</div>
+      <div style="font-size:12px; color:var(--text-muted);" id="victorySubheader">
+        Accumulation Matrix Synchronized.
+      </div>
+
+      <div class="victory-stats-grid">
+        <div class="stat-pill">
+          <span class="stat-pill-label">Accuracy</span>
+          <span class="stat-pill-value" id="modalAccuracy">100%</span>
+        </div>
+        <div class="stat-pill">
+          <span class="stat-pill-label">Peak Streak</span>
+          <span class="stat-pill-value" id="modalPeakStreak">7</span>
+        </div>
+        <div class="stat-pill">
+          <span class="stat-pill-label">Total Flux</span>
+          <span class="stat-pill-value" id="modalFluxScore">1,450</span>
+        </div>
+        <div class="stat-pill">
+          <span class="stat-pill-label">Avg Solve Speed</span>
+          <span class="stat-pill-value" id="modalSolveSpeed">2.4s</span>
+        </div>
+      </div>
+
+      <button class="engage-btn" id="nextTierBtn" onclick="game.advanceTier()">
+        ENGAGE NEXT TIER (SPACE / ENTER) →
+      </button>
+    </div>
+  </div>
+
+  <!-- ==========================================================================
+       6. CORE DEPLETION / GAME OVER MODAL (SUDDEN DEATH & BLITZ)
+       ========================================================================== -->
+  <div class="modal-overlay" id="gameOverModal">
+    <div class="victory-card" style="border-color: var(--rose-neon); box-shadow: 0 10px 40px rgba(0,0,0,0.9), 0 0 30px var(--rose-glow);">
+      <div style="font-size: 32px;">💥</div>
+      <div class="victory-title" style="background: linear-gradient(90deg, #f43f5e, #fb923c); -webkit-background-clip:text; -webkit-text-fill-color:transparent;" id="gameOverHeader">
+        CORE OVERLOAD!
+      </div>
+      <div style="font-size:12px; color:var(--text-muted);" id="gameOverSubheader">
+        Containment depleted. Run telemetry saved.
+      </div>
+
+      <div class="victory-stats-grid">
+        <div class="stat-pill">
+          <span class="stat-pill-label">Questions Cleared</span>
+          <span class="stat-pill-value" id="goQuestionsCleared">0</span>
+        </div>
+        <div class="stat-pill">
+          <span class="stat-pill-label">Final Flux</span>
+          <span class="stat-pill-value" id="goFinalFlux">0</span>
+        </div>
+      </div>
+
+      <button class="engage-btn" style="background: linear-gradient(135deg, var(--rose-neon), var(--amber-neon));" onclick="game.restartActiveMode()">
+        REINITIALIZE RUN (SPACE / ENTER)
+      </button>
+    </div>
+  </div>
+
+  <!-- ==========================================================================
+       7. JAVASCRIPT: AUDIO SYNTHESIZER, CANVAS ENGINE, MATH ENGINE, & GAME LOGIC
+       ========================================================================== -->
+  <script>
+  /* ==========================================================================
+     AUDIO ENGINE: BESPOKE WEB AUDIO API OSCILLATORS (100% NATIVE & OFFLINE)
+     ========================================================================== */
+  class NativeAudioEngine {
+    constructor() {
+      this.ctx = null;
+      this.isMuted = localStorage.getItem('integral_forge_muted') === 'true';
+    }
+
+    init() {
+      if (!this.ctx) {
+        const AudioCtx = window.AudioContext || window.webkitAudioContext;
+        if (AudioCtx) {
+          this.ctx = new AudioCtx();
+        }
+      }
+      if (this.ctx && this.ctx.state === 'suspended') {
+        this.ctx.resume();
+      }
+    }
+
+    toggleMute() {
+      this.isMuted = !this.isMuted;
+      localStorage.setItem('integral_forge_muted', this.isMuted);
+      const icon = document.getElementById('audioIcon');
+      if (icon) icon.textContent = this.isMuted ? '🔇' : '🔊';
+      if (!this.isMuted) this.playPing(1);
+    }
+
+    // Resonant Plasma Ping on Correct Answer
+    playPing(multiplier = 1) {
+      if (this.isMuted) return;
+      this.init();
+      if (!this.ctx) return;
+
+      const now = this.ctx.currentTime;
+      const baseFreq = 523.25 * (multiplier >= 4 ? 1.5 : (multiplier >= 2 ? 1.25 : 1.0)); // C5 or harmonized
+
+      const osc = this.ctx.createOscillator();
+      const osc2 = this.ctx.createOscillator();
+      const gain = this.ctx.createGain();
+      const filter = this.ctx.createBiquadFilter();
+
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(baseFreq, now);
+      osc.frequency.exponentialRampToValueAtTime(baseFreq * 2, now + 0.18);
+
+      osc2.type = 'triangle';
+      osc2.frequency.setValueAtTime(baseFreq * 1.5, now);
+
+      filter.type = 'bandpass';
+      filter.frequency.setValueAtTime(baseFreq * 1.8, now);
+      filter.Q.setValueAtTime(4, now);
+
+      gain.gain.setValueAtTime(0.01, now);
+      gain.gain.linearRampToValueAtTime(0.25, now + 0.02);
+      gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.35);
+
+      osc.connect(filter);
+      osc2.connect(filter);
+      filter.connect(gain);
+      gain.connect(this.ctx.destination);
+
+      osc.start(now);
+      osc2.start(now);
+      osc.stop(now + 0.36);
+      osc2.stop(now + 0.36);
+    }
+
+    // Low-Frequency Buzzer on Wrong Answer
+    playBuzz() {
+      if (this.isMuted) return;
+      this.init();
+      if (!this.ctx) return;
+
+      const now = this.ctx.currentTime;
+      const osc = this.ctx.createOscillator();
+      const gain = this.ctx.createGain();
+
+      osc.type = 'sawtooth';
+      osc.frequency.setValueAtTime(140, now);
+      osc.frequency.exponentialRampToValueAtTime(70, now + 0.25);
+
+      gain.gain.setValueAtTime(0.18, now);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.28);
+
+      osc.connect(gain);
+      gain.connect(this.ctx.destination);
+
+      osc.start(now);
+      osc.stop(now + 0.3);
+    }
+
+    // Celebratory Victory Fanfare
+    playFanfare() {
+      if (this.isMuted) return;
+      this.init();
+      if (!this.ctx) return;
+
+      const now = this.ctx.currentTime;
+      const notes = [523.25, 659.25, 783.99, 1046.50]; // C5, E5, G5, C6
+      notes.forEach((freq, i) => {
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        const start = now + (i * 0.1);
+
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(freq, start);
+
+        gain.gain.setValueAtTime(0.001, start);
+        gain.gain.linearRampToValueAtTime(0.2, start + 0.03);
+        gain.gain.exponentialRampToValueAtTime(0.001, start + (i === 3 ? 0.6 : 0.28));
+
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+
+        osc.start(start);
+        osc.stop(start + (i === 3 ? 0.65 : 0.3));
+      });
+    }
+  }
+
+  const audio = new NativeAudioEngine();
+
+  /* ==========================================================================
+     DUAL-CANNON CANVAS CONFETTI PARTICLE SYSTEM (100% BESPOKE & ZERO-DEPENDENCY)
+     ========================================================================== */
+  class DualCannonConfetti {
+    constructor(canvasId) {
+      this.canvas = document.getElementById(canvasId);
+      this.ctx = this.canvas.getContext('2d');
+      this.particles = [];
+      this.isActive = false;
+      this.resize();
+      window.addEventListener('resize', () => this.resize());
+    }
+
+    resize() {
+      this.canvas.width = window.innerWidth;
+      this.canvas.height = window.innerHeight;
+    }
+
+    launch() {
+      this.resize();
+      const colors = ['#06b6d4', '#8b5cf6', '#10b981', '#f59e0b', '#f43f5e', '#38bdf8', '#fbbf24'];
+      const countPerCannon = 75;
+
+      // Left Cannon
+      for (let i = 0; i < countPerCannon; i++) {
+        const angle = -Math.PI / 4 + (Math.random() * 0.4 - 0.2);
+        const speed = Math.random() * 18 + 12;
+        this.particles.push({
+          x: 0,
+          y: this.canvas.height,
+          vx: Math.cos(angle) * speed,
+          vy: Math.sin(angle) * speed,
+          w: Math.random() * 8 + 4,
+          h: Math.random() * 6 + 4,
+          color: colors[Math.floor(Math.random() * colors.length)],
+          rotation: Math.random() * Math.PI * 2,
+          vRot: (Math.random() - 0.5) * 0.2,
+          life: 1.0,
+          decay: Math.random() * 0.008 + 0.006
+        });
+      }
+
+      // Right Cannon
+      for (let i = 0; i < countPerCannon; i++) {
+        const angle = -3 * Math.PI / 4 + (Math.random() * 0.4 - 0.2);
+        const speed = Math.random() * 18 + 12;
+        this.particles.push({
+          x: this.canvas.width,
+          y: this.canvas.height,
+          vx: Math.cos(angle) * speed,
+          vy: Math.sin(angle) * speed,
+          w: Math.random() * 8 + 4,
+          h: Math.random() * 6 + 4,
+          color: colors[Math.floor(Math.random() * colors.length)],
+          rotation: Math.random() * Math.PI * 2,
+          vRot: (Math.random() - 0.5) * 0.2,
+          life: 1.0,
+          decay: Math.random() * 0.008 + 0.006
+        });
+      }
+
+      if (!this.isActive) {
+        this.isActive = true;
+        this.animate();
+      }
+    }
+
+    animate() {
+      if (!this.isActive) return;
+      this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+
+      for (let i = this.particles.length - 1; i >= 0; i--) {
+        const p = this.particles[i];
+        p.x += p.vx;
+        p.y += p.vy;
+        p.vy += 0.35; // Gravity
+        p.vx *= 0.985; // Air drag
+        p.rotation += p.vRot;
+        p.life -= p.decay;
+
+        if (p.life <= 0 || p.y > this.canvas.height + 20) {
+          this.particles.splice(i, 1);
+          continue;
+        }
+
+        this.ctx.save();
+        this.ctx.translate(p.x, p.y);
+        this.ctx.rotate(p.rotation);
+        this.ctx.globalAlpha = Math.max(0, p.life);
+        this.ctx.fillStyle = p.color;
+        this.ctx.fillRect(-p.w / 2, -p.h / 2, p.w, p.h);
+        this.ctx.restore();
+      }
+
+      if (this.particles.length > 0) {
+        requestAnimationFrame(() => this.animate());
+      } else {
+        this.isActive = false;
+        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+      }
+    }
+  }
+
+  const confetti = new DualCannonConfetti('confettiCanvas');
+
+  /* ==========================================================================
+     HTML5 60 FPS ACCUMULATION CANVAS ENGINE
+     ========================================================================== */
+  class CanvasAccumulationEngine {
+    constructor(canvasId) {
+      this.canvas = document.getElementById(canvasId);
+      this.ctx = this.canvas.getContext('2d');
+      this.mode = 'area'; // 'area', 'kinematics', 'spring', 'charge', 'sandbox'
+      this.time = 0;
+      this.bounds = { a: 0, b: 3 };
+      this.partitionCount = 16;
+      this.riemannMethod = 'left'; // 'left', 'right', 'midpoint', 'trapezoid'
+      this.presetCurve = 'parabola';
+      this.particleTrack = { pos: 0, vel: 0, trail: [] };
+      this.chargeValue = 0;
+      this.springDisp = 0;
+
+      this.currentProblemVisual = null;
+
+      this.resize();
+      window.addEventListener('resize', () => this.resize());
+      requestAnimationFrame((t) => this.renderLoop(t));
+    }
+
+    resize() {
+      const rect = this.canvas.getBoundingClientRect();
+      const dpr = window.devicePixelRatio || 1;
+      this.width = rect.width;
+      this.height = rect.height;
+      this.canvas.width = rect.width * dpr;
+      this.canvas.height = rect.height * dpr;
+      this.ctx.resetTransform();
+      this.ctx.scale(dpr, dpr);
+    }
+
+    setProblemContext(visualConfig) {
+      this.currentProblemVisual = visualConfig;
+      if (visualConfig && visualConfig.type) {
+        this.mode = visualConfig.type;
+      }
+      this.time = 0;
+      this.particleTrack = { pos: 0, vel: 0, trail: [] };
+      this.chargeValue = 0;
+    }
+
+    setSandboxPreset(preset) {
+      this.presetCurve = preset;
+      if (preset === 'spring') this.mode = 'spring';
+      else if (preset === 'kinematics') this.mode = 'kinematics';
+      else this.mode = 'sandbox';
+      this.updateTelemetryHUD();
+    }
+
+    setRiemannMethod(method) {
+      this.riemannMethod = method;
+      document.querySelectorAll('.sandbox-rule-btn').forEach(b => b.classList.remove('active'));
+      const activeBtn = document.getElementById('rule' + method.charAt(0).toUpperCase() + method.slice(1));
+      if (activeBtn) activeBtn.classList.add('active');
+      this.updateTelemetryHUD();
+    }
+
+    setPartitionCount(count) {
+      this.partitionCount = parseInt(count, 10);
+      const lbl = document.getElementById('partitionLabel');
+      if (lbl) lbl.textContent = this.partitionCount;
+      this.updateTelemetryHUD();
+    }
+
+    renderLoop(timestamp) {
+      this.time += 0.02;
+      this.ctx.clearRect(0, 0, this.width, this.height);
+
+      if (this.mode === 'kinematics') {
+        this.renderKinematicsScene();
+      } else if (this.mode === 'spring') {
+        this.renderSpringWorkScene();
+      } else if (this.mode === 'charge') {
+        this.renderChargeAccumulationScene();
+      } else {
+        this.renderAreaRiemannScene();
+      }
+
+      requestAnimationFrame((t) => this.renderLoop(t));
+    }
+
+    // 1. Generic Area & Riemann Sum Slab Rendering
+    renderAreaRiemannScene() {
+      const W = this.width;
+      const H = this.height;
+      const padX = 35;
+      const padY = 25;
+
+      // Coordinate mapping
+      const xMin = -0.5;
+      const xMax = 4.0;
+      const yMin = -0.5;
+      const yMax = 4.5;
+
+      const toScreenX = (x) => padX + ((x - xMin) / (xMax - xMin)) * (W - padX * 2);
+      const toScreenY = (y) => H - padY - ((y - yMin) / (yMax - yMin)) * (H - padY * 2);
+
+      // Evaluate active curve function
+      const f = (x) => {
+        if (this.currentProblemVisual && this.currentProblemVisual.fn) {
+          return this.currentProblemVisual.fn(x);
+        }
+        if (this.presetCurve === 'parabola') return 0.3 * x * x + 0.2;
+        if (this.presetCurve === 'cubic') return 0.2 * (x * x * x - 2 * x + 2.5);
+        if (this.presetCurve === 'sine') return Math.sin(x * 1.5) + 1.5;
+        if (this.presetCurve === 'exponential') return 0.4 * Math.exp(0.6 * x);
+        if (this.presetCurve === 'grav') return Math.min(4, 1.2 / Math.max(0.3, x * 0.8));
+        return 0.3 * x * x + 0.2;
+      };
+
+      const a = (this.currentProblemVisual && this.currentProblemVisual.a !== undefined) ? this.currentProblemVisual.a : 0.5;
+      const b = (this.currentProblemVisual && this.currentProblemVisual.b !== undefined) ? this.currentProblemVisual.b : 3.2;
+
+      // Draw Grid & Axes
+      this.ctx.strokeStyle = 'rgba(255, 255, 255, 0.07)';
+      this.ctx.lineWidth = 1;
+      this.ctx.beginPath();
+      for (let x = 0; x <= 4; x += 1) {
+        this.ctx.moveTo(toScreenX(x), padY);
+        this.ctx.lineTo(toScreenX(x), H - padY);
+      }
+      for (let y = 0; y <= 4; y += 1) {
+        this.ctx.moveTo(padX, toScreenY(y));
+        this.ctx.lineTo(W - padX, toScreenY(y));
+      }
+      this.ctx.stroke();
+
+      // Axes lines
+      this.ctx.strokeStyle = 'rgba(148, 163, 184, 0.4)';
+      this.ctx.lineWidth = 1.5;
+      this.ctx.beginPath();
+      this.ctx.moveTo(toScreenX(xMin), toScreenY(0));
+      this.ctx.lineTo(toScreenX(xMax), toScreenY(0));
+      this.ctx.moveTo(toScreenX(0), toScreenY(yMin));
+      this.ctx.lineTo(toScreenX(0), toScreenY(yMax));
+      this.ctx.stroke();
+
+      // Riemann Slabs (Upper / Lower / Midpoint / Trapezoid)
+      const n = (this.mode === 'sandbox') ? this.partitionCount : 12;
+      const dx = (b - a) / n;
+      let riemannSum = 0;
+
+      for (let i = 0; i < n; i++) {
+        const xLeft = a + i * dx;
+        const xRight = xLeft + dx;
+        let slabY = 0;
+
+        if (this.riemannMethod === 'left') {
+          slabY = f(xLeft);
+          riemannSum += slabY * dx;
+        } else if (this.riemannMethod === 'right') {
+          slabY = f(xRight);
+          riemannSum += slabY * dx;
+        } else if (this.riemannMethod === 'midpoint') {
+          slabY = f((xLeft + xRight) / 2);
+          riemannSum += slabY * dx;
+        } else if (this.riemannMethod === 'trapezoid') {
+          const yL = f(xLeft);
+          const yR = f(xRight);
+          riemannSum += 0.5 * (yL + yR) * dx;
+        }
+
+        const sxL = toScreenX(xLeft);
+        const sxR = toScreenX(xRight);
+        const sy0 = toScreenY(0);
+
+        if (this.riemannMethod === 'trapezoid') {
+          const syL = toScreenY(f(xLeft));
+          const syR = toScreenY(f(xRight));
+          this.ctx.fillStyle = 'rgba(139, 92, 246, 0.22)';
+          this.ctx.strokeStyle = 'rgba(139, 92, 246, 0.6)';
+          this.ctx.beginPath();
+          this.ctx.moveTo(sxL, sy0);
+          this.ctx.lineTo(sxL, syL);
+          this.ctx.lineTo(sxR, syR);
+          this.ctx.lineTo(sxR, sy0);
+          this.ctx.closePath();
+          this.ctx.fill();
+          this.ctx.stroke();
+        } else {
+          const syTop = toScreenY(slabY);
+          const sHeight = sy0 - syTop;
+          this.ctx.fillStyle = (i % 2 === 0) ? 'rgba(6, 182, 212, 0.2)' : 'rgba(139, 92, 246, 0.2)';
+          this.ctx.strokeStyle = 'rgba(56, 189, 248, 0.5)';
+          this.ctx.fillRect(sxL, syTop, sxR - sxL, sHeight);
+          this.ctx.strokeRect(sxL, syTop, sxR - sxL, sHeight);
+        }
+      }
+
+      // Sweeping Continuous Area Glow Under Curve [a, b]
+      const sweepProgress = Math.min(1.0, (Math.sin(this.time * 1.5) + 1.2) * 0.5);
+      const sweepB = a + (b - a) * sweepProgress;
+
+      this.ctx.save();
+      this.ctx.beginPath();
+      this.ctx.moveTo(toScreenX(a), toScreenY(0));
+      for (let x = a; x <= sweepB; x += 0.05) {
+        this.ctx.lineTo(toScreenX(x), toScreenY(f(x)));
+      }
+      this.ctx.lineTo(toScreenX(sweepB), toScreenY(0));
+      this.ctx.closePath();
+
+      const grad = this.ctx.createLinearGradient(toScreenX(a), 0, toScreenX(b), 0);
+      grad.addColorStop(0, 'rgba(6, 182, 212, 0.35)');
+      grad.addColorStop(1, 'rgba(139, 92, 246, 0.35)');
+      this.ctx.fillStyle = grad;
+      this.ctx.fill();
+      this.ctx.restore();
+
+      // Continuous Curve Line f(x)
+      this.ctx.beginPath();
+      for (let x = xMin; x <= xMax; x += 0.05) {
+        const sx = toScreenX(x);
+        const sy = toScreenY(f(x));
+        if (x === xMin) this.ctx.moveTo(sx, sy);
+        else this.ctx.lineTo(sx, sy);
+      }
+      this.ctx.strokeStyle = '#38bdf8';
+      this.ctx.lineWidth = 2.5;
+      this.ctx.shadowColor = '#06b6d4';
+      this.ctx.shadowBlur = 8;
+      this.ctx.stroke();
+      this.ctx.shadowBlur = 0;
+
+      // Draw Bound Markers [a, b]
+      this.drawBoundMarker(toScreenX(a), toScreenY(0), 'a=' + a.toFixed(1));
+      this.drawBoundMarker(toScreenX(b), toScreenY(0), 'b=' + b.toFixed(1));
+
+      // Telemetry update on HUD
+      const exactIntegral = this.approximateExactIntegral(f, a, b);
+      const readout = document.getElementById('canvasTelemetryReadout');
+      if (readout) {
+        const err = Math.abs(riemannSum - exactIntegral);
+        const errPct = exactIntegral !== 0 ? ((err / Math.abs(exactIntegral)) * 100).toFixed(1) : '0.0';
+        readout.innerHTML = `S<sub>n</sub>: <b>${riemannSum.toFixed(3)}</b> | ∫Exact: <b>${exactIntegral.toFixed(3)}</b> | Δ: <b>${errPct}%</b>`;
+      }
+    }
+
+    // 2. Kinematics Accumulation Scene (a(t) -> v(t) & Particle on Track)
+    renderKinematicsScene() {
+      const W = this.width;
+      const H = this.height;
+      const halfH = H * 0.55;
+
+      // Upper Half: v(t) curve
+      this.ctx.strokeStyle = 'rgba(255, 255, 255, 0.08)';
+      this.ctx.beginPath();
+      this.ctx.moveTo(30, halfH);
+      this.ctx.lineTo(W - 20, halfH);
+      this.ctx.stroke();
+
+      const alpha = 0.8;
+      const v0 = 0.5;
+      const tMax = 4.0;
+      const curT = (this.time % tMax);
+
+      const toSX = (t) => 30 + (t / tMax) * (W - 50);
+      const toSY = (v) => halfH - 10 - (v / 4.0) * (halfH - 25);
+
+      // Curve v(t) = v0 + alpha*t
+      this.ctx.beginPath();
+      for (let t = 0; t <= tMax; t += 0.1) {
+        const v = v0 + alpha * t;
+        if (t === 0) this.ctx.moveTo(toSX(t), toSY(v));
+        else this.ctx.lineTo(toSX(t), toSY(v));
+      }
+      this.ctx.strokeStyle = '#c084fc';
+      this.ctx.lineWidth = 2;
+      this.ctx.stroke();
+
+      // Area fill from 0 to curT
+      this.ctx.beginPath();
+      this.ctx.moveTo(toSX(0), halfH);
+      for (let t = 0; t <= curT; t += 0.05) {
+        this.ctx.lineTo(toSX(t), toSY(v0 + alpha * t));
+      }
+      this.ctx.lineTo(toSX(curT), halfH);
+      this.ctx.closePath();
+      this.ctx.fillStyle = 'rgba(192, 132, 252, 0.25)';
+      this.ctx.fill();
+
+      // Vertical line at current t
+      this.ctx.strokeStyle = '#a855f7';
+      this.ctx.setLineDash([3, 3]);
+      this.ctx.beginPath();
+      this.ctx.moveTo(toSX(curT), halfH);
+      this.ctx.lineTo(toSX(curT), toSY(v0 + alpha * curT));
+      this.ctx.stroke();
+      this.ctx.setLineDash([]);
+
+      // Lower Half: Physical Particle Track
+      const trackY = H - 25;
+      this.ctx.fillStyle = 'rgba(15, 23, 42, 0.9)';
+      this.ctx.fillRect(20, trackY - 14, W - 40, 28);
+      this.ctx.strokeStyle = 'rgba(56, 189, 248, 0.3)';
+      this.ctx.strokeRect(20, trackY - 14, W - 40, 28);
+
+      // Particle position x(t) = v0*t + 0.5*alpha*t^2
+      const xDist = v0 * curT + 0.5 * alpha * curT * curT;
+      const maxDist = v0 * tMax + 0.5 * alpha * tMax * tMax;
+      const partX = 30 + (xDist / maxDist) * (W - 70);
+
+      // Particle trail
+      this.ctx.shadowColor = '#06b6d4';
+      this.ctx.shadowBlur = 10;
+      this.ctx.fillStyle = '#06b6d4';
+      this.ctx.beginPath();
+      this.ctx.arc(partX, trackY, 7, 0, Math.PI * 2);
+      this.ctx.fill();
+      this.ctx.shadowBlur = 0;
+
+      // Text labels
+      this.ctx.font = '10px JetBrains Mono';
+      this.ctx.fillStyle = '#38bdf8';
+      this.ctx.fillText(`v(t)=${(v0 + alpha * curT).toFixed(2)} m/s`, toSX(curT) + 4, toSY(v0 + alpha * curT) - 6);
+      this.ctx.fillStyle = '#94a3b8';
+      this.ctx.fillText(`Δx = ∫ v dt = ${xDist.toFixed(2)} m`, 30, trackY - 18);
+    }
+
+    // 3. Spring / Variable Force Work Scene (F = kx, W = 1/2 k x^2)
+    renderSpringWorkScene() {
+      const W = this.width;
+      const H = this.height;
+      const splitX = W * 0.45;
+
+      // Left: Elastic Spring Coil Animation
+      const k = 15;
+      const maxDisp = 1.8;
+      const disp = Math.abs(Math.sin(this.time * 2)) * maxDisp;
+
+      const anchorX = 25;
+      const massX = anchorX + 60 + disp * 35;
+      const springY = H * 0.5;
+
+      // Wall Anchor
+      this.ctx.fillStyle = '#334155';
+      this.ctx.fillRect(anchorX - 10, springY - 30, 10, 60);
+
+      // Draw Spring Coils
+      this.ctx.strokeStyle = '#06b6d4';
+      this.ctx.lineWidth = 2.5;
+      this.ctx.beginPath();
+      this.ctx.moveTo(anchorX, springY);
+      const coils = 9;
+      const coilW = (massX - anchorX) / coils;
+      for (let i = 0; i < coils; i++) {
+        const cx = anchorX + i * coilW;
+        const cy = springY + (i % 2 === 0 ? -12 : 12);
+        this.ctx.lineTo(cx + coilW * 0.5, cy);
+      }
+      this.ctx.lineTo(massX, springY);
+      this.ctx.stroke();
+
+      // Compressing Mass Block
+      this.ctx.fillStyle = '#8b5cf6';
+      this.ctx.fillRect(massX, springY - 18, 30, 36);
+      this.ctx.strokeStyle = '#c084fc';
+      this.ctx.strokeRect(massX, springY - 18, 30, 36);
+
+      // Right: Triangle Area under F = kx
+      const padR = 25;
+      const plotLeft = splitX + 20;
+      const plotRight = W - padR;
+      const plotBottom = H - 25;
+      const plotTop = 30;
+
+      // Plot Axes
+      this.ctx.strokeStyle = 'rgba(255, 255, 255, 0.15)';
+      this.ctx.beginPath();
+      this.ctx.moveTo(plotLeft, plotBottom);
+      this.ctx.lineTo(plotRight, plotBottom);
+      this.ctx.moveTo(plotLeft, plotBottom);
+      this.ctx.lineTo(plotLeft, plotTop);
+      this.ctx.stroke();
+
+      // Force Line F = kx
+      const toPlotX = (x) => plotLeft + (x / maxDisp) * (plotRight - plotLeft);
+      const toPlotY = (f) => plotBottom - (f / (k * maxDisp)) * (plotBottom - plotTop);
+
+      this.ctx.beginPath();
+      this.ctx.moveTo(toPlotX(0), toPlotY(0));
+      this.ctx.lineTo(toPlotX(maxDisp), toPlotY(k * maxDisp));
+      this.ctx.strokeStyle = '#f59e0b';
+      this.ctx.lineWidth = 2;
+      this.ctx.stroke();
+
+      // Shaded Work Triangle
+      this.ctx.beginPath();
+      this.ctx.moveTo(toPlotX(0), toPlotY(0));
+      this.ctx.lineTo(toPlotX(disp), toPlotY(k * disp));
+      this.ctx.lineTo(toPlotX(disp), plotBottom);
+      this.ctx.closePath();
+      this.ctx.fillStyle = 'rgba(245, 158, 11, 0.3)';
+      this.ctx.fill();
+
+      // Work Value
+      const work = 0.5 * k * disp * disp;
+      this.ctx.font = '10px JetBrains Mono';
+      this.ctx.fillStyle = '#f59e0b';
+      this.ctx.fillText(`W = ∫ kx dx = ${work.toFixed(2)} J`, plotLeft + 10, plotTop + 14);
+      this.ctx.fillStyle = '#38bdf8';
+      this.ctx.fillText(`x = ${disp.toFixed(2)} m`, anchorX, springY + 35);
+    }
+
+    // 4. Capacitor Charge Accumulation Scene (q(t) = ∫ i(t) dt)
+    renderChargeAccumulationScene() {
+      const W = this.width;
+      const H = this.height;
+
+      // Two Capacitor Plates
+      const plateY = 35;
+      const plateH = H - 70;
+      const p1X = W * 0.35;
+      const p2X = W * 0.65;
+
+      this.ctx.fillStyle = 'rgba(30, 41, 59, 0.8)';
+      this.ctx.strokeStyle = 'rgba(56, 189, 248, 0.5)';
+      this.ctx.fillRect(p1X - 6, plateY, 12, plateH);
+      this.ctx.strokeRect(p1X - 6, plateY, 12, plateH);
+
+      this.ctx.fillRect(p2X - 6, plateY, 12, plateH);
+      this.ctx.strokeRect(p2X - 6, plateY, 12, plateH);
+
+      // Accumulating Charge Gauge
+      const chargeRatio = (Math.sin(this.time) + 1) * 0.5;
+      const qCount = Math.floor(chargeRatio * 18);
+
+      for (let i = 0; i < qCount; i++) {
+        const py = plateY + 12 + (i / 18) * (plateH - 24);
+        // Positive charges on plate 1
+        this.ctx.fillStyle = '#10b981';
+        this.ctx.font = '10px monospace';
+        this.ctx.fillText('+', p1X - 18, py);
+
+        // Negative charges on plate 2
+        this.ctx.fillStyle = '#f43f5e';
+        this.ctx.fillText('−', p2X + 10, py);
+
+        // Electric Field Flux lines between plates
+        this.ctx.strokeStyle = 'rgba(6, 182, 212, 0.25)';
+        this.ctx.beginPath();
+        this.ctx.moveTo(p1X + 8, py - 3);
+        this.ctx.lineTo(p2X - 8, py - 3);
+        this.ctx.stroke();
+      }
+
+      this.ctx.font = '11px JetBrains Mono';
+      this.ctx.fillStyle = '#10b981';
+      this.ctx.fillText(`Q(t) = ∫ i(t) dt = ${(chargeRatio * 4.5).toFixed(2)} μC`, 20, 20);
+      this.ctx.fillStyle = '#94a3b8';
+      this.ctx.fillText(`CAPACITOR CHARGE ACCUMULATOR`, W - 210, 20);
+    }
+
+    drawBoundMarker(x, y, label) {
+      this.ctx.strokeStyle = '#38bdf8';
+      this.ctx.beginPath();
+      this.ctx.moveTo(x, y - 6);
+      this.ctx.lineTo(x, y + 6);
+      this.ctx.stroke();
+      this.ctx.font = '9px JetBrains Mono';
+      this.ctx.fillStyle = '#94a3b8';
+      this.ctx.fillText(label, x - 10, y + 16);
+    }
+
+    approximateExactIntegral(f, a, b) {
+      const steps = 1000;
+      const dx = (b - a) / steps;
+      let sum = 0;
+      for (let i = 0; i < steps; i++) {
+        sum += f(a + (i + 0.5) * dx) * dx;
+      }
+      return sum;
+    }
+
+    updateTelemetryHUD() {
+      // triggers instant recalculation during slider interactions
+    }
+  }
+
+  const canvasEngine = new CanvasAccumulationEngine('integralCanvas');
+
+  /* ==========================================================================
+     PROCEDURAL QUESTION GENERATION ENGINE (8 EXTENSIVE TIERS)
+     ========================================================================== */
+  class ProceduralCalculusEngine {
+    constructor() {
+      this.lruSignatures = [];
+      this.lruCapacity = 18;
+    }
+
+    recordSignature(sig) {
+      this.lruSignatures.push(sig);
+      if (this.lruSignatures.length > this.lruCapacity) {
+        this.lruSignatures.shift();
+      }
+    }
+
+    isRepeated(sig) {
+      return this.lruSignatures.includes(sig);
+    }
+
+    generateQuestion(tier) {
+      let attempts = 0;
+      let q = null;
+      while (attempts < 20) {
+        attempts++;
+        switch (tier) {
+          case 1: q = this.genTier1(); break;
+          case 2: q = this.genTier2(); break;
+          case 3: q = this.genTier3(); break;
+          case 4: q = this.genTier4(); break;
+          case 5: q = this.genTier5(); break;
+          case 6: q = this.genTier6(); break;
+          case 7: q = this.genTier7(); break;
+          case 8: q = this.genTier8(); break;
+          default: q = this.genTier1(); break;
+        }
+        if (!this.isRepeated(q.signature)) {
+          this.recordSignature(q.signature);
+          break;
+        }
+      }
+      return q;
+    }
+
+    // Helper: shuffle 4 choices and record correct index
+    formatQuestion(latexPrompt, correctLatex, traps, derivation, codexFormula, codexExpl, visualConfig, topicName, subtext = "") {
+      const choices = [
+        { latex: correctLatex, isCorrect: true },
+        { latex: traps[0], isCorrect: false },
+        { latex: traps[1], isCorrect: false },
+        { latex: traps[2], isCorrect: false }
+      ];
+
+      // Fisher-Yates shuffle
+      for (let i = choices.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [choices[i], choices[j]] = [choices[j], choices[i]];
+      }
+
+      const correctIdx = choices.findIndex(c => c.isCorrect);
+
+      return {
+        signature: latexPrompt + correctLatex,
+        promptLatex: latexPrompt,
+        choices: choices.map(c => c.latex),
+        correctIndex: correctIdx,
+        derivation: derivation,
+        codexFormula: codexFormula,
+        codexExplanation: codexExpl,
+        visualConfig: visualConfig,
+        topic: topicName,
+        subtext: subtext
+      };
+    }
+
+    // TIER 1: Power Rule & Polynomial Anti-derivatives
+    genTier1() {
+      const type = Math.floor(Math.random() * 4);
+      if (type === 0) {
+        // \int a x^n dx
+        const a = (Math.floor(Math.random() * 4) + 2) * 2;
+        const n = Math.floor(Math.random() * 3) + 2; // e.g. 2, 3, 4
+        const newN = n + 1;
+        const prompt = `\\int ${a}x^{${n}}\\,dx`;
+        const correct = `\\frac{${a}}{${newN}}x^{${newN}} + C`;
+        const traps = [
+          `${a * n}x^{${n - 1}} + C`, // Differentiation error
+          `\\frac{${a}}{${n}}x^{${newN}} + C`, // Forgot +1 in denominator
+          `\\frac{${a}}{${newN}}x^{${n}} + C`  // Forgot +1 in exponent
+        ];
+        return this.formatQuestion(
+          prompt, correct, traps,
+          `Apply Power Rule: $\\int x^n\\,dx = \\frac{x^{n+1}}{n+1} + C$. Increase exponent to $x^{${newN}}$ and divide by $${newN}$.`,
+          `\\int x^n\\,dx = \\frac{x^{n+1}}{n+1} + C \\quad (n \\neq -1)`,
+          `For polynomial terms, the anti-derivative is found by incrementing the power by 1 and dividing by the new exponent.`,
+          { type: 'area', a: 0, b: 2.5, fn: (x) => 0.4 * Math.pow(x, n) },
+          'POWER RULE & POLYNOMIALS'
+        );
+      } else if (type === 1) {
+        // Radical: \int \sqrt{x} dx or \int \frac{1}{\sqrt{x}} dx
+        const isFrac = Math.random() > 0.5;
+        if (!isFrac) {
+          return this.formatQuestion(
+            `\\int \\sqrt{x}\\,dx`,
+            `\\frac{2}{3}x^{3/2} + C`,
+            [
+              `\\frac{1}{2\\sqrt{x}} + C`, // Derivative
+              `\\frac{3}{2}x^{3/2} + C`, // Inverted fraction
+              `\\frac{2}{3}x^{1/2} + C`
+            ],
+            `Rewrite $\\sqrt{x}$ as $x^{1/2}$. Integral is $\\frac{x^{3/2}}{3/2} + C = \\frac{2}{3}x^{3/2} + C$.`,
+            `\\int x^{1/2}\\,dx = \\frac{2}{3}x^{3/2} + C`,
+            `Convert radical expressions into fractional exponents x^{1/2} before integrating.`,
+            { type: 'area', a: 0.1, b: 3.5, fn: (x) => Math.sqrt(x) },
+            'RADICAL ANTI-DERIVATIVES'
+          );
+        } else {
+          return this.formatQuestion(
+            `\\int \\frac{1}{\\sqrt{x}}\\,dx`,
+            `2\\sqrt{x} + C`,
+            [
+              `-\\frac{1}{2x^{3/2}} + C`, // Derivative
+              `\\frac{1}{2}\\sqrt{x} + C`,
+              `\\ln|\\sqrt{x}| + C` // Inappropriate log trap
+            ],
+            `Rewrite as $x^{-1/2}$. Integrate: $\\frac{x^{1/2}}{1/2} + C = 2\\sqrt{x} + C$.`,
+            `\\int x^{-1/2}\\,dx = 2\\sqrt{x} + C`,
+            `Radicals in denominators correspond to negative fractional exponents.`,
+            { type: 'area', a: 0.2, b: 3.5, fn: (x) => 1 / Math.sqrt(x) },
+            'RADICAL ANTI-DERIVATIVES'
+          );
+        }
+      } else {
+        // \int \frac{1}{x^2} dx = -1/x + C
+        const coeff = Math.floor(Math.random() * 5) + 2;
+        return this.formatQuestion(
+          `\\int \\frac{${coeff}}{x^2}\\,dx`,
+          `-\\frac{${coeff}}{x} + C`,
+          [
+            `\\frac{${coeff}}{x} + C`, // Missing negative sign
+            `-\\frac{2${coeff}}{x^3} + C`, // Differentiation trap
+            `${coeff}\\ln(x^2) + C`
+          ],
+          `Rewrite as $${coeff}x^{-2}$. Integral is $${coeff}\\frac{x^{-1}}{-1} + C = -\\frac{${coeff}}{x} + C$.`,
+          `\\int x^{-2}\\,dx = -\\frac{1}{x} + C`,
+          `Watch negative exponents carefully when incrementing: -2 + 1 = -1.`,
+          { type: 'area', a: 0.5, b: 3.5, fn: (x) => coeff / (x * x) },
+          'NEGATIVE POWER RULE'
+        );
+      }
+    }
+
+    // TIER 2: Exponential & Reciprocal Forms
+    genTier2() {
+      const type = Math.floor(Math.random() * 3);
+      if (type === 0) {
+        // Reciprocal: \int \frac{a}{x} dx = a \ln|x| + C
+        const a = Math.floor(Math.random() * 5) + 2;
+        return this.formatQuestion(
+          `\\int \\frac{${a}}{x}\\,dx`,
+          `${a}\\ln|x| + C`,
+          [
+            `-\\frac{${a}}{x^2} + C`, // Derivative
+            `${a}x^0 + C`, // Power rule failure
+            `\\frac{${a}}{\\ln|x|} + C`
+          ],
+          `The exponent is $-1$ where power rule divides by zero: anti-derivative is $${a}\\ln|x| + C$.`,
+          `\\int \\frac{1}{x}\\,dx = \\ln|x| + C`,
+          `The reciprocal 1/x is the unique exponent singularity whose integral yields natural logarithm.`,
+          { type: 'area', a: 0.4, b: 3.5, fn: (x) => a / x },
+          'RECIPROCAL INTEGRALS'
+        );
+      } else if (type === 1) {
+        // \int e^{kx} dx = 1/k e^{kx} + C
+        const k = Math.floor(Math.random() * 4) + 2;
+        return this.formatQuestion(
+          `\\int e^{${k}x}\\,dx`,
+          `\\frac{1}{${k}}e^{${k}x} + C`,
+          [
+            `${k}e^{${k}x} + C`, // Multiplication error (derivative)
+            `e^{${k}x} + C`, // Forgot 1/k
+            `\\frac{1}{${k + 1}}e^{${k + 1}x} + C`
+          ],
+          `Integrating exponential with linear argument yields $\\frac{1}{${k}}e^{${k}x} + C$.`,
+          `\\int e^{kx}\\,dx = \\frac{1}{${k}}e^{kx} + C`,
+          `Chain rule factor 1/k appears in the denominator for anti-derivatives.`,
+          { type: 'area', a: 0, b: 2.5, fn: (x) => Math.exp(0.5 * x) },
+          'EXPONENTIAL FORMS'
+        );
+      } else {
+        // General base: \int a^x dx = a^x / \ln a + C
+        const base = [2, 3, 5, 7][Math.floor(Math.random() * 4)];
+        return this.formatQuestion(
+          `\\int ${base}^x\\,dx`,
+          `\\frac{${base}^x}{\\ln ${base}} + C`,
+          [
+            `${base}^x \\ln ${base} + C`, // Multiplied by log (derivative)
+            `\\frac{${base}^{x+1}}{x+1} + C`, // Power rule trap
+            `${base}^x + C`
+          ],
+          `General base requires division by $\\ln(${base})$: $\\int ${base}^x\\,dx = \\frac{${base}^x}{\\ln ${base}} + C$.`,
+          `\\int a^x\\,dx = \\frac{a^x}{\\ln a} + C`,
+          `Unlike base e, arbitrary bases a^x require dividing by the scale factor ln(a).`,
+          { type: 'area', a: 0, b: 2.0, fn: (x) => Math.pow(base, x * 0.5) },
+          'GENERAL EXPONENTIALS'
+        );
+      }
+    }
+
+    // TIER 3: Standard Trigonometric Integrals
+    genTier3() {
+      const type = Math.floor(Math.random() * 4);
+      const k = Math.floor(Math.random() * 3) + 2;
+      if (type === 0) {
+        // \int \sin(kx) dx = -1/k \cos(kx) + C
+        return this.formatQuestion(
+          `\\int \\sin(${k}x)\\,dx`,
+          `-\\frac{1}{${k}}\\cos(${k}x) + C`,
+          [
+            `\\frac{1}{${k}}\\cos(${k}x) + C`, // Sign trap!
+            `-${k}\\cos(${k}x) + C`, // Multiplied by k
+            `${k}\\cos(${k}x) + C`
+          ],
+          `Integral of $\\sin(u)$ is $-\\cos(u)$. Linear chain factor $1/${k}$ gives $-\\frac{1}{${k}}\\cos(${k}x) + C$.`,
+          `\\int \\sin(kx)\\,dx = -\\frac{1}{${k}}\\cos(kx) + C`,
+          `Sign trap alert: \\frac{d}{dx}\\sin(x) = +\\cos(x), but \\int \\sin(x)dx = -\\cos(x).`,
+          { type: 'area', a: 0, b: 3.14, fn: (x) => Math.sin(x) + 1 },
+          'STANDARD TRIGONOMETRIC'
+        );
+      } else if (type === 1) {
+        // \int \cos(kx) dx = 1/k \sin(kx) + C
+        return this.formatQuestion(
+          `\\int \\cos(${k}x)\\,dx`,
+          `\\frac{1}{${k}}\\sin(${k}x) + C`,
+          [
+            `-\\frac{1}{${k}}\\sin(${k}x) + C`, // Sign trap
+            `${k}\\sin(${k}x) + C`,
+            `-\\frac{1}{${k}}\\sin^2(${k}x) + C`
+          ],
+          `Integral of $\\cos(${k}x)$ is $+\\frac{1}{${k}}\\sin(${k}x) + C$.`,
+          `\\int \\cos(kx)\\,dx = \\frac{1}{${k}}\\sin(kx) + C`,
+          `Cosine integrates to positive sine.`,
+          { type: 'area', a: 0, b: 3.14, fn: (x) => Math.cos(x) + 1.2 },
+          'STANDARD TRIGONOMETRIC'
+        );
+      } else if (type === 2) {
+        // \int \sec^2(x) dx = \tan(x) + C
+        return this.formatQuestion(
+          `\\int \\sec^2(x)\\,dx`,
+          `\\tan(x) + C`,
+          [
+            `2\\sec(x)\\tan(x) + C`, // Derivative trap
+            `-\\cot(x) + C`,
+            `\\frac{1}{3}\\sec^3(x) + C`
+          ],
+          `Since $\\frac{d}{dx}\\tan(x) = \\sec^2(x)$, we have $\\int \\sec^2(x)\\,dx = \\tan(x) + C$.`,
+          `\\int \\sec^2(x)\\,dx = \\tan(x) + C`,
+          `Secant squared is the exact derivative of tangent.`,
+          { type: 'area', a: -1.0, b: 1.0, fn: (x) => 1 / (Math.cos(x) * Math.cos(x)) },
+          'SQUARED TRIG FORMS'
+        );
+      } else {
+        // \int \sec(x)\tan(x) dx = \sec(x) + C
+        return this.formatQuestion(
+          `\\int \\sec(x)\\tan(x)\\,dx`,
+          `\\sec(x) + C`,
+          [
+            `\\tan^2(x) + C`,
+            `-\\sec(x) + C`,
+            `\\sec(x)\\tan^2(x) + C`
+          ],
+          `Since $\\frac{d}{dx}\\sec(x) = \\sec(x)\\tan(x)$, we have $\\int \\sec(x)\\tan(x)\\,dx = \\sec(x) + C$.`,
+          `\\int \\sec(x)\\tan(x)\\,dx = \\sec(x) + C`,
+          `Standard identity pairing from differential calculus.`,
+          { type: 'area', a: 0.1, b: 1.2, fn: (x) => (1 / Math.cos(x)) * Math.tan(x) },
+          'PRODUCT TRIG FORMS'
+        );
+      }
+    }
+
+    // TIER 4: Definite Integrals & Fundamental Theorem of Calculus
+    genTier4() {
+      const type = Math.floor(Math.random() * 3);
+      if (type === 0) {
+        // Trig bounds: \int_0^{\pi/2} \sin(x) dx = 1
+        return this.formatQuestion(
+          `\\int_0^{\\pi/2} \\sin(x)\\,dx`,
+          `1`,
+          [`0`, `2`, `-1`],
+          `$F(x) = -\\cos(x)$. FTC: $[-\\cos(\\pi/2)] - [-\\cos(0)] = 0 - (-1) = 1$.`,
+          `\\int_a^b f(x)\\,dx = F(b) - F(a)`,
+          `FTC Part 2: Always subtract the lower bound evaluation carefully to avoid sign inversions.`,
+          { type: 'area', a: 0, b: 1.57, fn: (x) => Math.sin(x) },
+          'DEFINITE INTEGRALS & FTC'
+        );
+      } else if (type === 1) {
+        // Symmetric odd function: \int_{-a}^a x^3 dx = 0
+        const a = Math.floor(Math.random() * 4) + 2;
+        return this.formatQuestion(
+          `\\int_{-${a}}^{${a}} x^3\\,dx`,
+          `0`,
+          [`${a * a * a * a / 2}`, `${2 * a * a * a}`, `${a * a * a * a}`],
+          `$x^3$ is an odd function ($f(-x) = -f(x)$). Over symmetric limits $[-${a}, ${a}]$, the integral is $0$.`,
+          `\\int_{-a}^a f_{\\text{odd}}(x)\\,dx = 0`,
+          `Recognizing symmetric odd integrals eliminates lengthy calculation immediately.`,
+          { type: 'area', a: -2.0, b: 2.0, fn: (x) => 0.2 * x * x * x + 1.5 },
+          'SYMMETRIC DEFINITE PROPERTIES'
+        );
+      } else {
+        // Polynomial bound: \int_0^2 (3x^2 + 2x) dx = [x^3 + x^2]_0^2 = 8 + 4 = 12
+        return this.formatQuestion(
+          `\\int_0^2 (3x^2 + 2x)\\,dx`,
+          `12`,
+          [`10`, `16`, `6`],
+          `Anti-derivative is $x^3 + x^2$. FTC evaluation: $(2^3 + 2^2) - 0 = 8 + 4 = 12$.`,
+          `\\int_0^b (c x^2 + d x)\\,dx = \\left[\\frac{c}{3}x^3 + \\frac{d}{2}x^2\\right]_0^b`,
+          `Evaluate top limit and subtract lower limit.`,
+          { type: 'area', a: 0, b: 2.0, fn: (x) => 3 * x * x + 2 * x },
+          'POLYNOMIAL BOUND EVALUATION'
+        );
+      }
+    }
+
+    // TIER 5: Substitution Method (u-Substitution)
+    genTier5() {
+      const type = Math.floor(Math.random() * 3);
+      if (type === 0) {
+        // \int 2x e^{x^2} dx = e^{x^2} + C
+        return this.formatQuestion(
+          `\\int 2x e^{x^2}\\,dx`,
+          `e^{x^2} + C`,
+          [
+            `2e^{x^2} + C`,
+            `\\frac{1}{2}e^{x^2} + C`,
+            `x^2 e^{x^2} + C`
+          ],
+          `Let $u = x^2, du = 2x\\,dx$. The integral is $\\int e^u\\,du = e^u + C = e^{x^2} + C$.`,
+          `\\int f'(x)e^{f(x)}\\,dx = e^{f(x)} + C`,
+          `Look for function-derivative pairs f'(x) dx matching du.`,
+          { type: 'area', a: 0, b: 1.5, fn: (x) => 2 * x * Math.exp(x * x * 0.4) },
+          'U-SUBSTITUTION METHOD'
+        );
+      } else if (type === 1) {
+        // \int \frac{2x}{x^2 + a} dx = \ln(x^2 + a) + C
+        const a = Math.floor(Math.random() * 4) + 1;
+        return this.formatQuestion(
+          `\\int \\frac{2x}{x^2 + ${a}}\\,dx`,
+          `\\ln(x^2 + ${a}) + C`,
+          [
+            `\\frac{1}{x^2 + ${a}} + C`,
+            `2\\ln(x^2 + ${a}) + C`,
+            `\\frac{1}{2}\\ln(x^2 + ${a}) + C`
+          ],
+          `Let $u = x^2 + ${a}, du = 2x\\,dx$. Integral is $\\int \\frac{1}{u}\\,du = \\ln(x^2 + ${a}) + C$.`,
+          `\\int \\frac{f'(x)}{f(x)}\\,dx = \\ln|f(x)| + C`,
+          `Any fraction where the numerator is the exact derivative of the denominator integrates to ln|denominator|.`,
+          { type: 'area', a: 0, b: 2.5, fn: (x) => (2 * x) / (x * x + a) },
+          'LOGARITHMIC DERIVATIVE FORM'
+        );
+      } else {
+        // \int \sin(x)\cos(x) dx = 1/2 \sin^2(x) + C
+        return this.formatQuestion(
+          `\\int \\sin(x)\\cos(x)\\,dx`,
+          `\\frac{1}{2}\\sin^2(x) + C`,
+          [
+            `\\sin^2(x) + C`,
+            `-\\frac{1}{2}\\cos(x) + C`,
+            `\\cos^2(x) + C`
+          ],
+          `Let $u = \\sin(x), du = \\cos(x)\\,dx$. Integral is $\\int u\\,du = \\frac{1}{2}\\sin^2(x) + C$.`,
+          `\\int u\\,du = \\frac{1}{2}u^2 + C`,
+          `Trigonometric power substitution using u = sin(x).`,
+          { type: 'area', a: 0, b: 3.14, fn: (x) => Math.sin(x) * Math.cos(x) + 0.6 },
+          'TRIGONOMETRIC U-SUB'
+        );
+      }
+    }
+
+    // TIER 6: Inverse Trigonometric Forms (Strict \sin^{-1}, \tan^{-1} notation)
+    genTier6() {
+      const type = Math.floor(Math.random() * 3);
+      if (type === 0) {
+        // \int \frac{1}{1 + x^2} dx = \tan^{-1}(x) + C
+        return this.formatQuestion(
+          `\\int \\frac{1}{1 + x^2}\\,dx`,
+          `\\tan^{-1}(x) + C`,
+          [
+            `\\sin^{-1}(x) + C`,
+            `\\ln(1 + x^2) + C`,
+            `\\cot^{-1}(x) + C`
+          ],
+          `Standard inverse trigonometric form: $\\frac{d}{dx}\\tan^{-1}(x) = \\frac{1}{1+x^2} \\implies \\int \\frac{dx}{1+x^2} = \\tan^{-1}(x) + C$.`,
+          `\\int \\frac{1}{1 + x^2}\\,dx = \\tan^{-1}(x) + C`,
+          `Standard form for arctan. Strict \\tan^{-1} notation enforced.`,
+          { type: 'area', a: 0, b: 3.0, fn: (x) => 1 / (1 + x * x) },
+          'INVERSE TRIGONOMETRIC FORMS'
+        );
+      } else if (type === 1) {
+        // Scaled arctan: \int \frac{1}{a^2 + x^2} dx = 1/a \tan^{-1}(x/a) + C
+        const a = [2, 3, 4, 5][Math.floor(Math.random() * 4)];
+        const aSq = a * a;
+        return this.formatQuestion(
+          `\\int \\frac{1}{${aSq} + x^2}\\,dx`,
+          `\\frac{1}{${a}}\\tan^{-1}\\left(\\frac{x}{${a}}\\right) + C`,
+          [
+            `\\tan^{-1}\\left(\\frac{x}{${a}}\\right) + C`, // Dropped 1/a factor!
+            `\\frac{1}{${aSq}}\\tan^{-1}\\left(\\frac{x}{${a}}\\right) + C`,
+            `\\sin^{-1}\\left(\\frac{x}{${a}}\\right) + C`
+          ],
+          `Scaled form: $\\int \\frac{dx}{a^2 + x^2} = \\frac{1}{a}\\tan^{-1}\\left(\\frac{x}{a}\\right) + C$ with $a = ${a}$, yielding $\\frac{1}{${a}}\\tan^{-1}\\left(\\frac{x}{${a}}\\right) + C$.`,
+          `\\int \\frac{1}{a^2 + x^2}\\,dx = \\frac{1}{a}\\tan^{-1}\\left(\\frac{x}{a}\\right) + C`,
+          `Crucial trap: Do NOT forget the leading factor 1/a in front of tan^{-1}.`,
+          { type: 'area', a: 0, b: 3.5, fn: (x) => 1 / (aSq + x * x) },
+          'SCALED INVERSE TRIG FORMS'
+        );
+      } else {
+        // \int \frac{1}{\sqrt{a^2 - x^2}} dx = \sin^{-1}(x/a) + C (NO 1/a in front!)
+        const a = [2, 3, 5][Math.floor(Math.random() * 3)];
+        const aSq = a * a;
+        return this.formatQuestion(
+          `\\int \\frac{1}{\\sqrt{${aSq} - x^2}}\\,dx`,
+          `\\sin^{-1}\\left(\\frac{x}{${a}}\\right) + C`,
+          [
+            `\\frac{1}{${a}}\\sin^{-1}\\left(\\frac{x}{${a}}\\right) + C`, // False 1/a trap!
+            `\\tan^{-1}\\left(\\frac{x}{${a}}\\right) + C`,
+            `-\\sqrt{${aSq} - x^2} + C`
+          ],
+          `Notice $\\sin^{-1}(x/a)$ has NO $\\frac{1}{a}$ prefactor: $\\int \\frac{dx}{\\sqrt{${aSq}-x^2}} = \\sin^{-1}\\left(\\frac{x}{${a}}\\right) + C$.`,
+          `\\int \\frac{1}{\\sqrt{a^2 - x^2}}\\,dx = \\sin^{-1}\\left(\\frac{x}{a}\\right) + C`,
+          `Unlike tangent inverse, sine inverse has NO 1/a coefficient in front.`,
+          { type: 'area', a: 0, b: a * 0.9, fn: (x) => 1 / Math.sqrt(Math.max(0.01, aSq - x * x)) },
+          'INVERSE SINE FORMS'
+        );
+      }
+    }
+
+    // TIER 7: Physical Accumulations (Work, Kinematics & Impulse)
+    genTier7() {
+      const type = Math.floor(Math.random() * 4);
+      if (type === 0) {
+        // Kinematics: a(t) = \alpha t with v(0) = v0
+        const alpha = Math.floor(Math.random() * 3) + 2;
+        const v0 = Math.floor(Math.random() * 4) + 1;
+        return this.formatQuestion(
+          `a(t) = ${alpha}t, \\; v(0) = ${v0}. \\quad v(t) = \\;?`,
+          `\\frac{${alpha}}{2}t^2 + ${v0}`,
+          [
+            `${alpha}t^2 + ${v0}`, // Forgot 1/2 factor
+            `\\frac{${alpha}}{2}t^2`, // Forgot initial condition
+            `${alpha} + ${v0}t`
+          ],
+          `$v(t) = \\int a(t)\\,dt = \\frac{${alpha}}{2}t^2 + C$. Initial condition $v(0) = ${v0}$ gives $v(t) = \\frac{${alpha}}{2}t^2 + ${v0}$.`,
+          `v(t) = v(0) + \\int_0^t a(t')\\,dt'`,
+          `Kinematics accumulation: Integrating acceleration yields velocity plus initial velocity constant.`,
+          { type: 'kinematics' },
+          'KINEMATICS VELOCITY RECOVERY',
+          'Physical accumulation from acceleration curve'
+        );
+      } else if (type === 1) {
+        // Spring Work: W = \int_0^X k x dx = 1/2 k X^2
+        const k = (Math.floor(Math.random() * 4) + 2) * 10;
+        const xVal = 2;
+        const work = 0.5 * k * xVal * xVal;
+        return this.formatQuestion(
+          `F(x) = ${k}x. \\quad W = \\int_0^2 F(x)\\,dx = \\;?`,
+          `${work}\\text{ J}`,
+          [
+            `${work * 2}\\text{ J}`, // Forgot 1/2
+            `${k * xVal}\\text{ J}`,
+            `${work / 2}\\text{ J}`
+          ],
+          `$W = \\int_0^2 ${k}x\\,dx = \\left[\\frac{1}{2}${k}x^2\\right]_0^2 = \\frac{1}{2}(${k})(4) = ${work}\\text{ J}$.`,
+          `W = \\int_{x_1}^{x_2} F(x)\\,dx = \\frac{1}{2}k x^2`,
+          `Work is the area under the variable force-displacement curve.`,
+          { type: 'spring' },
+          'VARIABLE FORCE WORK ACCUMULATION',
+          'Elastic potential energy from spring compression'
+        );
+      } else if (type === 2) {
+        // Capacitor Charge Flow: Q = \int_0^t i dt
+        return this.formatQuestion(
+          `i(t) = I_0 e^{-t/\\tau}. \\quad Q_{\\text{total}} = \\int_0^\\infty i(t)\\,dt = \\;?`,
+          `I_0 \\tau`,
+          [
+            `\\frac{I_0}{\\tau}`,
+            `I_0`,
+            `I_0 \\tau^2`
+          ],
+          `$\\int_0^\\infty I_0 e^{-t/\\tau}\\,dt = \\left[-I_0 \\tau e^{-t/\\tau}\\right]_0^\\infty = 0 - (-I_0 \\tau) = I_0 \\tau$.`,
+          `Q = \\int_0^t i(t')\\,dt'`,
+          `Current is rate of flow of charge: charge is accumulated via time integral of current.`,
+          { type: 'charge' },
+          'CAPACITOR CHARGE ACCUMULATION',
+          'Integrated current flow across dielectric node'
+        );
+      } else {
+        // Impulse: J = \int F dt
+        const f0 = 12;
+        const t0 = 3;
+        const impulse = 0.5 * f0 * t0; // Triangular pulse area
+        return this.formatQuestion(
+          `\\text{Triangular Force Pulse: Peak } F = ${f0}\\text{ N, duration } T = ${t0}\\text{ s}. \\quad J = \\int_0^T F(t)\\,dt = \\;?`,
+          `${impulse}\\text{ N}\\cdot\\text{s}`,
+          [
+            `${f0 * t0}\\text{ N}\\cdot\\text{s}`, // Box pulse trap
+            `${impulse * 2}\\text{ N}\\cdot\\text{s}`,
+            `${(f0 * t0) / 3}\\text{ N}\\cdot\\text{s}`
+          ],
+          `Impulse $J = \\int F(t)\\,dt = \\text{Area} = \\frac{1}{2} \\times ${t0} \\times ${f0} = ${impulse}\\text{ N}\\cdot\\text{s}$.`,
+          `J = \\Delta p = \\int_{t_1}^{t_2} F(t)\\,dt`,
+          `Impulse equals change in linear momentum, represented by area under F(t).`,
+          { type: 'area', a: 0, b: t0, fn: (t) => Math.max(0, f0 * (1 - Math.abs(t - 1.5) / 1.5)) },
+          'IMPULSE & MOMENTUM THEOREM'
+        );
+      }
+    }
+
+    // TIER 8: Integration by Parts & JEE Advanced Properties
+    genTier8() {
+      const type = Math.floor(Math.random() * 4);
+      if (type === 0) {
+        // \int x e^x dx = (x - 1)e^x + C
+        return this.formatQuestion(
+          `\\int x e^x\\,dx`,
+          `(x - 1)e^x + C`,
+          [
+            `(x + 1)e^x + C`, // Sign trap in uv - \int v du
+            `x e^x - e^x`, // Missing + C
+            `\\frac{1}{2}x^2 e^x + C` // Illegal product rule integration
+          ],
+          `Using parts: $u = x, dv = e^x\\,dx \\implies \\int x e^x\\,dx = x e^x - \\int e^x\\,dx = (x - 1)e^x + C$.`,
+          `\\int u\\,dv = uv - \\int v\\,du`,
+          `Integration by Parts (ILATE priority rule): differentiate algebra x, integrate exponential e^x.`,
+          { type: 'area', a: 0, b: 2.0, fn: (x) => x * Math.exp(x * 0.7) },
+          'INTEGRATION BY PARTS'
+        );
+      } else if (type === 1) {
+        // \int \ln(x) dx = x\ln(x) - x + C
+        return this.formatQuestion(
+          `\\int \\ln(x)\\,dx`,
+          `x\\ln(x) - x + C`,
+          [
+            `\\frac{1}{x} + C`, // Derivative trap
+            `x\\ln(x) + x + C`,
+            `x\\ln(x) + C`
+          ],
+          `Using parts with $dv = dx$: $u = \\ln(x) \\implies x\\ln(x) - \\int 1\\,dx = x\\ln(x) - x + C$.`,
+          `\\int \\ln(x)\\,dx = x\\ln(x) - x + C`,
+          `A classic by-parts technique using dv = dx.`,
+          { type: 'area', a: 1.0, b: 3.5, fn: (x) => Math.log(x) },
+          'LOGARITHMIC BY-PARTS'
+        );
+      } else if (type === 2) {
+        // King's Rule: \int_0^{\pi/2} \frac{\sin x}{\sin x + \cos x} dx = \pi/4
+        return this.formatQuestion(
+          `\\int_0^{\\pi/2} \\frac{\\sin(x)}{\\sin(x) + \\cos(x)}\\,dx`,
+          `\\frac{\\pi}{4}`,
+          [
+            `\\frac{\\pi}{2}`,
+            `1`,
+            `\\frac{\\pi}{8}`
+          ],
+          `By King's Rule: $2I = \\int_0^{\\pi/2} 1\\,dx = \\frac{\\pi}{2} \\implies I = \\frac{\\pi}{4}$.`,
+          `\\int_0^a f(x)\\,dx = \\int_0^a f(a - x)\\,dx`,
+          `King's Property of Definite Integrals: Adding I and I transforms the integrand into unity.`,
+          { type: 'area', a: 0, b: 1.57, fn: (x) => Math.sin(x) / (Math.sin(x) + Math.cos(x) + 0.001) },
+          "KING'S DEFINITE SYMMETRY"
+        );
+      } else {
+        // Center of mass: \lambda(x) = \lambda_0 x => x_cm = 2/3 L
+        return this.formatQuestion(
+          `\\text{Rod length } L, \\; \\lambda(x) = \\lambda_0 x. \\quad x_{\\text{cm}} = \\frac{\\int_0^L x \\lambda(x)\\,dx}{\\int_0^L \\lambda(x)\\,dx} = \\;?`,
+          `\\frac{2}{3}L`,
+          [
+            `\\frac{1}{2}L`, // Uniform density trap
+            `\\frac{3}{4}L`,
+            `\\frac{1}{3}L`
+          ],
+          `Continuous mass: $M = \\frac{1}{2}\\lambda_0 L^2$, first moment is $\\frac{1}{3}\\lambda_0 L^3 \\implies x_{\\text{cm}} = \\frac{2}{3}L$.`,
+          `x_{\\text{cm}} = \\frac{1}{M}\\int_0^L x\\,dm`,
+          `Center of mass of a non-uniform mass distribution: continuous integral accumulation of first moment divided by total mass.`,
+          { type: 'area', a: 0, b: 3.0, fn: (x) => 0.5 * x * x },
+          'CENTER OF MASS ACCUMULATION'
+        );
+      }
+    }
+  }
+
+  const mathEngine = new ProceduralCalculusEngine();
+
+  /* ==========================================================================
+     GAME CONTROLLER & TELEMETRY STATE MACHINE
+     ========================================================================== */
+  class IntegralForgeGame {
+    constructor() {
+      this.mode = 'campaign'; // 'campaign', 'blitz', 'core', 'sandbox'
+      this.currentTier = 1;
+      this.maxTiers = 8;
+      this.tierClearTarget = 6;
+      this.tierCorrectCount = 0;
+
+      // Stats
+      this.score = 0;
+      this.streak = 0;
+      this.peakStreak = 0;
+      this.multiplier = 1;
+      this.totalQuestionsAttempted = 0;
+      this.totalCorrectAnswers = 0;
+      this.currentQuestionStartTime = Date.now();
+      this.solveTimes = [];
+
+      // Spaced-Repetition Error Queue
+      this.errorQueue = []; // items with retryCount
+      this.questionsSinceLastError = 0;
+
+      // Mode-specific state
+      this.cores = 3; // For Core Integrity mode
+      this.blitzTimeRemaining = 60; // For Blitz mode
+      this.blitzInterval = null;
+
+      // Active Question
+      this.currentQuestion = null;
+      this.codexPenaltyApplied = false;
+      this.isAnsweringLocked = false;
+      this.advanceTimer = null;
+
+      this.initSavedData();
+      this.renderModePills();
+      this.setupKeyboardBindings();
+      this.loadNextQuestion();
+    }
+
+    initSavedData() {
+      const savedTier = localStorage.getItem('integral_forge_tier');
+      if (savedTier) this.currentTier = Math.min(this.maxTiers, parseInt(savedTier, 10));
+      const savedScore = localStorage.getItem('integral_forge_score');
+      if (savedScore) this.score = parseInt(savedScore, 10);
+    }
+
+    saveProgress() {
+      localStorage.setItem('integral_forge_tier', this.currentTier);
+      localStorage.setItem('integral_forge_score', this.score);
+    }
+
+    setMode(newMode) {
+      this.mode = newMode;
+      this.renderModePills();
+      this.restartActiveMode();
+    }
+
+    renderModePills() {
+      const modes = ['campaign', 'blitz', 'core', 'sandbox'];
+      modes.forEach(m => {
+        const btn = document.getElementById('mode' + m.charAt(0).toUpperCase() + m.slice(1) + 'Btn');
+        if (btn) {
+          if (m === this.mode) btn.classList.add('active');
+          else btn.classList.remove('active');
+        }
+      });
+
+      const sandboxPanel = document.getElementById('sandboxControls');
+      if (sandboxPanel) {
+        if (this.mode === 'sandbox') sandboxPanel.classList.add('active');
+        else sandboxPanel.classList.remove('active');
+      }
+
+      this.updateSpecialStatusUI();
+    }
+
+    updateSpecialStatusUI() {
+      const container = document.getElementById('modeSpecialContainer');
+      if (!container) return;
+
+      if (this.mode === 'core') {
+        container.innerHTML = `
+          <span style="font-size:10px; color:var(--text-muted); margin-right:4px;">CORES:</span>
+          <span class="core-node ${this.cores < 1 ? 'burned' : ''}" id="core1"></span>
+          <span class="core-node ${this.cores < 2 ? 'burned' : ''}" id="core2"></span>
+          <span class="core-node ${this.cores < 3 ? 'burned' : ''}" id="core3"></span>
+        `;
+      } else if (this.mode === 'blitz') {
+        container.innerHTML = `
+          <span class="blitz-timer-display" id="blitzTimerDisplay">⏳ ${this.blitzTimeRemaining}s</span>
+        `;
+      } else {
+        container.innerHTML = ``;
+      }
+    }
+
+    restartActiveMode() {
+      this.closeAllModals();
+      clearTimeout(this.advanceTimer);
+      clearInterval(this.blitzInterval);
+
+      if (this.mode === 'blitz') {
+        this.blitzTimeRemaining = 60;
+        this.tierCorrectCount = 0;
+        this.streak = 0;
+        this.updateTelemetryBar();
+        this.updateSpecialStatusUI();
+        this.startBlitzTimer();
+      } else if (this.mode === 'core') {
+        this.cores = 3;
+        this.currentTier = Math.max(3, this.currentTier);
+        this.streak = 0;
+        this.updateTelemetryBar();
+        this.updateSpecialStatusUI();
+      } else if (this.mode === 'sandbox') {
+        canvasEngine.setSandboxPreset('parabola');
+      }
+
+      this.loadNextQuestion();
+    }
+
+    startBlitzTimer() {
+      clearInterval(this.blitzInterval);
+      this.blitzInterval = setInterval(() => {
+        this.blitzTimeRemaining--;
+        const timerLbl = document.getElementById('blitzTimerDisplay');
+        if (timerLbl) timerLbl.textContent = `⏳ ${this.blitzTimeRemaining}s`;
+
+        if (this.blitzTimeRemaining <= 0) {
+          clearInterval(this.blitzInterval);
+          this.triggerBlitzGameOver();
+        }
+      }, 1000);
+    }
+
+    triggerBlitzGameOver() {
+      audio.playBuzz();
+      document.getElementById('gameOverHeader').textContent = "BLITZ SPRINT EXPIRED!";
+      document.getElementById('gameOverSubheader').textContent = "60-second high-density flux run finished.";
+      document.getElementById('goQuestionsCleared').textContent = this.totalCorrectAnswers;
+      document.getElementById('goFinalFlux').textContent = this.score;
+      document.getElementById('gameOverModal').classList.add('active');
+    }
+
+    triggerCoreGameOver() {
+      audio.playBuzz();
+      document.getElementById('gameOverHeader').textContent = "CORE COLLAPSE!";
+      document.getElementById('gameOverSubheader').textContent = "All 3 containment cores depleted in Sudden Death.";
+      document.getElementById('goQuestionsCleared').textContent = this.totalCorrectAnswers;
+      document.getElementById('goFinalFlux').textContent = this.score;
+      document.getElementById('gameOverModal').classList.add('active');
+    }
+
+    loadNextQuestion() {
+      this.isAnsweringLocked = false;
+      this.codexPenaltyApplied = false;
+      this.currentQuestionStartTime = Date.now();
+
+      // Reset auto-advance countdown bar
+      const bar = document.getElementById('countdownBar');
+      if (bar) {
+        bar.style.transition = 'none';
+        bar.style.width = '0%';
+      }
+
+      // Hide derivation banner & penalty badge
+      const derivBox = document.getElementById('derivationBox');
+      if (derivBox) derivBox.style.display = 'none';
+      const penBadge = document.getElementById('penaltyBadge');
+      if (penBadge) penBadge.style.display = 'none';
+
+      // Reset choice buttons styling
+      for (let i = 0; i < 4; i++) {
+        const btn = document.getElementById('choice' + i);
+        if (btn) {
+          btn.className = 'choice-btn';
+        }
+      }
+
+      // Spaced Repetition Queue check
+      this.questionsSinceLastError++;
+      if (this.errorQueue.length > 0 && this.questionsSinceLastError >= 3) {
+        this.currentQuestion = this.errorQueue.shift();
+        this.questionsSinceLastError = 0;
+      } else {
+        const tierToServe = (this.mode === 'sandbox') ? 1 : this.currentTier;
+        this.currentQuestion = mathEngine.generateQuestion(tierToServe);
+      }
+
+      // Render Question Prompt
+      this.renderMathPrompt();
+
+      // Configure Canvas Visualizer
+      if (this.mode !== 'sandbox') {
+        canvasEngine.setProblemContext(this.currentQuestion.visualConfig);
+        const canvasTxt = document.getElementById('canvasModeText');
+        if (canvasTxt) {
+          canvasTxt.textContent = this.currentQuestion.topic + " INTEGRAL ACCUMULATOR";
+        }
+      }
+
+      this.updateTelemetryBar();
+    }
+
+    renderMathPrompt() {
+      const promptEl = document.getElementById('mathPrompt');
+      const topicEl = document.getElementById('topicBadge');
+      const subtextEl = document.getElementById('physicsSubtext');
+
+      if (topicEl) topicEl.textContent = this.currentQuestion.topic;
+      if (subtextEl) subtextEl.textContent = this.currentQuestion.subtext || '';
+
+      if (window.katex && promptEl) {
+        katex.render(this.currentQuestion.promptLatex, promptEl, { throwOnError: false });
+        for (let i = 0; i < 4; i++) {
+          const choiceEl = document.getElementById('choiceText' + i);
+          if (choiceEl) {
+            katex.render(this.currentQuestion.choices[i], choiceEl, { throwOnError: false });
+          }
+        }
+      } else {
+        // Fallback if KaTeX still loading
+        if (promptEl) promptEl.textContent = this.currentQuestion.promptLatex;
+        for (let i = 0; i < 4; i++) {
+          const choiceEl = document.getElementById('choiceText' + i);
+          if (choiceEl) choiceEl.textContent = this.currentQuestion.choices[i];
+        }
+      }
+    }
+
+    handleChoice(index) {
+      if (this.isAnsweringLocked) return;
+      this.isAnsweringLocked = true;
+
+      const solveDuration = (Date.now() - this.currentQuestionStartTime) / 1000;
+      this.solveTimes.push(solveDuration);
+      this.totalQuestionsAttempted++;
+
+      const isCorrect = (index === this.currentQuestion.correctIndex);
+      const chosenBtn = document.getElementById('choice' + index);
+      const correctBtn = document.getElementById('choice' + this.currentQuestion.correctIndex);
+
+      const derivBox = document.getElementById('derivationBox');
+      const derivText = document.getElementById('derivationText');
+      const derivTitle = document.getElementById('derivationTitle');
+
+      if (isCorrect) {
+        // Correct Answer Handled
+        this.totalCorrectAnswers++;
+        this.streak++;
+        if (this.streak > this.peakStreak) this.peakStreak = this.streak;
+
+        // Calculate Multiplier
+        this.multiplier = (this.streak >= 6) ? 4 : ((this.streak >= 3) ? 2 : 1);
+
+        // Score Calculation (with speed bonus + codex penalty)
+        let basePoints = 100 * this.multiplier;
+        if (solveDuration < 3.0) basePoints += 25; // Speed bonus
+        if (this.codexPenaltyApplied) basePoints = Math.floor(basePoints * 0.5);
+        this.score += basePoints;
+
+        audio.playPing(this.multiplier);
+
+        if (chosenBtn) chosenBtn.classList.add('correct-reveal');
+        if (derivBox) {
+          derivBox.className = 'derivation-banner correct';
+          derivTitle.textContent = "✓ DERIVATION:";
+          derivText.innerHTML = this.renderLatexInline(this.currentQuestion.derivation);
+          derivBox.style.display = 'block';
+        }
+
+        // Mode specific progression
+        if (this.mode === 'campaign') {
+          this.tierCorrectCount++;
+          if (this.tierCorrectCount >= this.tierClearTarget) {
+            this.saveProgress();
+            setTimeout(() => this.triggerTierVictory(), 600);
+            return;
+          }
+        }
+
+      } else {
+        // Wrong Answer Handled
+        this.streak = 0;
+        this.multiplier = 1;
+        audio.playBuzz();
+
+        if (chosenBtn) chosenBtn.classList.add('wrong-reveal');
+        if (correctBtn) correctBtn.classList.add('correct-reveal');
+
+        if (derivBox) {
+          derivBox.className = 'derivation-banner incorrect';
+          derivTitle.textContent = "✗ TRAP ANALYSIS:";
+          derivText.innerHTML = this.renderLatexInline(this.currentQuestion.derivation);
+          derivBox.style.display = 'block';
+        }
+
+        // Add to Spaced Repetition Queue
+        this.errorQueue.push(this.currentQuestion);
+
+        // Core mode penalty
+        if (this.mode === 'core') {
+          this.cores--;
+          this.updateSpecialStatusUI();
+          if (this.cores <= 0) {
+            setTimeout(() => this.triggerCoreGameOver(), 800);
+            return;
+          }
+        }
+      }
+
+      this.updateTelemetryBar();
+      this.saveProgress();
+
+      // Trigger 1.3s countdown bar and auto-advance
+      const bar = document.getElementById('countdownBar');
+      if (bar) {
+        bar.style.transition = 'width 1.3s linear';
+        bar.style.width = '100%';
+      }
+
+      this.advanceTimer = setTimeout(() => {
+        this.loadNextQuestion();
+      }, 1300);
+    }
+
+    renderLatexInline(str) {
+      if (!str) return '';
+      if (!window.katex) return str;
+      try {
+        let res = str.replace(/\$([^\$]+)\$/g, (match, expr) => {
+          try {
+            return katex.renderToString(expr.trim(), { throwOnError: false, displayMode: false });
+          } catch (err) {
+            return expr;
+          }
+        });
+        return res;
+      } catch (e) {
+        return str;
+      }
+    }
+
+    triggerTierVictory() {
+      clearTimeout(this.advanceTimer);
+      audio.playFanfare();
+      confetti.launch();
+
+      const acc = Math.round((this.totalCorrectAnswers / Math.max(1, this.totalQuestionsAttempted)) * 100);
+      const avgSpeed = (this.solveTimes.reduce((a, b) => a + b, 0) / Math.max(1, this.solveTimes.length)).toFixed(1);
+
+      document.getElementById('victoryHeader').textContent = `TIER ${this.currentTier} CLEARED!`;
+      document.getElementById('victorySubheader').textContent = `Mastery threshold achieved in ${this.currentQuestion.topic}.`;
+      document.getElementById('modalAccuracy').textContent = `${acc}%`;
+      document.getElementById('modalPeakStreak').textContent = this.peakStreak;
+      document.getElementById('modalFluxScore').textContent = this.score.toLocaleString();
+      document.getElementById('modalSolveSpeed').textContent = `${avgSpeed}s`;
+
+      document.getElementById('victoryModal').classList.add('active');
+    }
+
+    advanceTier() {
+      document.getElementById('victoryModal').classList.remove('active');
+      if (this.currentTier < this.maxTiers) {
+        this.currentTier++;
+      }
+      this.tierCorrectCount = 0;
+      this.saveProgress();
+      this.loadNextQuestion();
+    }
+
+    openCodex() {
+      if (!this.currentQuestion) return;
+      this.codexPenaltyApplied = true;
+
+      const penBadge = document.getElementById('penaltyBadge');
+      if (penBadge) penBadge.style.display = 'inline-block';
+
+      const box = document.getElementById('codexFormulaBox');
+      const expl = document.getElementById('codexExplanationText');
+
+      if (window.katex && box) {
+        katex.render(this.currentQuestion.codexFormula, box, { throwOnError: false });
+      } else if (box) {
+        box.textContent = this.currentQuestion.codexFormula;
+      }
+
+      if (expl) expl.textContent = this.currentQuestion.codexExplanation;
+      document.getElementById('codexModal').classList.add('active');
+    }
+
+    closeCodex() {
+      document.getElementById('codexModal').classList.remove('active');
+    }
+
+    closeAllModals() {
+      document.getElementById('codexModal').classList.remove('active');
+      document.getElementById('victoryModal').classList.remove('active');
+      document.getElementById('gameOverModal').classList.remove('active');
+    }
+
+    updateTelemetryBar() {
+      const tierLbl = document.getElementById('tierLabel');
+      if (tierLbl) tierLbl.textContent = `TIER ${this.currentTier}`;
+
+      const fill = document.getElementById('tierProgressFill');
+      if (fill) {
+        const pct = Math.min(100, Math.round((this.tierCorrectCount / this.tierClearTarget) * 100));
+        fill.style.width = pct + '%';
+      }
+
+      const count = document.getElementById('tierProgressCount');
+      if (count) count.textContent = `${this.tierCorrectCount}/${this.tierClearTarget}`;
+
+      const streakEl = document.getElementById('streakCount');
+      if (streakEl) streakEl.textContent = this.streak;
+
+      const multBadge = document.getElementById('multiplierBadge');
+      if (multBadge) multBadge.textContent = `${this.multiplier}x`;
+
+      const fluxEl = document.getElementById('fluxScore');
+      if (fluxEl) fluxEl.textContent = this.score.toLocaleString();
+
+      const accEl = document.getElementById('accuracyLabel');
+      if (accEl) {
+        const acc = (this.totalQuestionsAttempted === 0) ? 100 : Math.round((this.totalCorrectAnswers / this.totalQuestionsAttempted) * 100);
+        accEl.textContent = `ACCURACY: ${acc}%`;
+      }
+    }
+
+    setupKeyboardBindings() {
+      window.addEventListener('keydown', (e) => {
+        // Toggle Codex
+        if (e.key === 'h' || e.key === 'H') {
+          const modal = document.getElementById('codexModal');
+          if (modal.classList.contains('active')) this.closeCodex();
+          else this.openCodex();
+          return;
+        }
+
+        // Close or Advance Modals with Space / Enter / Escape
+        if (e.key === 'Escape') {
+          this.closeAllModals();
+          return;
+        }
+
+        if (e.key === ' ' || e.key === 'Enter') {
+          const victoryModal = document.getElementById('victoryModal');
+          const gameOverModal = document.getElementById('gameOverModal');
+          const codexModal = document.getElementById('codexModal');
+
+          if (victoryModal.classList.contains('active')) {
+            e.preventDefault();
+            this.advanceTier();
+            return;
+          }
+          if (gameOverModal.classList.contains('active')) {
+            e.preventDefault();
+            this.restartActiveMode();
+            return;
+          }
+          if (codexModal.classList.contains('active')) {
+            e.preventDefault();
+            this.closeCodex();
+            return;
+          }
+        }
+
+        // Number Keys 1, 2, 3, 4 for Answer Choices
+        if (['1', '2', '3', '4'].includes(e.key)) {
+          const idx = parseInt(e.key, 10) - 1;
+          this.handleChoice(idx);
+        }
+      });
+    }
+
+    resetPrompt() {
+      if (confirm("Reset current tier progress and telemetry scores?")) {
+        localStorage.removeItem('integral_forge_tier');
+        localStorage.removeItem('integral_forge_score');
+        this.currentTier = 1;
+        this.score = 0;
+        this.streak = 0;
+        this.tierCorrectCount = 0;
+        this.totalQuestionsAttempted = 0;
+        this.totalCorrectAnswers = 0;
+        this.updateTelemetryBar();
+        this.loadNextQuestion();
+      }
+    }
+  }
+
+  // Initialize Game on DOM ready
+  let game = null;
+  window.addEventListener('DOMContentLoaded', () => {
+    game = new IntegralForgeGame();
+  });
+  </script>
+</body>
+</html>

@@ -68,10 +68,11 @@
         <ul class="nav-menu">
           <li><a href="#about" class="nav-link">About</a></li>
           <li><a href="#focus" class="nav-link">Dual Core</a></li>
-          <li><a href="#projects" class="nav-link">Projects</a></li>
+          <li><a href="projects/index.html" class="nav-link">Projects</a></li>
+          <li><a href="labs/index.html" class="nav-link">Labs</a></li>
           <li><a href="blog/index.html" class="nav-link">Blog</a></li>
           <li><a href="#contact" class="nav-link">Contact</a></li>
-          <li class="mobile-nav-cta"><a href="#projects" class="btn-cta">Explore Projects ↓</a></li>
+          <li class="mobile-nav-cta"><a href="projects/index.html" class="btn-cta">Explore Projects →</a></li>
         </ul>
       </nav>
 
@@ -82,9 +83,9 @@
         </button>
 
         <!-- Projects CTA -->
-        <a href="#projects" class="btn-cta">
+        <a href="projects/index.html" class="btn-cta">
           <span>Explore Projects</span>
-          <span style="font-size: 1.1em">↓</span>
+          <span style="font-size: 1.1em">→</span>
         </a>
 
         <!-- Mobile Menu Hamburger -->
@@ -237,156 +238,95 @@
   <!-- Featured Projects Showcase -->
   <section id="projects">
     <div class="container">
-      <span class="section-kicker">Systems & Production Software</span>
-      <h2 class="section-title">Active Projects & Running Platforms</h2>
-      <p class="section-desc">
-        A curated portfolio of active production platforms, examination engines, e-commerce storefronts, and computational tools engineered by Syed Mazhar Ali.
-      </p>
+      <div style="display: flex; align-items: flex-end; justify-content: space-between; margin-bottom: 2.5rem; flex-wrap: wrap; gap: 1rem;">
+        <div>
+          <span class="section-kicker">Systems &amp; Production Software</span>
+          <h2 class="section-title" style="margin-bottom: 0.5rem;">Active Projects &amp; Running Platforms</h2>
+          <p class="section-desc" style="margin-bottom: 0;">A curated portfolio of active production platforms, examination engines, e-commerce storefronts, and computational tools engineered by Syed Mazhar Ali.</p>
+        </div>
+        <a href="projects/index.html" class="btn-secondary">
+          <span>View All Projects →</span>
+        </a>
+      </div>
 
-      <div class="projects-grid">
-        <!-- Project 1: SMA Test Portal -->
-        <div class="project-card">
-          <div>
-            <div class="project-header-meta">
-              <span class="project-badge">CBT Examination Platform</span>
-              <span class="project-live-indicator">
-                <span class="pulse-dot"></span>
-                <span>Live Production</span>
-              </span>
-            </div>
-            <h3 class="project-title">SMA Test Portal — CBT Exam Engine</h3>
-            <p class="project-desc">
-              High-throughput computer-based test platform replicating NTA examination interfaces for JEE Main, JEE Advanced, and NEET. Engineered for zero-latency question navigation, real-time timer tracking, state synchronization, and dynamic KaTeX mathematical formula evaluation.
-            </p>
+      <div class="projects-list">
+        <!-- FEATURED_PROJECTS_START -->
+
+        <article class="project-row">
+          <div class="project-row-meta">
+            <span class="project-badge badge-cyan">CBT Examination Platform</span>
+            <span class="project-live-indicator">
+            <span class="pulse-dot"></span>
+            <span>Live Production</span>
+          </span>
           </div>
-          <div class="project-footer">
-            <div class="project-tech">
-              <span class="tech-tag">CBT Engine</span>
-              <span class="tech-tag">KaTeX AST</span>
-              <span class="tech-tag">Web Workers</span>
-              <span class="tech-tag">IndexedDB</span>
-              <span class="tech-tag">Vanilla JS</span>
+          <div class="project-row-info">
+            <h3>SMA Test Portal — CBT Exam Engine</h3>
+            <p class="project-row-desc">High-throughput computer-based test platform replicating NTA examination interfaces for JEE Main, JEE Advanced, and NEET. Engineered for zero-latency question navigation, real-time timer tracking, state synchronization, and dynamic KaTeX mathematical formula evaluation.</p>
+            <div class="project-row-tech">
+              <span class="tech-tag">CBT Engine</span><span class="tech-tag">KaTeX AST</span><span class="tech-tag">Web Workers</span><span class="tech-tag">IndexedDB</span><span class="tech-tag">Vanilla JS</span>
             </div>
-            <a href="https://tests.smaphysics.com/" target="_blank" rel="noopener noreferrer" class="project-launch-btn">
+          </div>
+          <div class="project-row-action">
+            <a href="https://tests.smaphysics.com/" target="_blank" rel="noopener noreferrer" class="project-action-btn">
               <span>Launch Test Portal</span>
               <span style="font-size: 1.1em">↗</span>
             </a>
           </div>
-        </div>
+        </article>
 
-        <!-- Project 2: Physics Worksheet Vault & DPPs -->
-        <div class="project-card">
-          <div>
-            <div class="project-header-meta">
-              <span class="project-badge" style="color: var(--accent-emerald); background: rgba(16, 185, 129, 0.1);">Physics Resource Portal</span>
-              <span class="project-live-indicator">
-                <span class="pulse-dot"></span>
-                <span>Live Production</span>
-              </span>
-            </div>
-            <h3 class="project-title">Physics Worksheet Vault (DPP Archive)</h3>
-            <p class="project-desc">
-              Digital repository of Daily Practice Problems (DPP) and categorized physics worksheets for competitive students. Includes problem classifications across Mechanics, Electrodynamics, and Optics with analytical solutions, vector diagrams, and downloadable modules.
-            </p>
+        <article class="project-row">
+          <div class="project-row-meta">
+            <span class="project-badge badge-emerald">Physics Resource Portal</span>
+            <span class="project-live-indicator">
+            <span class="pulse-dot"></span>
+            <span>Live Production</span>
+          </span>
           </div>
-          <div class="project-footer">
-            <div class="project-tech">
-              <span class="tech-tag">DPP Vault</span>
-              <span class="tech-tag">LaTeX/KaTeX</span>
-              <span class="tech-tag">Physics Pedagogy</span>
-              <span class="tech-tag">Vector Diagrams</span>
+          <div class="project-row-info">
+            <h3>Physics Worksheet Vault (DPP Archive)</h3>
+            <p class="project-row-desc">Digital repository of Daily Practice Problems (DPP) and categorized physics worksheets for competitive students. Includes problem classifications across Mechanics, Electrodynamics, and Optics with analytical solutions, vector diagrams, and downloadable modules.</p>
+            <div class="project-row-tech">
+              <span class="tech-tag">DPP Vault</span><span class="tech-tag">LaTeX/KaTeX</span><span class="tech-tag">Physics Pedagogy</span><span class="tech-tag">Vector Diagrams</span>
             </div>
-            <a href="https://daily-practice-sheets-dpps.smaphysics.com/" target="_blank" rel="noopener noreferrer" class="project-launch-btn">
+          </div>
+          <div class="project-row-action">
+            <a href="https://daily-practice-sheets-dpps.smaphysics.com/" target="_blank" rel="noopener noreferrer" class="project-action-btn">
               <span>Open DPP Vault</span>
               <span style="font-size: 1.1em">↗</span>
             </a>
           </div>
-        </div>
+        </article>
 
-        <!-- Project 3: Anokhi Ada E-Commerce -->
-        <div class="project-card">
-          <div>
-            <div class="project-header-meta">
-              <span class="project-badge" style="color: var(--accent-purple); background: rgba(168, 85, 247, 0.1);">Retail &amp; E-Commerce</span>
-              <span class="project-live-indicator">
-                <span class="pulse-dot"></span>
-                <span>Live Production</span>
-              </span>
-            </div>
-            <h3 class="project-title">Anokhi Ada — Fashion &amp; Accessories</h3>
-            <p class="project-desc">
-              Modern commercial e-commerce storefront for hair accessories, jewelry, and craft supplies in India. Implements mobile-first catalog browsing, cart operations, dynamic inventory tracking, customer review workflows, and streamlined checkout architecture.
-            </p>
+        <article class="project-row">
+          <div class="project-row-meta">
+            <span class="project-badge badge-purple">Retail &amp; E-Commerce</span>
+            <span class="project-live-indicator">
+            <span class="pulse-dot"></span>
+            <span>Live Production</span>
+          </span>
           </div>
-          <div class="project-footer">
-            <div class="project-tech">
-              <span class="tech-tag">E-Commerce</span>
-              <span class="tech-tag">Storefront</span>
-              <span class="tech-tag">Inventory Mgmt</span>
-              <span class="tech-tag">Mobile-First</span>
+          <div class="project-row-info">
+            <h3>Anokhi Ada — Fashion &amp; Accessories</h3>
+            <p class="project-row-desc">Modern commercial e-commerce storefront for hair accessories, jewelry, and craft supplies in India. Implements mobile-first catalog browsing, cart operations, dynamic inventory tracking, customer review workflows, and streamlined checkout architecture.</p>
+            <div class="project-row-tech">
+              <span class="tech-tag">E-Commerce</span><span class="tech-tag">Storefront</span><span class="tech-tag">Inventory Mgmt</span><span class="tech-tag">Mobile-First</span>
             </div>
-            <a href="https://anokhiada.com/" target="_blank" rel="noopener noreferrer" class="project-launch-btn">
+          </div>
+          <div class="project-row-action">
+            <a href="https://anokhiada.com/" target="_blank" rel="noopener noreferrer" class="project-action-btn">
               <span>Visit anokhiada.com</span>
               <span style="font-size: 1.1em">↗</span>
             </a>
           </div>
-        </div>
+        </article>
+      <!-- FEATURED_PROJECTS_END -->
+      </div>
 
-        <!-- Project 4: Interactive Mechanics Simulator -->
-        <div class="project-card">
-          <div>
-            <div class="project-header-meta">
-              <span class="project-badge" style="color: var(--accent-cyan); background: rgba(56, 189, 248, 0.1);">Canvas Simulation</span>
-              <span class="project-live-indicator">
-                <span class="pulse-dot"></span>
-                <span>Interactive Demo</span>
-              </span>
-            </div>
-            <h3 class="project-title">Interactive Mechanics Vector Visualizer</h3>
-            <p class="project-desc">
-              Zero-dependency client-side HTML5 canvas physics simulator executing real-time numerical integration (Euler/Verlet) for non-linear pendulum oscillations, damping, and phase-space vector telemetry. Runs at a rock-solid 60 FPS directly in your browser.
-            </p>
-          </div>
-          <div class="project-footer">
-            <div class="project-tech">
-              <span class="tech-tag">HTML5 Canvas</span>
-              <span class="tech-tag">Vanilla JS</span>
-              <span class="tech-tag">Numerical Math</span>
-              <span class="tech-tag">60 FPS</span>
-            </div>
-            <a href="#about" class="project-launch-btn">
-              <span>Try Interactive Demo ↑</span>
-            </a>
-          </div>
-        </div>
-
-        <!-- Project 5: Procedural Problem Generator -->
-        <div class="project-card">
-          <div>
-            <div class="project-header-meta">
-              <span class="project-badge" style="color: var(--accent-amber); background: rgba(245, 158, 11, 0.1);">Algorithmic Tooling</span>
-              <span class="project-live-indicator" style="color: var(--text-muted); background: var(--bg-tertiary);">
-                <span>Internal Tooling</span>
-              </span>
-            </div>
-            <h3 class="project-title">Procedural Problem &amp; PDF Generator</h3>
-            <p class="project-desc">
-              Algorithmic problem synthesis engine that parameterizes physics problem geometry and kinematics symbolically, synthesizing randomized DPP problem sheets, vector diagrams, and publication-ready PDFs with step-by-step KaTeX solutions.
-            </p>
-          </div>
-          <div class="project-footer">
-            <div class="project-tech">
-              <span class="tech-tag">Python</span>
-              <span class="tech-tag">WeasyPrint</span>
-              <span class="tech-tag">KaTeX</span>
-              <span class="tech-tag">Algorithmic Math</span>
-            </div>
-            <a href="building-sub-second-katex-quiz-engines/index.html" class="project-launch-btn">
-              <span>Read Architecture Essay</span>
-              <span style="font-size: 1.1em">→</span>
-            </a>
-          </div>
-        </div>
+      <div class="projects-view-all-wrap">
+        <a href="projects/index.html" class="btn-secondary">
+          <span>Explore Dedicated Projects Archive &amp; Architecture (5 Platforms) →</span>
+        </a>
       </div>
     </div>
   </section>
@@ -405,7 +345,22 @@
         </a>
       </div>
 
-      <!-- LATEST_ARTICLES_START -->
+      <div class="articles-list">
+        <!-- LATEST_ARTICLES_START -->
+
+        <article class="article-row" onclick="window.location.href='why-you-struggle-with-physics/index.html'" style="cursor: pointer;">
+          <div class="article-meta-date">
+            <span>November 17, 2026</span>
+            <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 0.25rem;">7 min read</div>
+          </div>
+          <div class="article-info">
+            <h3><a href="why-you-struggle-with-physics/index.html">Why You Struggle with Physics (Hint: It’s Not the Physics)</a></h3>
+            <p class="article-summary">Most students don&#x27;t hit a wall in physics because of physical concepts. They stumble on the translation chasm, the trap of formula pattern-matching, and mathematical hygiene. Here is the anatomical breakdown.</p>
+          </div>
+          <div class="article-tags-wrap">
+            <span class="tag-badge">#Physics</span> <span class="tag-badge">#Pedagogy</span> <span class="tag-badge">#Problem Solving</span> <span class="tag-badge">#JEE Advanced</span> <span class="tag-badge">#Mental Models</span>
+          </div>
+        </article>
 
         <article class="article-row" onclick="window.location.href='building-sub-second-katex-quiz-engines/index.html'" style="cursor: pointer;">
           <div class="article-meta-date">
@@ -448,21 +403,8 @@
             <span class="tag-badge">#AI</span> <span class="tag-badge">#Gemini</span> <span class="tag-badge">#Software</span> <span class="tag-badge">#Workflow</span>
           </div>
         </article>
-
-        <article class="article-row" onclick="window.location.href='it-is-really-tough-to-write-everyday/index.html'" style="cursor: pointer;">
-          <div class="article-meta-date">
-            <span>December 04, 2024</span>
-            <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 0.25rem;">4 min read</div>
-          </div>
-          <div class="article-info">
-            <h3><a href="it-is-really-tough-to-write-everyday/index.html">The Friction of Consistency: Why Writing Regularly Is Tougher Than It Looks</a></h3>
-            <p class="article-summary">Reflections on building a consistent writing habit, navigating the gap between physical notebooks and digital publishing, and staying focused on a single topic.</p>
-          </div>
-          <div class="article-tags-wrap">
-            <span class="tag-badge">#Productivity</span> <span class="tag-badge">#Writing</span> <span class="tag-badge">#Reflections</span> <span class="tag-badge">#SMAPhysics</span>
-          </div>
-        </article>
       <!-- LATEST_ARTICLES_END -->
+      </div>
     </div>
   </section>
 
@@ -515,6 +457,7 @@
             <li><a href="https://daily-practice-sheets-dpps.smaphysics.com/" target="_blank" rel="noopener noreferrer">Physics Worksheet Vault ↗</a></li>
             <li><a href="https://anokhiada.com/" target="_blank" rel="noopener noreferrer">Anokhi Ada Store ↗</a></li>
             <li><a href="#about">Interactive Mechanics Simulator</a></li>
+            <li><a href="projects/index.html">All Projects Archive</a></li>
             <li><a href="blog/index.html">Technical Blog Archive</a></li>
           </ul>
         </div>

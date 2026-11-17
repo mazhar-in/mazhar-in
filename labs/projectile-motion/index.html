@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <title>2D Projectile Motion Vector Simulator | Mazhar's Lab</title>
+  <meta name="description" content="Interactive 2D kinematics projectile simulation with live velocity components, vector dynamics, and analytical telemetry for physics researchers.">
+  <link rel="canonical" href="https://mazhar.in/labs/projectile-motion/">
+  <meta name="lab-category" content="Kinetic Toys & Reflex Mechanics">
+  <meta name="lab-status" content="Finished Machine">
+  <meta name="lab-hook" content="2D vector launch trajectory engine with live kinematics telemetry and real-time velocity components.">
+  <meta name="lab-tech" content="Canvas, KaTeX, Vanilla JS">
+  <meta name="lab-tags" content="Kinematics, Vectors, Mechanics, Simulation">
+  <!-- Open Graph / SEO -->
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="2D Projectile Motion Vector Simulator | Mazhar's Lab">
+  <meta property="og:description" content="Interactive 2D kinematics projectile simulation with live velocity components, vector dynamics, and analytical telemetry for physics researchers.">
+  <meta property="og:url" content="https://mazhar.in/labs/projectile-motion/">
+  <!-- Schema.org WebApplication -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "2D Projectile Motion Vector Simulator | Mazhar's Lab",
+    "description": "Interactive 2D kinematics projectile simulation with live velocity components, vector dynamics, and analytical telemetry for physics researchers.",
+    "url": "https://mazhar.in/labs/projectile-motion/",
+    "applicationCategory": "EducationalApplication",
+    "author": {
+      "@type": "Person",
+      "name": "Syed Mazhar Ali",
+      "url": "https://mazhar.in"
+    }
+  }
+  </script>
+
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <!-- Labs Auto-Discovery Meta Tags -->
+  <title>2D Projectile Motion Vector Simulator | Mazhar's Lab</title>
+  <meta name="description" content="Interactive 2D projectile motion simulator with dynamic launch velocity vectors, real-time trajectory curves, and analytical telemetry for JEE Advanced physics.">
+  <!-- OpenGraph -->
+  <meta property="og:title" content="2D Projectile Motion Vector Simulator | The Lab">
+  <meta property="og:description" content="Interactive 2D projectile motion simulator with real-time trajectory curves and analytical telemetry by Syed Mazhar Ali.">
+  <meta property="og:type" content="website">
+
+  <!-- Tailwind CSS (CDN) -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              dark: '#090c10',
+              card: '#0e131b',
+              panel: '#161e2b',
+              border: 'rgba(255, 255, 255, 0.1)',
+              cyan: '#38bdf8',
+              emerald: '#10b981',
+              purple: '#a855f7'
+            }
+          },
+          fontFamily: {
+            sans: ['Inter', 'system-ui', 'sans-serif'],
+            mono: ['JetBrains Mono', 'monospace']
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+  <!-- KaTeX for Mathematical Physics Rendering -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css" crossorigin="anonymous">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js" crossorigin="anonymous"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js" crossorigin="anonymous"
+          onload="renderMathInElement(document.body, {
+            delimiters: [
+              {left: '$$', right: '$$', display: true},
+              {left: '$', right: '$', display: false},
+              {left: '\\(', right: '\\)', display: false},
+              {left: '\\[', right: '\\]', display: true}
+            ],
+            throwOnError: false
+          });"></script>
+
+  <style>
+    body {
+      background-color: #090c10;
+      color: #f8fafc;
+      font-family: 'Inter', sans-serif;
+    }
+    .grid-bg {
+      background-image: radial-gradient(rgba(56, 189, 248, 0.07) 1px, transparent 1px);
+      background-size: 24px 24px;
+    }
+  </style>
+</head>
+<body class="min-h-screen grid-bg flex flex-col">
+
+  <!-- Sticky Top Navigation Bar -->
+  <header class="sticky top-0 z-50 bg-[#0e131b]/90 backdrop-blur-md border-b border-white/10 px-4 py-3">
+    <div class="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-3 text-xs sm:text-sm">
+      <div class="flex items-center gap-2 font-mono">
+        <span class="text-amber-400">⚡</span>
+        <span class="text-slate-300 font-semibold">Lab Experiment</span>
+        <span class="text-slate-500">by Syed Mazhar Ali</span>
+        <span class="text-slate-600 hidden md:inline">|</span>
+        <a href="../index.html" class="text-sky-400 hover:text-sky-300 transition-colors flex items-center gap-1 font-sans">
+          <span>← Back to mazhar.in/labs</span>
+        </a>
+      </div>
+
+      <div class="flex items-center gap-2">
+        <a href="https://lockinrank.com" target="_blank" rel="noopener noreferrer" 
+           class="px-3 py-1.5 rounded-md bg-purple-500/10 hover:bg-purple-500/20 text-purple-300 border border-purple-500/30 transition-all font-mono text-xs flex items-center gap-1">
+          <span>Practice on LockInRank CBT</span>
+          <span>↗</span>
+        </a>
+        <a href="https://smaphysics.com" target="_blank" rel="noopener noreferrer" 
+           class="px-3 py-1.5 rounded-md bg-sky-500/10 hover:bg-sky-500/20 text-sky-300 border border-sky-500/30 transition-all font-mono text-xs flex items-center gap-1">
+          <span>SMA Physics</span>
+          <span>↗</span>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Interactive Lab Workspace -->
+  <main class="max-w-7xl mx-auto w-full px-4 py-6 flex-1 flex flex-col gap-8">
+    
+    <!-- Title & Status Header -->
+    <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-white/10 pb-4">
+      <div>
+        <div class="flex items-center gap-2 mb-2 font-mono text-xs">
+          <span class="px-2 py-0.5 rounded bg-sky-500/10 text-sky-400 border border-sky-500/20">Physics Simulators</span>
+          <span class="text-emerald-400 flex items-center gap-1">
+            <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span> 60 FPS Engine
+          </span>
+        </div>
+        <h1 class="text-2xl sm:text-3xl font-bold tracking-tight text-white">2D Projectile Motion Vector Visualizer</h1>
+        <p class="text-slate-400 text-sm mt-1 max-w-2xl">
+          Simulate parabolic trajectories under uniform gravity. Analyze launch velocity vectors $\vec{v}_x$ and $\vec{v}_y$, apex kinematics, and analytical range boundaries.
+        </p>
+      </div>
+
+      <!-- Quick Telemetry Chips -->
+      <div class="flex items-center gap-3 font-mono text-xs text-slate-300 bg-[#161e2b] px-3.5 py-2.5 rounded-lg border border-white/5">
+        <div>Range $R$: <span id="chipRange" class="text-sky-400 font-bold">0.0m</span></div>
+        <span class="text-slate-600">•</span>
+        <div>Apex $H$: <span id="chipHeight" class="text-emerald-400 font-bold">0.0m</span></div>
+        <span class="text-slate-600">•</span>
+        <div>Time $T$: <span id="chipTime" class="text-purple-400 font-bold">0.00s</span></div>
+      </div>
+    </div>
+
+    <!-- Interactive Simulation Container -->
+    <div class="grid grid-cols-1 lg:grid-cols-4 gap-6 items-start">
+      
+      <!-- Canvas Stage (Left 3 cols) -->
+      <div class="lg:col-span-3 bg-[#0e131b] border border-white/10 rounded-xl overflow-hidden shadow-2xl relative flex flex-col">
+        <div class="bg-[#161e2b]/80 border-b border-white/5 px-4 py-2.5 flex items-center justify-between text-xs font-mono text-slate-400">
+          <div class="flex items-center gap-2">
+            <span class="w-2 h-2 rounded-full bg-sky-400"></span>
+            <span>Trajectory Canvas (Grid = 50m / tick)</span>
+          </div>
+          <div class="flex items-center gap-2">
+            <button id="btnLaunch" class="px-3 py-1 rounded bg-sky-500 text-black font-semibold hover:bg-sky-400 transition-colors">Launch 🚀</button>
+            <button id="btnTrace" class="px-2.5 py-1 rounded bg-white/5 hover:bg-white/10 transition-colors">Clear Traces</button>
+          </div>
+        </div>
+        <div class="relative w-full h-[380px] sm:h-[480px] bg-[#090c10] flex items-center justify-center">
+          <canvas id="simCanvas" class="w-full h-full block cursor-crosshair"></canvas>
+        </div>
+      </div>
+
+      <!-- Control Panel (Right 1 col) -->
+      <div class="bg-[#0e131b] border border-white/10 rounded-xl p-5 shadow-xl flex flex-col gap-5 text-sm">
+        <h3 class="font-semibold text-white tracking-wide border-b border-white/10 pb-2 flex items-center gap-2 font-mono text-xs uppercase text-slate-400">
+          <span>Kinematic Controls</span>
+        </h3>
+
+        <!-- Initial Velocity Slider -->
+        <div class="flex flex-col gap-1.5">
+          <div class="flex justify-between text-xs font-mono">
+            <label for="sliderV0" class="text-slate-300">Launch Speed ($v_0$)</label>
+            <span id="valV0" class="text-sky-400 font-semibold">45 m/s</span>
+          </div>
+          <input type="range" id="sliderV0" min="10" max="100" value="45" step="1" 
+                 class="w-full accent-sky-400 bg-slate-800 rounded h-1.5 cursor-pointer">
+        </div>
+
+        <!-- Launch Angle Slider -->
+        <div class="flex flex-col gap-1.5">
+          <div class="flex justify-between text-xs font-mono">
+            <label for="sliderAngle" class="text-slate-300">Elevation Angle ($\theta$)</label>
+            <span id="valAngle" class="text-emerald-400 font-semibold">45°</span>
+          </div>
+          <input type="range" id="sliderAngle" min="5" max="85" value="45" step="1" 
+                 class="w-full accent-emerald-400 bg-slate-800 rounded h-1.5 cursor-pointer">
+        </div>
+
+        <!-- Gravity Slider -->
+        <div class="flex flex-col gap-1.5">
+          <div class="flex justify-between text-xs font-mono">
+            <label for="sliderG" class="text-slate-300">Gravity ($g$)</label>
+            <span id="valG" class="text-purple-400 font-semibold">9.8 m/s²</span>
+          </div>
+          <input type="range" id="sliderG" min="1.6" max="25" value="9.8" step="0.1" 
+                 class="w-full accent-purple-400 bg-slate-800 rounded h-1.5 cursor-pointer">
+        </div>
+
+        <!-- Analytical Telemetry Box -->
+        <div class="bg-[#161e2b] p-3.5 rounded-lg border border-white/5 font-mono text-xs flex flex-col gap-2.5 mt-1">
+          <div class="text-slate-400 text-[11px] uppercase tracking-wider font-semibold border-b border-white/5 pb-1">
+            Analytical Readout
+          </div>
+          <div class="flex justify-between">
+            <span class="text-slate-400">$v_{0x} = v_0\cos\theta$:</span>
+            <span id="outVx" class="text-sky-300 font-semibold">31.8 m/s</span>
+          </div>
+          <div class="flex justify-between">
+            <span class="text-slate-400">$v_{0y} = v_0\sin\theta$:</span>
+            <span id="outVy" class="text-emerald-300 font-semibold">31.8 m/s</span>
+          </div>
+          <div class="flex justify-between">
+            <span class="text-slate-400">Max Height ($H$):</span>
+            <span id="outHeight" class="text-purple-300 font-semibold">51.6 m</span>
+          </div>
+          <div class="flex justify-between">
+            <span class="text-slate-400">Max Range ($R$):</span>
+            <span id="outRange" class="text-amber-300 font-semibold">206.6 m</span>
+          </div>
+          <div class="flex justify-between">
+            <span class="text-slate-400">Total Flight Time ($T$):</span>
+            <span id="outTime" class="text-slate-200 font-semibold">6.49 s</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Structured SEO Content Section ("Concept & Formula Breakdown") -->
+    <article class="bg-[#0e131b] border border-white/10 rounded-xl p-6 sm:p-8 mt-2 shadow-lg max-w-4xl">
+      <div class="flex items-center gap-2 font-mono text-xs text-sky-400 uppercase tracking-widest mb-2">
+        <span>Theoretical Mechanics &amp; Derivations</span>
+      </div>
+      <h2 class="text-xl sm:text-2xl font-bold text-white mb-4">Concept &amp; Formula Breakdown</h2>
+      
+      <div class="prose prose-invert prose-slate max-w-none text-slate-300 space-y-4 text-sm sm:text-base leading-relaxed">
+        <p>
+          In classical Newtonian mechanics, two-dimensional projectile motion without air resistance represents the superposition of two independent, mutually perpendicular motions:
+        </p>
+
+        <ol class="list-decimal list-inside space-y-1 text-slate-400 font-mono text-xs sm:text-sm">
+          <li><strong>Horizontal Axis ($x$)</strong>: Uniform linear motion with constant velocity $v_x = v_0 \cos\theta$.</li>
+          <li><strong>Vertical Axis ($y$)</strong>: Uniformly accelerated motion under gravitational field $a_y = -g$.</li>
+        </ol>
+
+        <h3 class="text-lg font-semibold text-white mt-6 mb-2">1. Trajectory Equation (Parabola)</h3>
+        <p>
+          Eliminating parameter $t$ between $x(t) = (v_0\cos\theta)t$ and $y(t) = (v_0\sin\theta)t - \frac{1}{2}gt^2$ yields the canonical trajectory equation:
+        </p>
+
+        <div class="my-4 p-4 rounded-lg bg-[#161e2b] border border-white/5 text-center font-mono">
+          $$y(x) = x \tan\theta - \frac{g}{2 v_0^2 \cos^2\theta} x^2$$
+        </div>
+
+        <p>
+          Expressed in terms of the total horizontal range $R$:
+        </p>
+
+        <div class="my-4 p-4 rounded-lg bg-[#161e2b] border border-white/5 text-center font-mono">
+          $$y(x) = x \tan\theta \left( 1 - \frac{x}{R} \right)$$
+        </div>
+
+        <h3 class="text-lg font-semibold text-white mt-6 mb-2">2. Critical Kinematic Bounds</h3>
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 my-4 font-mono text-xs">
+          <div class="bg-[#161e2b] p-3 rounded border border-white/5 text-center">
+            <div class="text-slate-400 mb-1">Time of Flight</div>
+            <div class="text-purple-300 font-bold">$$T = \frac{2v_0 \sin\theta}{g}$$</div>
+          </div>
+          <div class="bg-[#161e2b] p-3 rounded border border-white/5 text-center">
+            <div class="text-slate-400 mb-1">Maximum Height</div>
+            <div class="text-emerald-300 font-bold">$$H = \frac{v_0^2 \sin^2\theta}{2g}$$</div>
+          </div>
+          <div class="bg-[#161e2b] p-3 rounded border border-white/5 text-center">
+            <div class="text-slate-400 mb-1">Horizontal Range</div>
+            <div class="text-sky-300 font-bold">$$R = \frac{v_0^2 \sin 2\theta}{g}$$</div>
+          </div>
+        </div>
+
+        <h3 class="text-lg font-semibold text-white mt-6 mb-2">Key Problem-Solving Insights for JEE Advanced</h3>
+        <ul class="list-disc list-inside space-y-1.5 text-slate-400">
+          <li><strong>Complementary Angle Invariance</strong>: Launch angles $\theta$ and $90^\circ - \theta$ produce the exact same horizontal range $R$ for identical launch speed $v_0$.</li>
+          <li><strong>Orthogonality Condition</strong>: The velocity vector is perpendicular to the initial velocity vector at time $t = \frac{v_0}{g \sin\theta}$ (achievable only when $\theta > 45^\circ$).</li>
+          <li><strong>Curvature at Apex</strong>: At the highest point, velocity is purely horizontal ($v = v_0\cos\theta$), and acceleration is purely normal ($a_n = g$). Hence, the radius of curvature is $\rho = \frac{v_0^2 \cos^2\theta}{g}$.</li>
+        </ul>
+      </div>
+    </article>
+
+  </main>
+
+  <!-- Minimal Lab Footer -->
+  <footer class="border-t border-white/10 bg-[#090c10] py-6 px-4 text-center text-xs text-slate-500 font-mono">
+    <div class="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-3">
+      <span>Designed &amp; Engineered by <a href="https://mazhar.in" class="text-sky-400 hover:underline">Syed Mazhar Ali</a></span>
+      <div class="flex gap-4">
+        <a href="https://lockinrank.com" target="_blank" rel="noopener noreferrer" class="hover:text-slate-300">LockInRank CBT ↗</a>
+        <a href="https://smaphysics.com" target="_blank" rel="noopener noreferrer" class="hover:text-slate-300">SMA Physics ↗</a>
+        <a href="../index.html" class="hover:text-slate-300">All Lab Tools</a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Simulation JavaScript Logic -->
+  <script>
+    const canvas = document.getElementById('simCanvas');
+    const ctx = canvas.getContext('2d');
+    
+    let v0 = 45;
+    let angleDeg = 45;
+    let g = 9.8;
+    
+    let isSimulating = false;
+    let simT = 0;
+    let pastTrajectories = [];
+    let currentTrajectory = [];
+
+    function resizeCanvas() {
+      const rect = canvas.getBoundingClientRect();
+      canvas.width = rect.width * window.devicePixelRatio;
+      canvas.height = rect.height * window.devicePixelRatio;
+      ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
+    }
+    window.addEventListener('resize', resizeCanvas);
+    resizeCanvas();
+
+    function updateAnalyticalMetrics() {
+      const rad = (angleDeg * Math.PI) / 180;
+      const vx = v0 * Math.cos(rad);
+      const vy = v0 * Math.sin(rad);
+      const T = (2 * vy) / g;
+      const H = (vy * vy) / (2 * g);
+      const R = (v0 * v0 * Math.sin(2 * rad)) / g;
+
+      document.getElementById('outVx').textContent = vx.toFixed(1) + ' m/s';
+      document.getElementById('outVy').textContent = vy.toFixed(1) + ' m/s';
+      document.getElementById('outHeight').textContent = H.toFixed(1) + ' m';
+      document.getElementById('outRange').textContent = R.toFixed(1) + ' m';
+      document.getElementById('outTime').textContent = T.toFixed(2) + ' s';
+
+      document.getElementById('chipRange').textContent = R.toFixed(1) + 'm';
+      document.getElementById('chipHeight').textContent = H.toFixed(1) + 'm';
+      document.getElementById('chipTime').textContent = T.toFixed(2) + 's';
+    }
+
+    function worldToCanvas(wx, wy, w, h) {
+      const scale = Math.min(w / 450, h / 220);
+      const originX = 50;
+      const originY = h - 40;
+      return {
+        x: originX + wx * scale,
+        y: originY - wy * scale,
+        scale: scale
+      };
+    }
+
+    function draw() {
+      const rect = canvas.getBoundingClientRect();
+      const w = rect.width;
+      const h = rect.height;
+
+      ctx.clearRect(0, 0, w, h);
+
+      const rad = (angleDeg * Math.PI) / 180;
+      const vx0 = v0 * Math.cos(rad);
+      const vy0 = v0 * Math.sin(rad);
+      const totalT = (2 * vy0) / g;
+
+      // 1. Draw Ground & Grid
+      const groundY = h - 40;
+      ctx.strokeStyle = 'rgba(255, 255, 255, 0.1)';
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.moveTo(0, groundY);
+      ctx.lineTo(w, groundY);
+      ctx.stroke();
+
+      // Tick marks
+      ctx.fillStyle = '#64748b';
+      ctx.font = '10px monospace';
+      const scaleObj = worldToCanvas(1, 0, w, h);
+      const tickStepMeters = 50;
+      for (let mx = 0; mx <= 500; mx += tickStepMeters) {
+        const p = worldToCanvas(mx, 0, w, h);
+        if (p.x < w - 20) {
+          ctx.beginPath();
+          ctx.moveTo(p.x, groundY);
+          ctx.lineTo(p.x, groundY + 5);
+          ctx.stroke();
+          ctx.fillText(mx + 'm', p.x - 10, groundY + 18);
+        }
+      }
+
+      // 2. Draw Past Trajectories
+      for (let traj of pastTrajectories) {
+        ctx.strokeStyle = 'rgba(148, 163, 184, 0.25)';
+        ctx.lineWidth = 1.5;
+        ctx.beginPath();
+        for (let i = 0; i < traj.length; i++) {
+          const pt = worldToCanvas(traj[i].x, traj[i].y, w, h);
+          if (i === 0) ctx.moveTo(pt.x, pt.y);
+          else ctx.lineTo(pt.x, pt.y);
+        }
+        ctx.stroke();
+      }
+
+      // 3. Draw Theoretical Parabola (Dashed)
+      ctx.strokeStyle = 'rgba(56, 189, 248, 0.35)';
+      ctx.setLineDash([4, 4]);
+      ctx.lineWidth = 1.5;
+      ctx.beginPath();
+      for (let tStep = 0; tStep <= totalT; tStep += totalT / 60) {
+        const px = vx0 * tStep;
+        const py = Math.max(0, vy0 * tStep - 0.5 * g * tStep * tStep);
+        const pt = worldToCanvas(px, py, w, h);
+        if (tStep === 0) ctx.moveTo(pt.x, pt.y);
+        else ctx.lineTo(pt.x, pt.y);
+      }
+      ctx.stroke();
+      ctx.setLineDash([]);
+
+      // 4. Update Simulation State
+      if (isSimulating) {
+        simT += 0.025;
+        const curX = vx0 * simT;
+        const curY = vy0 * simT - 0.5 * g * simT * simT;
+
+        if (curY >= 0) {
+          currentTrajectory.push({ x: curX, y: curY });
+        } else {
+          isSimulating = false;
+          pastTrajectories.push([...currentTrajectory]);
+          currentTrajectory = [];
+        }
+      }
+
+      // 5. Draw Active Trajectory
+      if (currentTrajectory.length > 0) {
+        ctx.strokeStyle = '#38bdf8';
+        ctx.lineWidth = 2.5;
+        ctx.beginPath();
+        for (let i = 0; i < currentTrajectory.length; i++) {
+          const pt = worldToCanvas(currentTrajectory[i].x, currentTrajectory[i].y, w, h);
+          if (i === 0) ctx.moveTo(pt.x, pt.y);
+          else ctx.lineTo(pt.x, pt.y);
+        }
+        ctx.stroke();
+
+        // Projectile Body & Velocity Vectors
+        const lastPt = currentTrajectory[currentTrajectory.length - 1];
+        const canvasPt = worldToCanvas(lastPt.x, lastPt.y, w, h);
+        
+        const curVx = vx0;
+        const curVy = vy0 - g * simT;
+
+        // Velocity vector arrow
+        ctx.strokeStyle = '#10b981';
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.moveTo(canvasPt.x, canvasPt.y);
+        ctx.lineTo(canvasPt.x + curVx * 0.8, canvasPt.y - curVy * 0.8);
+        ctx.stroke();
+
+        // Glowing ball
+        ctx.fillStyle = '#38bdf8';
+        ctx.beginPath();
+        ctx.arc(canvasPt.x, canvasPt.y, 6, 0, Math.PI * 2);
+        ctx.fill();
+      } else {
+        // Cannon at origin
+        const originPt = worldToCanvas(0, 0, w, h);
+        ctx.strokeStyle = '#f59e0b';
+        ctx.lineWidth = 4;
+        ctx.beginPath();
+        ctx.moveTo(originPt.x, originPt.y);
+        ctx.lineTo(originPt.x + Math.cos(rad) * 24, originPt.y - Math.sin(rad) * 24);
+        ctx.stroke();
+
+        ctx.fillStyle = '#f8fafc';
+        ctx.beginPath();
+        ctx.arc(originPt.x, originPt.y, 5, 0, Math.PI * 2);
+        ctx.fill();
+      }
+
+      requestAnimationFrame(draw);
+    }
+
+    requestAnimationFrame(draw);
+
+    function startLaunch() {
+      simT = 0;
+      currentTrajectory = [];
+      isSimulating = true;
+    }
+
+    document.getElementById('sliderV0').addEventListener('input', (e) => {
+      v0 = parseFloat(e.target.value);
+      document.getElementById('valV0').textContent = v0 + ' m/s';
+      updateAnalyticalMetrics();
+    });
+
+    document.getElementById('sliderAngle').addEventListener('input', (e) => {
+      angleDeg = parseFloat(e.target.value);
+      document.getElementById('valAngle').textContent = angleDeg + '°';
+      updateAnalyticalMetrics();
+    });
+
+    document.getElementById('sliderG').addEventListener('input', (e) => {
+      g = parseFloat(e.target.value);
+      document.getElementById('valG').textContent = g.toFixed(1) + ' m/s²';
+      updateAnalyticalMetrics();
+    });
+
+    document.getElementById('btnLaunch').addEventListener('click', startLaunch);
+    document.getElementById('btnTrace').addEventListener('click', () => {
+      pastTrajectories = [];
+      currentTrajectory = [];
+      isSimulating = false;
+    });
+
+    updateAnalyticalMetrics();
+  </script>
+</body>
+</html>

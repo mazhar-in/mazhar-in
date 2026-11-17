@@ -15,3 +15,32 @@ Desktop.ini
 .idea/
 *.swp
 *.swo
+
+# Local Markdown Studio Editor
+content/posts/run_editor.*
+content/posts/markdown_editor.html
+content/posts/index.html
+run_editor.*
+markdown_editor.html
+
+# Triage, Internal Documentation & Workspace Reports
+LABS_TRIAGE.md
+*.triage.md
+SETUP.md
+manual.md
+scratch/
+.temp/
+*.log
+*.tmp
+*.bak
+*.orig
+
+# Local Visual Inspector & Triage
+local-inspector.html
+inspector/
+CURATED_PICKS.json
+scripts/serve_inspector.py
+scripts/scavenge_local_tools.py
+
+
+

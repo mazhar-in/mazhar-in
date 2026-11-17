@@ -23,6 +23,55 @@ INDEX_FILE = ROOT_DIR / "index.html"
 POST_TEMPLATE_FILE = TEMPLATES_DIR / "post_template.html"
 BLOG_INDEX_TEMPLATE_FILE = TEMPLATES_DIR / "blog_index_template.html"
 
+PROJECTS_FILE = ROOT_DIR / "data" / "projects.json"
+PROJECTS_DIR = ROOT_DIR / "projects"
+PROJECTS_INDEX_TEMPLATE_FILE = TEMPLATES_DIR / "projects_index_template.html"
+
+
+def render_project_row(p: dict, is_homepage: bool = False) -> str:
+    """
+    Renders a single project as a clean, responsive list row.
+    """
+    badge_cls = f"badge-{p.get('badge_type', 'cyan')}"
+    status_text = p.get('status', 'Live')
+    if "live" in status_text.lower():
+        status_html = f'''<span class="project-live-indicator">
+            <span class="pulse-dot"></span>
+            <span>{html.escape(status_text)}</span>
+          </span>'''
+    else:
+        status_html = f'''<span class="project-live-indicator" style="color: var(--text-muted); background: var(--bg-tertiary);">
+            <span>{html.escape(status_text)}</span>
+          </span>'''
+
+    tech_tags = "".join([f'<span class="tech-tag">{html.escape(t)}</span>' for t in p.get("tech", [])])
+
+    link_url = p.get("homepage_link" if is_homepage else "link", p.get("link", "#"))
+    link_target = ' target="_blank" rel="noopener noreferrer"' if p.get("is_external", False) else ''
+    icon = '↗' if p.get("is_external", False) else '→'
+
+    return f"""
+        <article class="project-row">
+          <div class="project-row-meta">
+            <span class="project-badge {badge_cls}">{html.escape(p.get("badge", ""))}</span>
+            {status_html}
+          </div>
+          <div class="project-row-info">
+            <h3>{html.escape(p.get("title", ""))}</h3>
+            <p class="project-row-desc">{html.escape(p.get("description", ""))}</p>
+            <div class="project-row-tech">
+              {tech_tags}
+            </div>
+          </div>
+          <div class="project-row-action">
+            <a href="{link_url}"{link_target} class="project-action-btn">
+              <span>{html.escape(p.get("link_text", "View Project"))}</span>
+              <span style="font-size: 1.1em">{icon}</span>
+            </a>
+          </div>
+        </article>"""
+
+
 
 def parse_frontmatter(raw_content: str):
     """
@@ -401,6 +450,59 @@ def build_site():
             with open(INDEX_FILE, "w", encoding="utf-8") as f:
                 f.write(new_index)
             print("  [OK] Injected latest articles into index.html")
+
+    # 3. Generate projects/index.html & update Featured Projects on index.html
+    if PROJECTS_FILE.exists() and PROJECTS_INDEX_TEMPLATE_FILE.exists():
+        with open(PROJECTS_FILE, "r", encoding="utf-8") as f:
+            projects_data = json.load(f)
+
+        # Sort projects by order
+        projects_data.sort(key=lambda x: x.get("order", 99))
+
+        # 3a. Generate dedicated projects/index.html
+        all_project_rows = [render_project_row(p, is_homepage=False) for p in projects_data]
+        with open(PROJECTS_INDEX_TEMPLATE_FILE, "r", encoding="utf-8") as f:
+            proj_template = f.read()
+
+        proj_page_html = proj_template.replace("{{projects_list}}", "\n".join(all_project_rows))
+        PROJECTS_DIR.mkdir(parents=True, exist_ok=True)
+        with open(PROJECTS_DIR / "index.html", "w", encoding="utf-8") as f:
+            f.write(proj_page_html)
+        print("  [OK] Generated projects page: projects/index.html")
+
+        # 3b. Inject Featured Projects into index.html (top 3 featured)
+        featured_projects = [p for p in projects_data if p.get("featured", False)][:3]
+        if not featured_projects:
+            featured_projects = projects_data[:3]
+
+        featured_rows = [render_project_row(p, is_homepage=True) for p in featured_projects]
+        featured_markup = "\n".join(featured_rows)
+
+        if INDEX_FILE.exists():
+            with open(INDEX_FILE, "r", encoding="utf-8") as f:
+                index_content = f.read()
+
+            pattern = r'(<!-- FEATURED_PROJECTS_START -->)(.*?)(<!-- FEATURED_PROJECTS_END -->)'
+            if re.search(pattern, index_content, flags=re.DOTALL):
+                new_index = re.sub(
+                    pattern,
+                    f'\\1\n{featured_markup}\n      \\3',
+                    index_content,
+                    flags=re.DOTALL
+                )
+                with open(INDEX_FILE, "w", encoding="utf-8") as f:
+                    f.write(new_index)
+                print("  [OK] Injected featured projects list into index.html")
+
+    # 4. Auto-update Labs manifest, SEO pre-render cards, and sitemap.xml
+    try:
+        if str(ROOT_DIR) not in sys.path:
+            sys.path.insert(0, str(ROOT_DIR))
+        from scripts.update_labs import update_labs
+        print("\n--- Running Labs Auto-Discovery Indexer ---")
+        update_labs()
+    except Exception as e:
+        print(f"  [WARN] Could not run labs indexer: {e}")
 
     print("=" * 65)
     print(f"  Build complete! Total articles compiled: {len(posts)}")

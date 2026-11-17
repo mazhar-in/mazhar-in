@@ -1,0 +1,362 @@
+[
+  {
+    "slug": "lockinrank",
+    "title": "LockInRank CBT Platform",
+    "description": "Full-scale NTA-pattern Computer-Based Test engine with synchronized OMR, instant percentiles, and mistake analytics.",
+    "hook": "Full-scale NTA-pattern Computer-Based Test engine with synchronized OMR, instant percentiles, and mistake analytics.",
+    "category": "EdTech Utilities & CBT",
+    "shelf_id": "graduated",
+    "shelf_num": "00 //",
+    "status": "graduated",
+    "experimental_tier": "Production",
+    "live_url": "https://lockinrank.com",
+    "url": "https://lockinrank.com",
+    "is_external": true,
+    "origin_story": "Started as a 50-line JavaScript countdown timer and question-state toggle to test how quickly students could respond to randomized numerical questions.",
+    "tech": [
+      "CBT Engine",
+      "Web Workers",
+      "KaTeX AST",
+      "IndexedDB",
+      "Vanilla JS"
+    ],
+    "tags": [
+      "CBT",
+      "NTA Simulator",
+      "Mock Testing",
+      "EdTech",
+      "Graduated"
+    ],
+    "modified": "2026-11-17"
+  },
+  {
+    "slug": "sma-virtual-physics-lab",
+    "title": "SMA Virtual Physics Lab Suite",
+    "description": "Zero-lag browser apparatus replicating 12+ Class 11 & 12 CBSE practicals with real-time procedural measurement.",
+    "hook": "Zero-lag browser apparatus replicating 12+ Class 11 & 12 CBSE practicals with real-time procedural measurement.",
+    "category": "Virtual Labs",
+    "shelf_id": "graduated",
+    "shelf_num": "00 //",
+    "status": "graduated",
+    "experimental_tier": "Production",
+    "live_url": "https://physics-virtual-lab.smaphysics.com/",
+    "url": "https://physics-virtual-lab.smaphysics.com/",
+    "is_external": true,
+    "origin_story": "Began as a single canvas experiment measuring vernier caliper screw pitch errors before expanding into a full virtual experiment workbench.",
+    "tech": [
+      "Canvas API",
+      "Procedural Math",
+      "Interactive SVG",
+      "Vanilla JS"
+    ],
+    "tags": [
+      "Virtual Labs",
+      "Practicals",
+      "Simulations",
+      "CBSE",
+      "Graduated"
+    ],
+    "modified": "2026-11-17"
+  },
+  {
+    "slug": "combinatorial-generator",
+    "title": "Combinatorial Question Generator Engine",
+    "description": "Algorithmic question synthesizer using combinatorial permutation patterns and procedural parameter binding.",
+    "hook": "Interactive combinatorial question generator engine with procedural variable synthesis.",
+    "category": "Algorithmic Generators & Tools",
+    "shelf_id": "algorithmic-generators",
+    "shelf_num": "04 //",
+    "status": "experimental",
+    "experimental_tier": "Playground",
+    "live_url": "labs/combinatorial-generator/index.html",
+    "url": "labs/combinatorial-generator/index.html",
+    "is_external": false,
+    "origin_story": "",
+    "tech": [
+      "Tailwind",
+      "JavaScript",
+      "MathJax"
+    ],
+    "tags": [
+      "Combinatorics",
+      "Question Generator",
+      "Procedural",
+      "Math"
+    ],
+    "modified": "2026-10-20"
+  },
+  {
+    "slug": "device-workbench",
+    "title": "Multi-Viewport Device Simulator & Layout Workbench",
+    "description": "Tactile viewport and device simulator workbench for previewing interactive web apps across mobile, tablet, and desktop viewports.",
+    "hook": "LockInRank layout preview & multi-viewport responsive device simulator.",
+    "category": "Oddities & Uncategorized",
+    "shelf_id": "oddities",
+    "shelf_num": "05 //",
+    "status": "experimental",
+    "experimental_tier": "Living Prototype",
+    "live_url": "labs/device-workbench/index.html",
+    "url": "labs/device-workbench/index.html",
+    "is_external": false,
+    "origin_story": "",
+    "tech": [
+      "SVG",
+      "Tailwind",
+      "JavaScript"
+    ],
+    "tags": [
+      "Viewport",
+      "Device Simulator",
+      "Dev Tool",
+      "Responsive"
+    ],
+    "modified": "2026-10-20"
+  },
+  {
+    "slug": "eduscroll-atoms",
+    "title": "Eduscroll: Atomic Structure Feed",
+    "description": "High-density atomic physics card swiper feed and rapid cognitive flashcard engine with live orbital visuals.",
+    "hook": "High-density atomic structure rapid swiper feed and cognitive flashcards.",
+    "category": "Eduscrolling & Micro-Feeds",
+    "shelf_id": "eduscrolling",
+    "shelf_num": "03 //",
+    "status": "experimental",
+    "experimental_tier": "Playground",
+    "live_url": "labs/eduscroll-atoms/index.html",
+    "url": "labs/eduscroll-atoms/index.html",
+    "is_external": false,
+    "origin_story": "",
+    "tech": [
+      "Canvas",
+      "KaTeX",
+      "Tailwind",
+      "Audio / TTS"
+    ],
+    "tags": [
+      "Eduscrolling",
+      "Atomic Physics",
+      "Micro Cards",
+      "Modern Physics"
+    ],
+    "modified": "2026-10-20"
+  },
+  {
+    "slug": "fluids-dpp-generator",
+    "title": "Fluids Master DPP Generator & Problem Engine",
+    "description": "Algorithmic Daily Practice Problem (DPP) generator producing randomized hydrostatic problem sets, KaTeX equations, and SVG diagrams.",
+    "hook": "Master DPP & question generator with dynamic KaTeX equations and SVG hydrostatic diagrams.",
+    "category": "Algorithmic Generators & Tools",
+    "shelf_id": "algorithmic-generators",
+    "shelf_num": "04 //",
+    "status": "experimental",
+    "experimental_tier": "Finished Machine",
+    "live_url": "labs/fluids-dpp-generator/index.html",
+    "url": "labs/fluids-dpp-generator/index.html",
+    "is_external": false,
+    "origin_story": "",
+    "tech": [
+      "SVG",
+      "KaTeX",
+      "Tailwind",
+      "JavaScript"
+    ],
+    "tags": [
+      "DPP Generator",
+      "Fluid Mechanics",
+      "Hydrostatics",
+      "Algorithmic"
+    ],
+    "modified": "2026-10-20"
+  },
+  {
+    "slug": "integralforge",
+    "title": "IntegralForge: The Accumulation Engine",
+    "description": "Interactive calculus engine visually modeling Riemann sums, continuous area accumulation, and dynamic integral transformations.",
+    "hook": "The accumulation engine: visual Riemann sums, area transformations, and continuous calculus.",
+    "category": "Calculus & Math Machines",
+    "shelf_id": "calculus-machines",
+    "shelf_num": "02 //",
+    "status": "experimental",
+    "experimental_tier": "Playground",
+    "live_url": "labs/integralforge/index.html",
+    "url": "labs/integralforge/index.html",
+    "is_external": false,
+    "origin_story": "",
+    "tech": [
+      "Canvas",
+      "KaTeX",
+      "Audio / TTS"
+    ],
+    "tags": [
+      "Calculus",
+      "Riemann Sums",
+      "Area Under Curve",
+      "Math Visualization"
+    ],
+    "modified": "2026-10-20"
+  },
+  {
+    "slug": "kineticflux",
+    "title": "KineticFlux: The Differential Physics Engine",
+    "description": "KineticFlux: The Differential Physics Engine - Interactive JEE Advanced and AP Physics C calculus physics simulator and trainer.",
+    "hook": "Differential physics engine exploring real-time vector fields and particle flux.",
+    "category": "Kinetic Toys & Reflex Mechanics",
+    "shelf_id": "kinetic-toys",
+    "shelf_num": "01 //",
+    "status": "experimental",
+    "experimental_tier": "Finished Machine",
+    "live_url": "labs/kineticflux/index.html",
+    "url": "labs/kineticflux/index.html",
+    "is_external": false,
+    "origin_story": "",
+    "tech": [
+      "Canvas",
+      "KaTeX",
+      "Audio / TTS"
+    ],
+    "tags": [
+      "Flux",
+      "Vector Fields",
+      "Differential",
+      "Physics Sandbox"
+    ],
+    "modified": "2026-10-20"
+  },
+  {
+    "slug": "powercraft",
+    "title": "PowerCraft: The Power Rule Crucible",
+    "description": "Fast-paced differential calculus game loop and polynomial crafting engine exploring dynamic derivative reflexes.",
+    "hook": "The power rule crucible: rapid differential calculus game loop and polynomial crafting.",
+    "category": "Calculus & Math Machines",
+    "shelf_id": "calculus-machines",
+    "shelf_num": "02 //",
+    "status": "experimental",
+    "experimental_tier": "Living Prototype",
+    "live_url": "labs/powercraft/index.html",
+    "url": "labs/powercraft/index.html",
+    "is_external": false,
+    "origin_story": "",
+    "tech": [
+      "Canvas",
+      "KaTeX",
+      "Audio / TTS"
+    ],
+    "tags": [
+      "Calculus",
+      "Derivatives",
+      "Power Rule",
+      "Math Game"
+    ],
+    "modified": "2026-10-20"
+  },
+  {
+    "slug": "projectile-motion",
+    "title": "2D Projectile Motion Vector Simulator",
+    "description": "Interactive 2D projectile motion simulator with dynamic launch velocity vectors, real-time trajectory curves, and analytical telemetry for JEE Advanced physics.",
+    "hook": "2D vector launch trajectory engine with live kinematics telemetry and real-time velocity components.",
+    "category": "Kinetic Toys & Reflex Mechanics",
+    "shelf_id": "kinetic-toys",
+    "shelf_num": "01 //",
+    "status": "experimental",
+    "experimental_tier": "Finished Machine",
+    "live_url": "labs/projectile-motion/index.html",
+    "url": "labs/projectile-motion/index.html",
+    "is_external": false,
+    "origin_story": "",
+    "tech": [
+      "Canvas",
+      "KaTeX",
+      "Vanilla JS"
+    ],
+    "tags": [
+      "Kinematics",
+      "Vectors",
+      "Mechanics",
+      "Simulation"
+    ],
+    "modified": "2026-10-20"
+  },
+  {
+    "slug": "trigmaster-blitz",
+    "title": "TrigMaster Blitz: Competitive Trigonometry Arena",
+    "description": "High-octane competitive trigonometry arcade with spaced repetition, procedural challenge generation, and competitive JEE/Olympiad tiers.",
+    "hook": "Fast-paced competitive trigonometry arena with instant evaluation and streak scoring.",
+    "category": "Oddities & Uncategorized",
+    "shelf_id": "oddities",
+    "shelf_num": "05 //",
+    "status": "experimental",
+    "experimental_tier": "Playground",
+    "live_url": "labs/trigmaster-blitz/index.html",
+    "url": "labs/trigmaster-blitz/index.html",
+    "is_external": false,
+    "origin_story": "",
+    "tech": [
+      "SVG",
+      "KaTeX",
+      "Tailwind",
+      "Audio / TTS"
+    ],
+    "tags": [
+      "Trigonometry",
+      "Game Loop",
+      "Math Reflex",
+      "Speed Drill"
+    ],
+    "modified": "2026-10-20"
+  },
+  {
+    "slug": "vector-arena",
+    "title": "Vector Arena: Directional Combat Engine",
+    "description": "Directional physics arena exploring the tactile physical weight and momentum of vectors through real-time canvas combat mechanics.",
+    "hook": "Exploring the physical weight of vectors through directional combat.",
+    "category": "Kinetic Toys & Reflex Mechanics",
+    "shelf_id": "kinetic-toys",
+    "shelf_num": "01 //",
+    "status": "experimental",
+    "experimental_tier": "Playground",
+    "live_url": "labs/vector-arena/index.html",
+    "url": "labs/vector-arena/index.html",
+    "is_external": false,
+    "origin_story": "",
+    "tech": [
+      "Canvas",
+      "SVG",
+      "Audio / TTS"
+    ],
+    "tags": [
+      "Vectors",
+      "Game Loop",
+      "Combat",
+      "Physics"
+    ],
+    "modified": "2026-10-20"
+  },
+  {
+    "slug": "vectoreels",
+    "title": "VectoReels: Physics in a Scroll",
+    "description": "VectoReels \u2014 Master Grade 11/12 Physics Vector Reflexes for JEE & NEET. 150 reflex cards in a mobile doomscroll feed with KaTeX math, haptics, confetti and instant audio.",
+    "hook": "Vertical kinetic micro-feed turning vector mechanics into bite-sized tactile cards.",
+    "category": "Eduscrolling & Micro-Feeds",
+    "shelf_id": "eduscrolling",
+    "shelf_num": "03 //",
+    "status": "experimental",
+    "experimental_tier": "Living Prototype",
+    "live_url": "labs/vectoreels/index.html",
+    "url": "labs/vectoreels/index.html",
+    "is_external": false,
+    "origin_story": "",
+    "tech": [
+      "Canvas",
+      "SVG",
+      "Tailwind",
+      "Audio / TTS"
+    ],
+    "tags": [
+      "Eduscrolling",
+      "Vectors",
+      "Micro Feed",
+      "Interactive"
+    ],
+    "modified": "2026-10-20"
+  }
+]

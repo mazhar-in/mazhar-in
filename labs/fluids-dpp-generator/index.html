@@ -1,0 +1,1282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Fluids Master DPP Generator & Problem Engine | Mazhar's Lab</title>
+  <meta name="description" content="Algorithmic Daily Practice Problem (DPP) generator producing randomized hydrostatic problem sets, KaTeX equations, and SVG diagrams.">
+  <link rel="canonical" href="https://mazhar.in/labs/fluids-dpp-generator/">
+  <meta name="lab-category" content="Algorithmic Generators & Tools">
+  <meta name="lab-status" content="Finished Machine">
+  <meta name="lab-hook" content="Master DPP & question generator with dynamic KaTeX equations and SVG hydrostatic diagrams.">
+  <meta name="lab-tech" content="SVG, KaTeX, Tailwind, JavaScript">
+  <meta name="lab-tags" content="DPP Generator, Fluid Mechanics, Hydrostatics, Algorithmic">
+  <!-- Open Graph / SEO -->
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Fluids Master DPP Generator & Problem Engine | Mazhar's Lab">
+  <meta property="og:description" content="Algorithmic Daily Practice Problem (DPP) generator producing randomized hydrostatic problem sets, KaTeX equations, and SVG diagrams.">
+  <meta property="og:url" content="https://mazhar.in/labs/fluids-dpp-generator/">
+  <!-- Schema.org WebApplication -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "Fluids Master DPP Generator & Problem Engine | Mazhar's Lab",
+    "description": "Algorithmic Daily Practice Problem (DPP) generator producing randomized hydrostatic problem sets, KaTeX equations, and SVG diagrams.",
+    "url": "https://mazhar.in/labs/fluids-dpp-generator/",
+    "applicationCategory": "EducationalApplication",
+    "author": {
+      "@type": "Person",
+      "name": "Syed Mazhar Ali",
+      "url": "https://mazhar.in"
+    }
+  }
+  </script>
+
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fluids Master DPP Generator & Problem Engine | Mazhar's Lab</title>
+  
+  <!-- KaTeX Math Engine -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js"></script>
+
+  <style>
+    :root {
+      --primary: #1e3a8a;
+      --primary-accent: #0284c7;
+      --secondary: #0f172a;
+      --border-color: #cbd5e1;
+      --bg-page: #f8fafc;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: var(--bg-page);
+      color: #1e293b;
+      line-height: 1.45;
+      padding: 20px;
+    }
+    .controls-card {
+      max-width: 960px;
+      margin: 0 auto 24px auto;
+      background: #ffffff;
+      padding: 20px 24px;
+      border-radius: 10px;
+      box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
+      border: 1px solid var(--border-color);
+    }
+    .controls-card h2 {
+      font-size: 1.25rem;
+      color: var(--primary);
+      margin-bottom: 14px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 16px;
+      margin-bottom: 16px;
+    }
+    .form-group { display: flex; flex-direction: column; gap: 6px; }
+    .form-group label { font-size: 0.85rem; font-weight: 600; color: #475569; }
+    .form-group input, .form-group select {
+      padding: 8px 12px;
+      border: 1px solid var(--border-color);
+      border-radius: 6px;
+      font-size: 0.95rem;
+      outline: none;
+    }
+    .checkbox-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 12px;
+      padding-top: 12px;
+      border-top: 1px solid #f1f5f9;
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: #334155;
+    }
+    .checkbox-row input {
+      width: 17px;
+      height: 17px;
+      cursor: pointer;
+      accent-color: var(--primary);
+    }
+    .btn-row { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; margin-top: 14px; }
+    button {
+      cursor: pointer;
+      font-size: 0.95rem;
+      font-weight: 600;
+      padding: 10px 18px;
+      border-radius: 6px;
+      border: none;
+      transition: background 0.2s;
+    }
+    .btn-generate { background: var(--primary); color: white; }
+    .btn-generate:hover { background: #172554; }
+    .btn-print { background: #059669; color: white; }
+    .btn-print:hover { background: #047857; }
+    .badge-count {
+      margin-left: auto;
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: #1e3a8a;
+      background: #e0f2fe;
+      border: 1px solid #bae6fd;
+      padding: 6px 12px;
+      border-radius: 20px;
+    }
+    .dpp-sheet {
+      max-width: 960px;
+      margin: 0 auto;
+      background: #ffffff;
+      padding: 30px 40px;
+      border: 1px solid var(--border-color);
+      box-shadow: 0 10px 15px -3px rgba(0,0,0,0.08);
+      position: relative;
+    }
+    .dpp-header {
+      text-align: center;
+      border-bottom: 2px solid #0f172a;
+      padding-bottom: 12px;
+      margin-bottom: 16px;
+    }
+    .inst-title { font-size: 1.6rem; font-weight: 800; text-transform: uppercase; color: #0f172a; }
+    .dpp-name { font-size: 1.15rem; font-weight: 700; color: var(--primary); margin-top: 2px; }
+    .sub-meta { font-size: 0.85rem; font-weight: 600; color: #475569; margin-top: 4px; }
+    .questions-container {
+      column-count: 2;
+      column-gap: 28px;
+      column-rule: 1px solid #e2e8f0;
+      text-align: justify;
+    }
+    .q-card { break-inside: avoid; page-break-inside: avoid; margin-bottom: 16px; font-size: 0.92rem; }
+    .q-text { margin-bottom: 6px; font-weight: 500; }
+    .q-num { font-weight: 700; color: #0f172a; }
+    .q-diagram { display: flex; justify-content: center; margin: 8px 0; }
+    .q-diagram svg { max-width: 100%; height: auto; }
+    .options-grid { display: flex; flex-direction: column; gap: 3px; margin-left: 12px; margin-bottom: 8px; }
+    .option-item { display: flex; gap: 6px; align-items: baseline; }
+    .opt-tag { font-weight: 700; }
+
+    /* Solution Toggle button & Box */
+    .btn-sol-toggle {
+      background: #f1f5f9;
+      color: #334155;
+      font-size: 0.75rem;
+      font-weight: 600;
+      padding: 3px 8px;
+      border: 1px solid #cbd5e1;
+      border-radius: 4px;
+      cursor: pointer;
+      margin-top: 4px;
+      margin-bottom: 6px;
+      display: inline-block;
+    }
+    .btn-sol-toggle:hover { background: #e2e8f0; }
+    .sol-preview-box {
+      background: #f0fdf4;
+      border: 1px solid #bbf7d0;
+      color: #166534;
+      border-radius: 6px;
+      padding: 8px 10px;
+      font-size: 0.82rem;
+      margin-top: 4px;
+      margin-bottom: 8px;
+      line-height: 1.45;
+    }
+    .sol-preview-box strong { color: #15803d; }
+
+    .page-break { page-break-before: always; margin-top: 30px; padding-top: 20px; border-top: 2px dashed #94a3b8; }
+    .solutions-header { text-align: center; font-size: 1.25rem; font-weight: 800; color: #0f172a; margin-bottom: 12px; }
+    .key-table-wrap { display: flex; justify-content: center; margin-bottom: 18px; }
+    .key-table { border-collapse: collapse; text-align: center; font-size: 0.85rem; width: 85%; }
+    .key-table th, .key-table td { border: 1px solid #94a3b8; padding: 4px 10px; }
+    .key-table th { background: #0f172a; color: #ffffff; font-weight: 700; }
+    .key-table tr:nth-child(even) { background: #f1f5f9; }
+    .sol-card { break-inside: avoid; page-break-inside: avoid; margin-bottom: 14px; font-size: 0.88rem; }
+    .sol-card strong { color: var(--primary); }
+    .sol-body { margin-left: 10px; margin-top: 4px; color: #334155; }
+    .dpp-footer {
+      margin-top: 28px;
+      padding-top: 10px;
+      border-top: 1px solid #cbd5e1;
+      text-align: center;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: #475569;
+    }
+    .dpp-footer a { color: var(--primary); text-decoration: underline; }
+
+    /* Student Test Mode */
+    body.test-mode .btn-sol-toggle { display: none !important; }
+    body.test-mode .sol-preview-box { display: none !important; }
+    body.test-mode .page-break { display: none !important; }
+    body.test-mode #solutionsSection { display: none !important; }
+
+    @page { size: A4; margin: 12mm 12mm 16mm 12mm; }
+    @media print {
+      body { background: #ffffff !important; padding: 0 !important; margin: 0 !important; color: #000000 !important; }
+      .controls-card { display: none !important; }
+      .btn-sol-toggle { display: none !important; }
+      .sol-preview-box { display: none !important; }
+      .dpp-sheet { max-width: 100% !important; margin: 0 !important; padding: 0 !important; box-shadow: none !important; border: none !important; }
+      .page-break { border-top: none !important; padding-top: 0 !important; margin-top: 0 !important; }
+      .questions-container { padding-bottom: 14mm !important; }
+      #solutionsBox { padding-bottom: 14mm !important; }
+      .dpp-footer {
+        position: fixed !important;
+        bottom: 0 !important;
+        left: 0 !important;
+        right: 0 !important;
+        margin: 0 !important;
+        padding: 4px 0 !important;
+        background: #ffffff !important;
+        border-top: 0.75pt solid #64748b !important;
+        font-size: 8pt !important;
+        display: block !important;
+      }
+      body.test-mode .page-break { display: none !important; }
+      body.test-mode #solutionsSection { display: none !important; }
+    }
+  </style>
+</head>
+<body>
+<!-- WORKBENCH_NAV -->
+<div style="position: fixed; top: 12px; left: 16px; z-index: 99999; display: flex; align-items: center; gap: 8px;">
+  <a href="../index.html" style="display: inline-flex; align-items: center; gap: 6px; padding: 6px 14px; font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; font-size: 0.8rem; font-weight: 600; color: #00f2fe; background: rgba(10, 15, 29, 0.88); border: 1px solid rgba(0, 242, 254, 0.35); border-radius: 9999px; text-decoration: none; backdrop-filter: blur(8px); box-shadow: 0 4px 12px rgba(0,0,0,0.4); transition: all 0.2s;">
+    <span>&larr; The Workbench</span>
+  </a>
+</div>
+
+
+  <div class="controls-card">
+    <h2>🎯 Must-Do Fluids DPP Configuration</h2>
+    <div class="form-grid">
+      <div class="form-group">
+        <label for="inputInstitute">Institute / Academy Name</label>
+        <input type="text" id="inputInstitute" value="NIKVINS Academy" placeholder="e.g. Apex Physics Institute">
+      </div>
+      <div class="form-group">
+        <label for="inputDppTitle">DPP Title / Subtitle</label>
+        <input type="text" id="inputDppTitle" value="Must-Do Fluids (DPP - 01)">
+      </div>
+      <div class="form-group">
+        <label for="selectCount">Questions Count</label>
+        <select id="selectCount">
+          <option value="10">10 Questions</option>
+          <option value="15" selected>15 Questions (Standard DPP)</option>
+          <option value="20">20 Questions</option>
+          <option value="25">25 Questions</option>
+          <option value="All">All Active Archetypes (78)</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="selectModule">Module / Topic Focus</label>
+        <select id="selectModule">
+          <option value="All" selected>All Must-Do Archetypes (78)</option>
+          <option value="PressureThrust">Pressure &amp; Hydrostatic Thrust (8)</option>
+          <option value="PascalsLaw">Pascal's Law &amp; Hydraulics (5)</option>
+          <option value="Archimedes">Archimedes' Principle &amp; Buoyancy (6)</option>
+          <option value="Hydrodynamics">Hydrodynamics &amp; Continuity (13)</option>
+          <option value="Efflux">Efflux of Liquid (5)</option>
+          <option value="SurfaceTension">Surface Tension, Excess Pressure &amp; Capillarity (30)</option>
+          <option value="Viscosity">Viscosity, Stokes' Law &amp; Terminal Velocity (11)</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="checkbox-row">
+      <input type="checkbox" id="checkTestMode" onchange="toggleTestMode()">
+      <label for="checkTestMode" style="cursor: pointer;">Student Test Mode (Hides on-screen solutions and Answer Key for examination distribution)</label>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn-generate" onclick="generateNewBatch()">🎲 Regenerate Fresh Questions</button>
+      <button class="btn-print" onclick="window.print()">🖨️ Print / Save as PDF</button>
+      <span class="badge-count" id="archCountBadge">78 Must-Do Archetypes Active</span>
+    </div>
+  </div>
+
+  <div class="dpp-sheet" id="printSheet">
+    <header class="dpp-header">
+      <div class="inst-title" id="dispInstitute">NIKVINS Academy</div>
+      <div class="dpp-name" id="dispDppTitle">Must-Do Fluids (DPP - 01)</div>
+      <div class="sub-meta">Target: JEE Main / Advanced &bull; Topic: Mechanical Properties of Fluids (Must-Do Series) &bull; Time: 60 Mins</div>
+    </header>
+
+    <main class="questions-container" id="questionsBox"></main>
+
+    <div class="page-break" id="solutionsSection">
+      <div class="solutions-header">ANSWER KEY &amp; STEP-BY-STEP DERIVATIONS</div>
+      <div class="key-table-wrap">
+        <table class="key-table" id="keyTable"></table>
+      </div>
+      <div id="solutionsBox"></div>
+    </div>
+
+    <footer class="dpp-footer">
+      Powered by <a href="https://lockinrank.com" target="_blank" rel="noopener noreferrer">lockinrank.com</a> &bull; Must-Do Fluids Series
+    </footer>
+  </div>
+
+  <script>
+    function formatOptionContent(str) {
+      if (!str) return "";
+      let s = ("" + str).trim();
+      if (s.includes("$")) return s;
+      const isMathExpr = /\\|[\^_<>]|(\d+\s*:\s*\d+)|^[+-]?\d+(\.\d+)?$/.test(s);
+      return isMathExpr ? `$${s}$` : s;
+    }
+
+    function toggleSolution(qNo) {
+      const el = document.getElementById("sol-preview-" + qNo);
+      if (el) {
+        el.style.display = (el.style.display === "none" || el.style.display === "") ? "block" : "none";
+      }
+    }
+
+    function toggleTestMode() {
+      const isTest = document.getElementById("checkTestMode").checked;
+      if (isTest) {
+        document.body.classList.add("test-mode");
+      } else {
+        document.body.classList.remove("test-mode");
+      }
+    }
+
+    const Archetypes = [
+      // arch_q100_same_mass_doubled_radius_terminal_velocity
+      () => ({
+        id: "arch_q100_same_mass_doubled_radius_terminal_velocity",
+        q: "A small spherical ball of radius $r$, falling through a viscous medium of negligible density has terminal velocity $v$. Another ball of the same mass but of radius $2r$, falling through the same viscous medium will have terminal velocity:",
+        svg: null,
+        ans: "$\\frac{v}{2}$",
+        distractors: ["$\\frac{v}{4}$", "$4v$", "$2v$"],
+        sol: "1. At terminal velocity in a medium of negligible density (buoyancy $\\approx 0$), downward gravity is balanced purely by Stokes' viscous drag:\n$$m g = 6\\pi \\eta r v$$\n\n2. Since both balls have the identical mass $m$, the gravitational force $mg$ is constant:\n$$6\\pi \\eta r v = 6\\pi \\eta (2r) v'$$\n$$r v = 2r v' \\implies v' = \\frac{v}{2}$$\n\nTherefore, the terminal velocity of the second ball is **$\\frac{v}{2}$**.",
+        tags: ["Viscosity"]
+      }),
+      // arch_q101_air_bubble_rising_viscosity_evaluation
+      () => ({
+        id: "arch_q101_air_bubble_rising_viscosity_evaluation",
+        q: "An air bubble of diameter $6\\text{ mm}$ rises steadily through a solution of density $1750\\text{ kg m}^{-3}$ at the rate of $0.35\\text{ cm s}^{-1}$. The co-efficient of viscosity of the solution (neglect density of air) is $\\underline{\\hspace{1cm}}\\text{ Pas}$ (given, $g = 10\\text{ m s}^{-2}$).",
+        svg: null,
+        ans: "$10$",
+        distractors: ["$5$", "$20$", "$1$"],
+        sol: "1. Radius of air bubble: $r = \\frac{6\\text{ mm}}{2} = 3\\text{ mm} = 3 \\times 10^{-3}\\text{ m}$.\nTerminal rise speed: $v_t = 0.35\\text{ cm/s} = 3.5 \\times 10^{-3}\\text{ m/s}$.\nDensity of liquid: $\\rho = 1750\\text{ kg/m}^3$.\n\n2. Equating upward buoyant force to downward Stokes' drag force (neglecting air mass):\n$$V \\rho g = 6\\pi \\eta r v_t \\implies \\frac{4}{3}\\pi r^3 \\rho g = 6\\pi \\eta r v_t$$\n$$\\eta = \\frac{2 r^2 \\rho g}{9 v_t}$$\n\n3. Substituting numerical values:\n$$\\eta = \\frac{2 \\times (3 \\times 10^{-3})^2 \\times 1750 \\times 10}{9 \\times (3.5 \\times 10^{-3})} = \\frac{2 \\times (9 \\times 10^{-6}) \\times 17500}{9 \\times (3.5 \\times 10^{-3})}$$\n$$\\eta = \\frac{18 \\times 10^{-6} \\times 17500}{3.15 \\times 10^{-2}} = \\frac{0.315}{0.0315} = 10\\text{ Pa s}$$\n\nHence, the coefficient of viscosity is **$10\\text{ Pa s}$**.",
+        tags: ["Viscosity"]
+      }),
+      // arch_q102_eight_drops_coalescing_speed_40
+      () => ({
+        id: "arch_q102_eight_drops_coalescing_speed_40",
+        q: "Eight equal drops of water are falling through air with a steady speed of $10\\text{ cm s}^{-1}$. If the drops coalesce, the new velocity is:-",
+        svg: null,
+        ans: "$40\\text{ cm s}^{-1}$",
+        distractors: ["$16\\text{ cm s}^{-1}$", "$5\\text{ cm s}^{-1}$", "$10\\text{ cm s}^{-1}$"],
+        sol: "1. By volume conservation, $R^3 = 8 r^3 \\implies R = 2r$.\n\n2. Terminal velocity of a falling liquid drop is proportional to the square of its radius ($v_t \\propto r^2$):\n$$v_t' = \\left(\\frac{R}{r}\\right)^2 v_t = (2)^2 v_t = 4 v_t$$\n\n3. Given initial terminal speed $v_t = 10\\text{ cm/s}$:\n$$v_t' = 4 \\times 10\\text{ cm/s} = 40\\text{ cm s}^{-1}$$",
+        tags: ["Viscosity"]
+      }),
+      // arch_q25_capillary_rise_hot_cold_water
+      () => ({
+        id: "arch_q25_capillary_rise_hot_cold_water",
+        q: "Given below are two statements:\n**Statement I:** If a capillary tube is immersed first in cold water and then in hot water, the height of capillary rise will be smaller in hot water.\n**Statement II:** If a capillary tube is immersed first in cold water and then in hot water, the height of capillary rise will be smaller in cold water.\nIn the light of the above statements, choose the most appropriate answer from the options given below:",
+        svg: null,
+        ans: "Statement I is true but Statement II is false",
+        distractors: ["Both Statement I and Statement II are true", "Both Statement I and Statement II are false", "Statement I is false but Statement II is true"],
+        sol: "1. The height of liquid rise in a capillary tube of radius $r$ is given by Jurin's law:\n$$h = \\frac{2T\\cos\\theta}{r \\rho g}$$\n\n2. As the temperature of water increases, thermal agitation weakens the intermolecular cohesive forces, causing the surface tension $T$ to decrease ($T_{\\text{hot}} < T_{\\text{cold}}$).\n\n3. Consequently, the capillary height $h$ decreases with an increase in temperature. Therefore, the height of capillary rise is smaller in hot water than in cold water.\nHence, **Statement I is true** and **Statement II is false**.",
+        tags: ["PressureThrust"]
+      }),
+      // arch_q26_aeroplane_level_flight_mass
+      () => ({
+        id: "arch_q26_aeroplane_level_flight_mass",
+        q: "A plane is in level flight at constant speed and each of its two wings has an area of $40\\text{ m}^2$. If the speed of the air is $180\\text{ km h}^{-1}$ over the lower wing surface and $252\\text{ km h}^{-1}$ over the upper wing surface, the mass of the plane is $\\underline{\\hspace{1cm}}\\text{ kg}$. (Take air density to be $1\\text{ kg m}^{-3}$ and $g = 10\\text{ m s}^{-2}$)",
+        svg: null,
+        ans: "$9600\\text{ kg}$",
+        distractors: ["$4800\\text{ kg}$", "$12000\\text{ kg}$", "$960\\text{ kg}$"],
+        sol: "1. Speeds in SI units ($1\\text{ km/h} = \\frac{5}{18}\\text{ m/s}$):\n$$v_1 = 180 \\times \\frac{5}{18} = 50\\text{ m s}^{-1} \\quad \\text{(lower surface)}$$\n$$v_2 = 252 \\times \\frac{5}{18} = 70\\text{ m s}^{-1} \\quad \\text{(upper surface)}$$\n\n2. Applying Bernoulli's equation across the streamlines above and below the wing:\n$$P_1 - P_2 = \\frac{1}{2}\\rho (v_2^2 - v_1^2) = \\frac{1}{2}(1)(70^2 - 50^2) = \\frac{1}{2}(4900 - 2500) = 1200\\text{ N m}^{-2}$$\n\n3. Total wing area for both wings: $A_{\\text{total}} = 2 \\times 40\\text{ m}^2 = 80\\text{ m}^2$.\nTotal upward aerodynamic lift force:\n$$F_L = \\Delta P \\times A_{\\text{total}} = 1200 \\times 80 = 96000\\text{ N}$$\n\n4. For steady level flight, aerodynamic lift balances the gravitational weight:\n$$M g = F_L \\implies M = \\frac{96000}{10} = 9600\\text{ kg}$$",
+        tags: ["PressureThrust"]
+      }),
+      // arch_q27_apparent_depth_half_filled_tumbler
+      () => ({
+        id: "arch_q27_apparent_depth_half_filled_tumbler",
+        q: "A glass tumbler having inner depth of $17.5\\text{ cm}$ is kept on a table. A student starts pouring water $(\\mu = \\frac{4}{3})$ into it while looking at the surface of water from the above. When he feels that the tumbler is half filled, he stops pouring water. Up to what height, the tumbler is actually filled?",
+        svg: null,
+        ans: "$10\\text{ cm}$",
+        distractors: ["$11.7\\text{ cm}$", "$7.5\\text{ cm}$", "$8.75\\text{ cm}$"],
+        sol: "1. Let the actual height of the water column in the tumbler be $h\\text{ cm}$. The remaining height of the air column above the water is $(17.5 - h)\\text{ cm}$.\n\n2. Due to refraction at the water surface, the bottom of the tumbler appears raised. The apparent depth of the water column is:\n$$d_{\\text{app}} = \\frac{h}{\\mu} = \\frac{h}{4/3} = \\frac{3h}{4}$$\n\n3. The student perceives the tumbler as half-filled when the apparent depth of water equals the remaining unfilled air column:\n$$\\frac{3h}{4} = 17.5 - h$$\n$$\\frac{7h}{4} = 17.5 \\implies h = \\frac{17.5 \\times 4}{7} = 2.5 \\times 4 = 10\\text{ cm}$$\n\nThus, the tumbler is actually filled up to a height of $10\\text{ cm}$.",
+        tags: ["PressureThrust"]
+      }),
+      // arch_q28_vessel_orifice_sliding_friction
+      () => ({
+        id: "arch_q28_vessel_orifice_sliding_friction",
+        q: "A light cylindrical vessel is kept on a horizontal surface. Area of the base is $A$. A hole of cross-sectional area $a$ is made just at its bottom side. The minimum coefficient of friction necessary to prevent sliding the vessel due to the impact force of the emerging liquid is:",
+        svg: "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 240 180\" width=\"200\" height=\"150\"><line x1=\"20\" y1=\"150\" x2=\"220\" y2=\"150\" stroke=\"#1e293b\" stroke-width=\"3\" stroke-linecap=\"round\"/><rect x=\"60\" y=\"40\" width=\"80\" height=\"110\" fill=\"#f8fafc\" stroke=\"#1e293b\" stroke-width=\"2\"/><rect x=\"61\" y=\"80\" width=\"78\" height=\"69\" fill=\"#bae6fd\" opacity=\"0.6\"/><line x1=\"140\" y1=\"135\" x2=\"175\" y2=\"135\" stroke=\"#1e293b\" stroke-width=\"2\"/><line x1=\"140\" y1=\"149\" x2=\"175\" y2=\"149\" stroke=\"#1e293b\" stroke-width=\"2\"/><rect x=\"140\" y=\"136\" width=\"35\" height=\"13\" fill=\"#bae6fd\" opacity=\"0.6\"/><path d=\"M 175 142 Q 195 142 205 160\" fill=\"none\" stroke=\"#0284c7\" stroke-width=\"2.5\"/><line x1=\"100\" y1=\"20\" x2=\"100\" y2=\"38\" stroke=\"#0369a1\" stroke-width=\"1.5\" marker-end=\"url(#arrow)\"/><text x=\"95\" y=\"18\" font-size=\"12\" font-weight=\"bold\" fill=\"#0369a1\">A</text><text x=\"180\" y=\"130\" font-size=\"12\" font-weight=\"bold\" fill=\"#0369a1\">a</text><line x1=\"60\" y1=\"80\" x2=\"140\" y2=\"80\" stroke=\"#0284c7\" stroke-dasharray=\"3,3\" stroke-width=\"1.5\"/></svg>",
+        ans: "$\\frac{2a}{A}$",
+        distractors: ["$\\frac{A}{2a}$", "$\\frac{a}{A}$", "None of these"],
+        sol: "1. Let the liquid height inside the vessel be $h$. By Torricelli's theorem, the efflux velocity of liquid through the small orifice at the bottom is:\n$$v = \\sqrt{2gh}$$\n\n2. The horizontal reaction force (thrust) exerted on the vessel by the exiting fluid jet is:\n$$F_{\\text{thrust}} = \\frac{dp}{dt} = \\rho a v^2 = \\rho a (2gh) = 2\\rho g h a$$\n\n3. The total downward gravitational force of the liquid on the base of area $A$ is:\n$$N = M g = (\\rho A h) g = \\rho g h A$$\n\n4. For the light vessel not to slide horizontally, static friction must balance the thrust:\n$$f_{\\max} = \\mu N \\ge F_{\\text{thrust}}$$\n$$\\mu (\\rho g h A) \\ge 2\\rho g h a \\implies \\mu \\ge \\frac{2a}{A}$$\n\nTherefore, the minimum required coefficient of friction is **$\\frac{2a}{A}$**.",
+        tags: ["PressureThrust"]
+      }),
+      // arch_q29_submarine_depth_doubled_pressure_percentage
+      () => ({
+        id: "arch_q29_submarine_depth_doubled_pressure_percentage",
+        q: "The pressure acting on a submarine is $3 \\times 10^5\\text{ Pa}$ at a certain depth. If the depth is doubled, the percentage increase in the pressure acting on the submarine would be: (Assume that atmospheric pressure is $1 \\times 10^5\\text{ Pa}$, density of water is $10^3\\text{ kg m}^{-3}$, $g = 10\\text{ m s}^{-2}$)",
+        svg: null,
+        ans: "$\\frac{200}{3}\\%$",
+        distractors: ["$\\frac{200}{5}\\%$", "$\\frac{5}{200}\\%$", "$\\frac{3}{200}\\%$"],
+        sol: "1. Total hydrostatic pressure at initial depth $h$:\n$$P_1 = P_0 + \\rho g h = 3 \\times 10^5\\text{ Pa}$$\nGiven $P_0 = 1 \\times 10^5\\text{ Pa}$, we have:\n$$\\rho g h = (3 - 1) \\times 10^5 = 2 \\times 10^5\\text{ Pa}$$\n\n2. When the depth is doubled ($h' = 2h$), the new total pressure is:\n$$P_2 = P_0 + \\rho g (2h) = 1 \\times 10^5 + 2(2 \\times 10^5) = 5 \\times 10^5\\text{ Pa}$$\n\n3. The percentage increase in total pressure is:\n$$\\Delta P\\% = \\frac{P_2 - P_1}{P_1} \\times 100\\% = \\frac{5 \\times 10^5 - 3 \\times 10^5}{3 \\times 10^5} \\times 100\\% = \\frac{2}{3} \\times 100\\% = \\frac{200}{3}\\%$$",
+        tags: ["PressureThrust"]
+      }),
+      // arch_q30_cylinder_floating_0c_4c_density
+      () => ({
+        id: "arch_q30_cylinder_floating_0c_4c_density",
+        q: "A leak proof cylinder of length $1\\text{ m}$, made of a metal which has very low coefficient of expansion, is floating vertically in water at $0^\\circ\\text{C}$ such that its height above the water surface is $20\\text{ cm}$. When the temperature of water is increased to $4^\\circ\\text{C}$, the height of the cylinder above the water surface becomes $21\\text{ cm}$. The density of water at $T = 4^\\circ\\text{C}$, relative to the density at $T = 0^\\circ\\text{C}$ is close to:",
+        svg: null,
+        ans: "$1.01$",
+        distractors: ["$1.26$", "$1.04$", "$1.03$"],
+        sol: "1. Total length of cylinder $L = 1\\text{ m} = 100\\text{ cm}$. Let its cross-sectional area be $A$.\n\u2022 At $0^\\circ\\text{C}$: height above water $= 20\\text{ cm} \\implies$ submerged height $h_1 = 100 - 20 = 80\\text{ cm}$.\n\u2022 At $4^\\circ\\text{C}$: height above water $= 21\\text{ cm} \\implies$ submerged height $h_2 = 100 - 21 = 79\\text{ cm}$.\n\n2. By principle of floatation, weight of the cylinder equals buoyant force at both temperatures:\n$$M g = (A h_1 \\rho_0) g = (A h_2 \\rho_4) g$$\n$$\\frac{\\rho_4}{\\rho_0} = \\frac{h_1}{h_2} = \\frac{80}{79} \\approx 1.0126$$\n\nComparing with options, the relative density is closest to **$1.01$**.",
+        tags: ["PressureThrust"]
+      }),
+      // arch_q31_two_vessels_connected_gravity_work
+      () => ({
+        id: "arch_q31_two_vessels_connected_gravity_work",
+        q: "Two cylindrical vessels of equal cross-sectional area of $2\\text{ m}^2$ contain water up to height $10\\text{ m}$ and $6\\text{ m}$, respectively. If the vessels are connected at their bottom, then the work done by the force of gravity is: (Density of water is $10^3\\text{ kg/m}^3$ and $g = 10\\text{ m/s}^2$)",
+        svg: null,
+        ans: "$8 \\times 10^4\\text{ J}$",
+        distractors: ["$1 \\times 10^5\\text{ J}$", "$4 \\times 10^4\\text{ J}$", "$6 \\times 10^4\\text{ J}$"],
+        sol: "1. When connected, water flows until both vessels attain an identical equilibrium height:\n$$h_f = \\frac{h_1 + h_2}{2} = \\frac{10 + 6}{2} = 8\\text{ m}$$\n\n2. The work done by gravity equals the loss in gravitational potential energy:\n$$W_g = U_i - U_f$$\nFor a column of height $h$ and cross-section $A$, the center of mass is at $h/2$, so $U = \\frac{1}{2}\\rho A g h^2$.\n$$W_g = \\frac{1}{2}\\rho A g (h_1^2 + h_2^2) - \\frac{1}{2}\\rho A g (2 h_f^2) = \\frac{1}{4}\\rho A g (h_1 - h_2)^2$$\n\n3. Substituting values ($A = 2\\text{ m}^2$, $h_1 = 10\\text{ m}$, $h_2 = 6\\text{ m}$):\n$$W_g = \\frac{1}{4} \\times 10^3 \\times 2 \\times 10 \\times (10 - 6)^2 = 5000 \\times 16 = 80000\\text{ J} = 8 \\times 10^4\\text{ J}$$",
+        tags: ["PascalsLaw"]
+      }),
+      // arch_q32_rotating_liquid_tube_force_alpha
+      () => ({
+        id: "arch_q32_rotating_liquid_tube_force_alpha",
+        q: "A tube of length $1\\text{ m}$ is filled completely with an ideal liquid of mass $2M$, and closed at both ends. The tube is rotated uniformly in horizontal plane about one of its ends. If the force exerted by the liquid at the other end is $F$, then the angular velocity of the tube is $\\sqrt{\\frac{F}{\\alpha M}}$ in SI unit. The value of $\\alpha$ is $\\underline{\\hspace{1cm}}$.",
+        svg: null,
+        ans: "$1$",
+        distractors: ["$2$", "$4$", "$\\frac{1}{2}$"],
+        sol: "1. Consider an infinitesimal liquid element of mass $dm$ at distance $x$ from the rotation axis:\n$$dm = \\left(\\frac{m}{L}\\right) dx$$\nThe centrifugal force exerted by this element while rotating at angular velocity $\\omega$ is:\n$$dF = (dm) \\omega^2 x = \\left(\\frac{m}{L}\\right) \\omega^2 x dx$$\n\n2. Total force exerted at the outer closed end ($x = L$):\n$$F = \\int_0^L \\frac{m}{L} \\omega^2 x dx = \\frac{m \\omega^2}{L} \\left[\\frac{x^2}{2}\\right]_0^L = \\frac{1}{2} m \\omega^2 L$$\n\n3. Substituting $m = 2M$ and $L = 1\\text{ m}$:\n$$F = \\frac{1}{2}(2M) \\omega^2 (1) = M \\omega^2 \\implies \\omega = \\sqrt{\\frac{F}{M}}$$\n\nComparing with $\\sqrt{\\frac{F}{\\alpha M}}$, we find **$\\alpha = 1$**.",
+        tags: ["PascalsLaw"]
+      }),
+      // arch_q33_hydraulic_lift_work_done_kj
+      () => ({
+        id: "arch_q33_hydraulic_lift_work_done_kj",
+        q: "In a hydraulic lift, the surface area of the input piston is $6\\text{ cm}^2$ and that of the output piston is $1500\\text{ cm}^2$. If $100\\text{ N}$ force is applied to the input piston to raise the output piston by $20\\text{ cm}$, then the work done is $\\underline{\\hspace{1cm}}\\text{ kJ}$.",
+        svg: null,
+        ans: "$5$",
+        distractors: ["$10$", "$2.5$", "$50$"],
+        sol: "1. By incompressibility of hydraulic liquid, the volume displaced by the input piston equals the volume gained under the output piston:\n$$A_1 y_1 = A_2 y_2$$\nGiven $A_1 = 6\\text{ cm}^2, A_2 = 1500\\text{ cm}^2, y_2 = 20\\text{ cm} = 0.2\\text{ m}$:\n$$y_1 = \\left(\\frac{A_2}{A_1}\\right) y_2 = \\left(\\frac{1500}{6}\\right) \\times 0.2 = 250 \\times 0.2 = 50\\text{ m}$$\n\n2. Work done by the input force $F_1 = 100\\text{ N}$:\n$$W = F_1 \\times y_1 = 100\\text{ N} \\times 50\\text{ m} = 5000\\text{ J} = 5\\text{ kJ}$$\n\nHence, the missing value is **$5$**.",
+        tags: ["PascalsLaw"]
+      }),
+      // arch_q34_interconnected_vessels_work_joules
+      () => ({
+        id: "arch_q34_interconnected_vessels_work_joules",
+        q: "Two cylindrical vessels of equal cross-sectional area $16\\text{ cm}^2$ contain water upto heights $100\\text{ cm}$ and $150\\text{ cm}$ respectively. The vessels are interconnected so that the water levels in them become equal. The work done by the force of gravity during the process is: [Take density of water $= 10^3\\text{ kg m}^{-3}$ and $g = 10\\text{ ms}^{-2}$]",
+        svg: null,
+        ans: "$1\\text{ J}$",
+        distractors: ["$0.25\\text{ J}$", "$8\\text{ J}$", "$12\\text{ J}$"],
+        sol: "1. Initial heights: $h_1 = 1.0\\text{ m}$, $h_2 = 1.5\\text{ m}$.\nCross-sectional area: $A = 16\\text{ cm}^2 = 16 \\times 10^{-4}\\text{ m}^2$.\n\n2. The loss of potential energy (work done by gravity) during level equalization is:\n$$W_g = \\frac{1}{4} \\rho A g (h_2 - h_1)^2$$\n\n3. Substituting values:\n$$W_g = \\frac{1}{4} \\times 10^3 \\times (16 \\times 10^{-4}) \\times 10 \\times (1.5 - 1.0)^2$$\n$$W_g = 4 \\times (0.5)^2 = 4 \\times 0.25 = 1.0\\text{ J}$$\n\nThus, the work done by gravity is **$1\\text{ J}$**.",
+        tags: ["PascalsLaw"]
+      }),
+      // arch_q35_hydraulic_press_diameter_scaling
+      () => ({
+        id: "arch_q35_hydraulic_press_diameter_scaling",
+        q: "A hydraulic press can lift $100\\text{ kg}$ when a mass $m$ is placed on the smaller piston. It can lift $\\underline{\\hspace{1cm}}\\text{ kg}$ when the diameter of the larger piston is increased by $4\\text{ times}$ and that of the smaller piston is decreased by $4\\text{ times}$ keeping the same mass $m$ on the smaller piston.",
+        svg: null,
+        ans: "$25600\\text{ kg}$",
+        distractors: ["$1600\\text{ kg}$", "$6400\\text{ kg}$", "$12800\\text{ kg}$"],
+        sol: "1. By Pascal's principle, force multiplication in a hydraulic press is proportional to the area ratio:\n$$\\frac{M_1}{m} = \\frac{A_2}{A_1} = \\left(\\frac{D_2}{D_1}\\right)^2 = \\frac{100}{m}$$\n\n2. In the second case:\n\u2022 New diameter of larger piston: $D_2' = 4 D_2$.\n\u2022 New diameter of smaller piston: $D_1' = \\frac{D_1}{4}$.\n\n3. The new diameter ratio becomes:\n$$\\frac{D_2'}{D_1'} = \\frac{4 D_2}{D_1 / 4} = 16 \\left(\\frac{D_2}{D_1}\\right)$$\nThe new area ratio scales as:\n$$\\left(\\frac{D_2'}{D_1'}\\right)^2 = 16^2 \\left(\\frac{D_2}{D_1}\\right)^2 = 256 \\left(\\frac{D_2}{D_1}\\right)^2$$\n\n4. Therefore, the load lifted becomes:\n$$M_2 = 256 \\times M_1 = 256 \\times 100 = 25600\\text{ kg}$$",
+        tags: ["PascalsLaw"]
+      }),
+      // arch_q36_partitioned_vessel_hinged_door_force
+      () => ({
+        id: "arch_q36_partitioned_vessel_hinged_door_force",
+        q: "A vessel with square cross-section and height of $6\\text{ m}$ is vertically partitioned. A small window of $100\\text{ cm}^2$ with hinged door is fitted at a depth of $3\\text{ m}$ in the partition wall. One part of the vessel is filled completely with water and the other side is filled with a liquid having density $1.5 \\times 10^3\\text{ kg/m}^3$. What force one needs to apply on the hinged door so that it does not get opened? (Acceleration due to gravity $= 10\\text{ m/s}^2$)",
+        svg: null,
+        ans: "$150\\text{ N}$",
+        distractors: ["$300\\text{ N}$", "$75\\text{ N}$", "$15\\text{ N}$"],
+        sol: "1. Hydrostatic pressure at depth $h = 3\\text{ m}$ from the water side ($\\rho_1 = 1000\\text{ kg/m}^3$):\n$$P_1 = \\rho_1 g h = 1000 \\times 10 \\times 3 = 30000\\text{ N m}^{-2}$$\n\n2. Hydrostatic pressure at the same depth from the liquid side ($\\rho_2 = 1500\\text{ kg/m}^3$):\n$$P_2 = \\rho_2 g h = 1500 \\times 10 \\times 3 = 45000\\text{ N m}^{-2}$$\n\n3. Net gauge pressure difference acting across the door:\n$$\\Delta P = P_2 - P_1 = 45000 - 30000 = 15000\\text{ N m}^{-2}$$\n\n4. Cross-sectional area of the window door: $A = 100\\text{ cm}^2 = 100 \\times 10^{-4}\\text{ m}^2 = 10^{-2}\\text{ m}^2$.\nNet force required to hold the hinged door closed:\n$$F = \\Delta P \\times A = 15000 \\times 10^{-2} = 150\\text{ N}$$",
+        tags: ["Archimedes"]
+      }),
+      // arch_q37_solid_cube_floating_volume_outside
+      () => ({
+        id: "arch_q37_solid_cube_floating_volume_outside",
+        q: "A $400\\text{ g}$ solid cube having an edge of length $10\\text{ cm}$ floats in water. How much volume of the cube is outside the water? (Given: density of water $= 1000\\text{ kg m}^{-3}$)",
+        svg: null,
+        ans: "$600\\text{ cm}^3$",
+        distractors: ["$1400\\text{ cm}^3$", "$4000\\text{ cm}^3$", "$400\\text{ cm}^3$"],
+        sol: "1. Total volume of the solid cube:\n$$V_{\\text{total}} = (10\\text{ cm})^3 = 1000\\text{ cm}^3$$\n\n2. By Archimedes' principle, a floating body displaces a weight of water equal to its own total mass:\n$$M = \\rho_w \\times V_{\\text{submerged}}$$\nGiven $M = 400\\text{ g}$ and $\\rho_w = 1\\text{ g/cm}^3$:\n$$V_{\\text{submerged}} = \\frac{400\\text{ g}}{1\\text{ g/cm}^3} = 400\\text{ cm}^3$$\n\n3. Volume of the cube projecting outside the water:\n$$V_{\\text{outside}} = V_{\\text{total}} - V_{\\text{submerged}} = 1000\\text{ cm}^3 - 400\\text{ cm}^3 = 600\\text{ cm}^3$$",
+        tags: ["Archimedes"]
+      }),
+      // arch_q38_ice_cube_kerosene_water_interface
+      () => ({
+        id: "arch_q38_ice_cube_kerosene_water_interface",
+        q: "A cube of ice floats partly in water and partly in kerosene oil. The ratio of volume of ice immersed in water to that in kerosene oil (specific gravity of Kerosene oil $= 0.8$, specific gravity of ice $= 0.9$) is:",
+        svg: "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 240 180\" width=\"200\" height=\"150\"><rect x=\"40\" y=\"30\" width=\"160\" height=\"130\" fill=\"#f8fafc\" stroke=\"#1e293b\" stroke-width=\"2\"/><rect x=\"41\" y=\"31\" width=\"158\" height=\"50\" fill=\"#fef08a\" opacity=\"0.4\"/><rect x=\"41\" y=\"81\" width=\"158\" height=\"78\" fill=\"#bae6fd\" opacity=\"0.6\"/><line x1=\"40\" y1=\"80\" x2=\"200\" y2=\"80\" stroke=\"#0284c7\" stroke-width=\"1.5\" stroke-dasharray=\"3,3\"/><rect x=\"90\" y=\"55\" width=\"55\" height=\"55\" fill=\"#e0f2fe\" stroke=\"#0369a1\" stroke-width=\"2\"/><text x=\"155\" y=\"60\" font-size=\"11\" font-weight=\"bold\" fill=\"#854d0e\">Kerosene</text><text x=\"155\" y=\"74\" font-size=\"11\" font-weight=\"bold\" fill=\"#854d0e\">Oil</text><text x=\"155\" y=\"115\" font-size=\"11\" font-weight=\"bold\" fill=\"#0284c7\">Water</text><line x1=\"145\" y1=\"65\" x2=\"115\" y2=\"70\" stroke=\"#64748b\" stroke-width=\"1\" marker-end=\"url(#arrow)\"/></svg>",
+        ans: "$1 : 1$",
+        distractors: ["$5 : 4$", "$8 : 9$", "$9 : 10$"],
+        sol: "1. Let $V_w$ be the volume of ice submerged in water and $V_k$ be the volume submerged in kerosene.\nTotal volume of the ice cube is $V_{\\text{total}} = V_w + V_k$.\n\n2. For floating equilibrium, total weight of ice equals total buoyant force from both liquids:\n$$V_{\\text{total}} \\rho_{\\text{ice}} g = (V_w \\rho_w + V_k \\rho_k) g$$\nDividing by density of water $\\rho_w$:\n$$(V_w + V_k) \\times 0.9 = V_w \\times 1.0 + V_k \\times 0.8$$\n\n3. Simplifying the relation:\n$$0.9 V_w + 0.9 V_k = 1.0 V_w + 0.8 V_k$$\n$$0.1 V_k = 0.1 V_w \\implies \\frac{V_w}{V_k} = \\frac{1}{1} = 1 : 1$$\n\nTherefore, the volume ratio is **$1 : 1$**.",
+        tags: ["Archimedes"]
+      }),
+      // arch_q39_concentric_cavity_sphere_floating_ratio
+      () => ({
+        id: "arch_q39_concentric_cavity_sphere_floating_ratio",
+        q: "A sphere of relative density $\\sigma$ and diameter $D$ has concentric cavity of diameter $d$. The ratio of $\\frac{D}{d}$, if it just floats on water in a tank is:",
+        svg: null,
+        ans: "$\\left(\\frac{\\sigma}{\\sigma - 1}\\right)^{1/3}$",
+        distractors: ["$\\left(\\frac{\\sigma - 2}{\\sigma + 2}\\right)^{1/3}$", "$\\left(\\frac{\\sigma - 1}{\\sigma}\\right)^{1/3}$", "$\\left(\\frac{\\sigma + 1}{\\sigma - 1}\\right)^{1/3}$"],
+        sol: "1. Outer radius is $R = D/2$ and inner cavity radius is $r = d/2$.\nVolume of solid material in the hollow sphere:\n$$V_{\\text{material}} = \\frac{\\pi}{6} (D^3 - d^3)$$\n\n2. Total mass of the sphere:\n$$M = V_{\\text{material}} \\times \\rho_{\\text{material}} = \\frac{\\pi}{6} (D^3 - d^3) (\\sigma \\rho_w)$$\n\n3. When the sphere just floats, its entire outer volume $V_{\\text{outer}} = \\frac{\\pi}{6} D^3$ is submerged:\n$$F_B = V_{\\text{outer}} \\rho_w g = \\frac{\\pi}{6} D^3 \\rho_w g$$\n\n4. Equating mass to displaced water mass:\n$$\\frac{\\pi}{6} (D^3 - d^3) \\sigma \\rho_w = \\frac{\\pi}{6} D^3 \\rho_w$$\n$$(D^3 - d^3) \\sigma = D^3 \\implies 1 - \\left(\\frac{d}{D}\\right)^3 = \\frac{1}{\\sigma}$$\n$$\\left(\\frac{d}{D}\\right)^3 = \\frac{\\sigma - 1}{\\sigma} \\implies \\frac{D}{d} = \\left(\\frac{\\sigma}{\\sigma - 1}\\right)^{1/3}$$",
+        tags: ["Archimedes"]
+      }),
+      // arch_q40_glycerine_ball_viscous_force
+      () => ({
+        id: "arch_q40_glycerine_ball_viscous_force",
+        q: "The velocity of a small ball of mass $0.3\\text{ g}$ and density $8\\text{ g cc}^{-1}$ when dropped in a container filled with glycerine becomes constant after some time. If the density of glycerine is $1.3\\text{ g cc}^{-1}$, then the value of viscous force acting on the ball will be $x \\times 10^{-4}\\text{ N}$, the value of $x$ is $\\underline{\\hspace{1cm}}$. [use $g = 10\\text{ m s}^{-2}$]",
+        svg: null,
+        ans: "$25$",
+        distractors: ["$50$", "$12.5$", "$2.5$"],
+        sol: "1. When the ball reaches terminal velocity, its acceleration is zero ($a = 0$), so downward gravity is balanced by upward buoyancy and viscous drag:\n$$m g = F_B + F_v \\implies F_v = m g - F_B$$\n\n2. Buoyant force in terms of liquid and solid densities:\n$$F_B = V \\rho_{\\text{liquid}} g = \\left(\\frac{m}{\\rho}\\right) \\rho_{\\text{liquid}} g$$\n$$F_v = m g \\left(1 - \\frac{\\rho_{\\text{liquid}}}{\\rho}\\right)$$\n\n3. Substituting $m = 0.3\\text{ g} = 3 \\times 10^{-4}\\text{ kg}, \\rho = 8\\text{ g/cc}, \\rho_{\\text{liquid}} = 1.3\\text{ g/cc}$:\n$$F_v = (3 \\times 10^{-4} \\times 10) \\left(1 - \\frac{1.3}{8}\\right) = 3 \\times 10^{-3} \\left(\\frac{6.7}{8}\\right)$$\n$$F_v = \\frac{20.1 \\times 10^{-3}}{8} = 2.5125 \\times 10^{-3}\\text{ N} \\approx 25.1 \\times 10^{-4}\\text{ N}$$\n\nRounding to the nearest integer gives **$x = 25$**.",
+        tags: ["Archimedes"]
+      }),
+      // arch_q41_cubical_block_maximum_load
+      () => ({
+        id: "arch_q41_cubical_block_maximum_load",
+        q: "A cubical block of side $0.5\\text{ m}$ floats on water with $30\\%$ of its volume under water. What is the maximum weight that can be put on the block without fully submerging it under water? [Take, density of water $= 10^3\\text{ kg/m}^3$]",
+        svg: null,
+        ans: "$87.5\\text{ kg}$",
+        distractors: ["$65.4\\text{ kg}$", "$30.1\\text{ kg}$", "$46.3\\text{ kg}$"],
+        sol: "1. Total volume of the cubical block:\n$$V = (0.5\\text{ m})^3 = 0.125\\text{ m}^3$$\n\n2. Initially, $30\\%$ is submerged, so the block's own mass is:\n$$M_{\\text{block}} = 0.30 \\times V \\times \\rho_w = 0.30 \\times 0.125 \\times 1000 = 37.5\\text{ kg}$$\n\n3. When loaded to the verge of complete submersion, the total volume $V$ is submerged:\n$$F_{B,\\max} = V \\rho_w g = 0.125 \\times 1000 \\times g = 125 g\\text{ N}$$\n\n4. The maximum mass that can be supported is:\n$$m_{\\max} = 125 - M_{\\text{block}} = 125 - 37.5 = 87.5\\text{ kg}$$\n(Alternatively, $m_{\\max} = 0.70 \\times V \\times \\rho_w = 0.70 \\times 125 = 87.5\\text{ kg}$).",
+        tags: ["Archimedes"]
+      }),
+      // arch_q42_pressurized_tank_side_orifice_efflux
+      () => ({
+        id: "arch_q42_pressurized_tank_side_orifice_efflux",
+        q: "Consider a completely full cylindrical water tank of height $1.6\\text{ m}$ and cross-sectional area $0.5\\text{ m}^2$. It has a small hole in its side at a height $90\\text{ cm}$ from the bottom. Assume, the cross-sectional area of the hole to be negligibly small as compared to that of the water tank. If a load $50\\text{ kg}$ is applied at the top surface of the water in the tank then the velocity of the water coming out at the instant when the hole is opened is: ($g = 10\\text{ m/s}^2$)",
+        svg: null,
+        ans: "$4\\text{ m/s}$",
+        distractors: ["$3\\text{ m/s}$", "$5\\text{ m/s}$", "$2\\text{ m/s}$"],
+        sol: "1. Height of water column above the hole:\n$$h = 1.6\\text{ m} - 0.90\\text{ m} = 0.70\\text{ m}$$\n\n2. Extra gauge pressure produced by the $50\\text{ kg}$ load on top surface ($A = 0.5\\text{ m}^2$):\n$$P_{\\text{gauge}} = \\frac{M g}{A} = \\frac{50 \\times 10}{0.5} = 1000\\text{ N m}^{-2}$$\n\n3. Applying Bernoulli's theorem between top surface and orifice opening into atmosphere:\n$$P_0 + P_{\\text{gauge}} + \\rho g h = P_0 + \\frac{1}{2}\\rho v^2$$\n$$v = \\sqrt{2 \\left(\\frac{P_{\\text{gauge}}}{\\rho} + g h\\right)}$$\n\n4. Substituting $\\rho = 1000\\text{ kg/m}^3, g = 10\\text{ m/s}^2, h = 0.70\\text{ m}$:\n$$v = \\sqrt{2 \\left(\\frac{1000}{1000} + 10 \\times 0.70\\right)} = \\sqrt{2(1 + 7)} = \\sqrt{16} = 4\\text{ m/s}$$",
+        tags: ["Hydrodynamics"]
+      }),
+      // arch_q43_pipe_pressure_gauge_drop_proportionality
+      () => ({
+        id: "arch_q43_pipe_pressure_gauge_drop_proportionality",
+        q: "Water flows in a horizontal pipe whose one end is closed with a valve. The reading of the pressure gauge attached to the pipe is $P_1$. The reading of the pressure gauge falls to $P_2$ when the valve is opened. The speed of water flowing in the pipe is proportional to:",
+        svg: null,
+        ans: "$\\sqrt{P_1 - P_2}$",
+        distractors: ["$P_1 - P_2$", "$(P_1 - P_2)^4$", "$(P_1 - P_2)^2$"],
+        sol: "1. When the valve is closed, the water is static ($v = 0$), so the pressure gauge measures the static stagnation pressure:\n$$P_{\\text{closed}} = P_1$$\n\n2. When the valve is opened and water flows with speed $v$ along the horizontal pipe, the static lateral pressure falls to $P_2$.\nBy Bernoulli's principle for horizontal streamline flow:\n$$P_1 = P_2 + \\frac{1}{2}\\rho v^2$$\n$$P_1 - P_2 = \\frac{1}{2}\\rho v^2 \\implies v = \\sqrt{\\frac{2(P_1 - P_2)}{\\rho}}$$\n\nTherefore, the flow speed is directly proportional to **$\\sqrt{P_1 - P_2}$**.",
+        tags: ["Hydrodynamics"]
+      }),
+      // arch_q44_venturi_meter_statements
+      () => ({
+        id: "arch_q44_venturi_meter_statements",
+        q: "Given below are two statements:\n**Statement I:** When speed of liquid is zero everywhere, pressure difference at any two points depends on equation $P_1 - P_2 = \\rho g(h_2 - h_1)$.\n**Statement II:** In venturi tube shown $2gh = v_2^2 - v_1^2$.\nIn the light of the above statements, choose the most appropriate answer from the options given below:",
+        svg: "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 260 160\" width=\"220\" height=\"135\"><path d=\"M 30 70 L 90 70 L 130 85 L 170 85 L 210 70 L 240 70\" fill=\"none\" stroke=\"#1e293b\" stroke-width=\"2\"/><path d=\"M 30 110 L 90 110 L 130 95 L 170 95 L 210 110 L 240 110\" fill=\"none\" stroke=\"#1e293b\" stroke-width=\"2\"/><line x1=\"70\" y1=\"70\" x2=\"70\" y2=\"20\" stroke=\"#1e293b\" stroke-width=\"1.8\"/><line x1=\"80\" y1=\"70\" x2=\"80\" y2=\"20\" stroke=\"#1e293b\" stroke-width=\"1.8\"/><rect x=\"71\" y=\"35\" width=\"8\" height=\"35\" fill=\"#bae6fd\"/><line x1=\"145\" y1=\"85\" x2=\"145\" y2=\"20\" stroke=\"#1e293b\" stroke-width=\"1.8\"/><line x1=\"155\" y1=\"85\" x2=\"155\" y2=\"20\" stroke=\"#1e293b\" stroke-width=\"1.8\"/><rect x=\"146\" y=\"55\" width=\"8\" height=\"30\" fill=\"#bae6fd\"/><line x1=\"60\" y1=\"35\" x2=\"165\" y2=\"35\" stroke=\"#94a3b8\" stroke-dasharray=\"2,2\"/><line x1=\"60\" y1=\"55\" x2=\"165\" y2=\"55\" stroke=\"#94a3b8\" stroke-dasharray=\"2,2\"/><line x1=\"110\" y1=\"35\" x2=\"110\" y2=\"55\" stroke=\"#0284c7\" stroke-width=\"1.5\" marker-start=\"url(#arrow)\" marker-end=\"url(#arrow)\"/><text x=\"115\" y=\"48\" font-size=\"11\" font-weight=\"bold\" fill=\"#0284c7\">h</text><text x=\"65\" y=\"125\" font-size=\"10\" font-weight=\"bold\">P\u2081, A\u2081</text><text x=\"140\" y=\"110\" font-size=\"10\" font-weight=\"bold\">P\u2082, A\u2082</text><text x=\"40\" y=\"93\" font-size=\"11\" fill=\"#0369a1\">\u2192</text><text x=\"180\" y=\"93\" font-size=\"11\" fill=\"#0369a1\">\u2192</text></svg>",
+        ans: "Both Statement I and Statement II are correct.",
+        distractors: ["Statement I is correct but Statement II is incorrect.", "Statement I is incorrect but Statement II is correct.", "Both Statement I and Statement II are incorrect."],
+        sol: "\u2022 **Statement I is correct:** In a static fluid under gravity ($v = 0$), hydrostatic pressure variation depends strictly on the vertical depth difference according to $P_1 - P_2 = \\rho g(h_2 - h_1)$.\n\n\u2022 **Statement II is correct:** By Bernoulli's equation across the horizontal Venturi tube:\n$$P_1 + \\frac{1}{2}\\rho v_1^2 = P_2 + \\frac{1}{2}\\rho v_2^2 \\implies P_1 - P_2 = \\frac{1}{2}\\rho (v_2^2 - v_1^2)$$\nThe pressure difference is registered by the manometer column height difference $h$ as $P_1 - P_2 = \\rho g h$.\nEquating both expressions:\n$$\\rho g h = \\frac{1}{2}\\rho (v_2^2 - v_1^2) \\implies 2gh = v_2^2 - v_1^2$$\n\nThus, **both statements are correct**.",
+        tags: ["Hydrodynamics"]
+      }),
+      // arch_q45_closed_pipe_valve_opened_velocity_v
+      () => ({
+        id: "arch_q45_closed_pipe_valve_opened_velocity_v",
+        q: "The reading of pressure metre attached with a closed pipe is $4.5 \\times 10^4\\text{ N m}^{-2}$. On opening the valve, water starts flowing and the reading of pressure metre falls to $2.0 \\times 10^4\\text{ N m}^{-2}$. The velocity of water is found to be $\\sqrt{V}\\text{ m s}^{-1}$. The value of $V$ is $\\underline{\\hspace{1cm}}$.",
+        svg: null,
+        ans: "$50$",
+        distractors: ["$25$", "$100$", "$20$"],
+        sol: "1. When the pipe is closed ($v = 0$), static stagnation pressure is $P_1 = 4.5 \\times 10^4\\text{ Pa}$.\nWhen the valve is opened, dynamic flow establishes with pressure $P_2 = 2.0 \\times 10^4\\text{ Pa}$.\n\n2. Applying Bernoulli's equation:\n$$P_1 = P_2 + \\frac{1}{2}\\rho v^2$$\n$$P_1 - P_2 = \\frac{1}{2}\\rho v^2$$\n$$4.5 \\times 10^4 - 2.0 \\times 10^4 = 2.5 \\times 10^4\\text{ Pa}$$\n\n3. Solving for flow velocity (taking density of water $\\rho = 1000\\text{ kg/m}^3$):\n$$v^2 = \\frac{2 \\times 2.5 \\times 10^4}{1000} = \\frac{50000}{1000} = 50$$\n$$v = \\sqrt{50}\\text{ m s}^{-1}$$\n\nComparing with $\\sqrt{V}\\text{ m s}^{-1}$, we obtain **$V = 50$**.",
+        tags: ["Hydrodynamics"]
+      }),
+      // arch_q46_model_aeroplane_wind_tunnel_lift
+      () => ({
+        id: "arch_q46_model_aeroplane_wind_tunnel_lift",
+        q: "In a test experiment on a model aeroplane in wind tunnel, the flow speeds on the upper and lower surfaces of the wings are $70\\text{ m s}^{-1}$ and $65\\text{ m s}^{-1}$ respectively. If the wing area is $2\\text{ m}^2$, the lift of the wing is $\\underline{\\hspace{1cm}}\\text{ N}$. (Given density of air $= 1.2\\text{ kg m}^{-3}$)",
+        svg: null,
+        ans: "$810\\text{ N}$",
+        distractors: ["$405\\text{ N}$", "$1620\\text{ N}$", "$720\\text{ N}$"],
+        sol: "1. Upper surface speed $v_2 = 70\\text{ m/s}$ and lower surface speed $v_1 = 65\\text{ m/s}$.\nBy Bernoulli's principle, the upward pressure difference is:\n$$\\Delta P = \\frac{1}{2}\\rho (v_2^2 - v_1^2)$$\n$$\\Delta P = \\frac{1}{2}(1.2)(70^2 - 65^2) = 0.6 \\times (4900 - 4225) = 0.6 \\times 675 = 405\\text{ N m}^{-2}$$\n\n2. Total upward dynamic aerodynamic lift force:\n$$F_{\\text{lift}} = \\Delta P \\times A = 405\\text{ N/m}^2 \\times 2\\text{ m}^2 = 810\\text{ N}$$\n\nHence, the lift of the wing is **$810\\text{ N}$**.",
+        tags: ["Hydrodynamics"]
+      }),
+      // arch_q47_conical_pipe_glycerin_discharge_rate
+      () => ({
+        id: "arch_q47_conical_pipe_glycerin_discharge_rate",
+        q: "Glycerin of density $1.25 \\times 10^3\\text{ kg m}^{-3}$ is flowing through the conical section of pipe. The area of cross-section of the pipe at its ends are $10\\text{ cm}^2$ and $5\\text{ cm}^2$ and pressure drop across its length is $3\\text{ N m}^{-2}$. The rate of flow of glycerine through the pipe is $x \\times 10^{-5}\\text{ m}^3\\text{ s}^{-1}$. The value of $x$ is $\\underline{\\hspace{1cm}}$.",
+        svg: null,
+        ans: "$4$",
+        distractors: ["$2$", "$8$", "$16$"],
+        sol: "1. By continuity equation: $A_1 v_1 = A_2 v_2 \\implies v_2 = \\left(\\frac{A_1}{A_2}\\right) v_1 = \\left(\\frac{10}{5}\\right) v_1 = 2v_1$.\n\n2. Applying Bernoulli's equation for horizontal streamline flow:\n$$\\Delta P = \\frac{1}{2}\\rho (v_2^2 - v_1^2) = \\frac{1}{2}\\rho (4v_1^2 - v_1^2) = \\frac{3}{2}\\rho v_1^2$$\nGiven $\\Delta P = 3\\text{ N/m}^2$ and $\\rho = 1250\\text{ kg/m}^3$:\n$$3 = \\frac{3}{2}(1250) v_1^2 \\implies 1 = 625 v_1^2 \\implies v_1 = \\frac{1}{25} = 0.04\\text{ m s}^{-1}$$\n\n3. The volume rate of flow (discharge) is:\n$$Q = A_1 v_1 = (10 \\times 10^{-4}\\text{ m}^2) \\times 0.04\\text{ m/s} = 4 \\times 10^{-5}\\text{ m}^3\\text{ s}^{-1}$$\n\nComparing with $x \\times 10^{-5}\\text{ m}^3\\text{ s}^{-1}$, we find **$x = 4$**.",
+        tags: ["Hydrodynamics"]
+      }),
+      // arch_q48_horizontal_tube_streamlines_pressure_diff
+      () => ({
+        id: "arch_q48_horizontal_tube_streamlines_pressure_diff",
+        q: "The figure shows a liquid of given density flowing steadily in horizontal tube of varying cross-section. Cross-sectional areas at $A$ is $1.5\\text{ cm}^2$, and $B$ is $25\\text{ mm}^2$, if the speed of liquid at $B$ is $60\\text{ cm s}^{-1}$ then $(P_A - P_B)$ is $\\underline{\\hspace{1cm}}$. (Given $P_A$ and $P_B$ are liquid pressures at $A$ and $B$ points. Density $\\rho = 1000\\text{ kg m}^{-3}$. $A$ and $B$ are on the axis of tube)",
+        svg: "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 260 160\" width=\"220\" height=\"135\"><path d=\"M 30 40 Q 110 55 220 70\" fill=\"none\" stroke=\"#1e293b\" stroke-width=\"2\"/><path d=\"M 30 120 Q 110 105 220 90\" fill=\"none\" stroke=\"#1e293b\" stroke-width=\"2\"/><path d=\"M 30 55 Q 110 65 220 74\" fill=\"none\" stroke=\"#0284c7\" stroke-width=\"1.2\" stroke-dasharray=\"3,2\"/><path d=\"M 30 70 Q 110 75 220 78\" fill=\"none\" stroke=\"#0284c7\" stroke-width=\"1.2\" stroke-dasharray=\"3,2\"/><path d=\"M 30 85 Q 110 85 220 82\" fill=\"none\" stroke=\"#0284c7\" stroke-width=\"1.2\" stroke-dasharray=\"3,2\"/><path d=\"M 30 100 Q 110 95 220 86\" fill=\"none\" stroke=\"#0284c7\" stroke-width=\"1.2\" stroke-dasharray=\"3,2\"/><ellipse cx=\"30\" cy=\"80\" rx=\"10\" ry=\"40\" fill=\"none\" stroke=\"#1e293b\" stroke-width=\"1.5\" stroke-dasharray=\"3,3\"/><ellipse cx=\"220\" cy=\"80\" rx=\"4\" ry=\"10\" fill=\"none\" stroke=\"#1e293b\" stroke-width=\"1.5\"/><circle cx=\"70\" cy=\"80\" r=\"3.5\" fill=\"#0f172a\"/><text x=\"65\" y=\"97\" font-size=\"11\" font-weight=\"bold\">A</text><circle cx=\"180\" cy=\"80\" r=\"3.5\" fill=\"#0f172a\"/><text x=\"175\" y=\"97\" font-size=\"11\" font-weight=\"bold\">B</text></svg>",
+        ans: "$175\\text{ Pa}$",
+        distractors: ["$135\\text{ Pa}$", "$27\\text{ Pa}$", "$36\\text{ Pa}$"],
+        sol: "1. Areas in compatible units:\n$$A_A = 1.5\\text{ cm}^2 = 150\\text{ mm}^2, \\quad A_B = 25\\text{ mm}^2$$\nSpeed at $B$: $v_B = 60\\text{ cm/s} = 0.60\\text{ m/s}$.\n\n2. By continuity equation:\n$$A_A v_A = A_B v_B \\implies v_A = \\left(\\frac{A_B}{A_A}\\right) v_B = \\left(\\frac{25}{150}\\right) \\times 0.60 = \\frac{1}{6} \\times 0.60 = 0.10\\text{ m/s}$$\n\n3. Applying Bernoulli's equation for horizontal flow:\n$$P_A + \\frac{1}{2}\\rho v_A^2 = P_B + \\frac{1}{2}\\rho v_B^2$$\n$$P_A - P_B = \\frac{1}{2}\\rho (v_B^2 - v_A^2) = \\frac{1}{2}(1000)[(0.60)^2 - (0.10)^2]$$\n$$P_A - P_B = 500 \\times (0.36 - 0.01) = 500 \\times 0.35 = 175\\text{ Pa}$$",
+        tags: ["Hydrodynamics"]
+      }),
+      // arch_q49_bent_pipe_velocity_x_parameter
+      () => ({
+        id: "arch_q49_bent_pipe_velocity_x_parameter",
+        q: "An ideal fluid of density $800\\text{ kg m}^{-3}$, flows smoothly through a bent pipe (as shown in figure) that tapers in cross-sectional area from $a$ to $\\frac{a}{2}$. The pressure difference between the wide and narrow sections of pipe is $4100\\text{ Pa}$. At wider section, the velocity of fluid is $\\frac{\\sqrt{x}}{6}\\text{ m s}^{-1}$ for $x = \\underline{\\hspace{1cm}}$. (Given $g = 10\\text{ m s}^{-2}$)",
+        svg: "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 260 180\" width=\"220\" height=\"150\"><path d=\"M 30 50 L 70 50 Q 110 50 140 110 L 210 110\" fill=\"none\" stroke=\"#1e293b\" stroke-width=\"2\"/><path d=\"M 30 85 L 60 85 Q 90 85 130 135 L 210 135\" fill=\"none\" stroke=\"#1e293b\" stroke-width=\"2\"/><ellipse cx=\"30\" cy=\"67.5\" rx=\"6\" ry=\"17.5\" fill=\"#bae6fd\" stroke=\"#1e293b\" stroke-width=\"1.5\"/><ellipse cx=\"210\" cy=\"122.5\" rx=\"4\" ry=\"12.5\" fill=\"#bae6fd\" stroke=\"#1e293b\" stroke-width=\"1.5\"/><line x1=\"15\" y1=\"135\" x2=\"230\" y2=\"135\" stroke=\"#94a3b8\" stroke-dasharray=\"3,3\"/><line x1=\"30\" y1=\"67.5\" x2=\"25\" y2=\"67.5\" stroke=\"#94a3b8\" stroke-dasharray=\"2,2\"/><line x1=\"25\" y1=\"67.5\" x2=\"25\" y2=\"135\" stroke=\"#0284c7\" stroke-width=\"1.5\" marker-start=\"url(#arrow)\" marker-end=\"url(#arrow)\"/><text x=\"5\" y=\"105\" font-size=\"11\" font-weight=\"bold\" fill=\"#0284c7\">h=1m</text><text x=\"45\" y=\"42\" font-size=\"11\" font-weight=\"bold\">a</text><text x=\"65\" y=\"65\" font-size=\"11\" font-weight=\"bold\">\u2192 v\u2081</text><text x=\"180\" y=\"152\" font-size=\"11\" font-weight=\"bold\">a/2</text><text x=\"175\" y=\"125\" font-size=\"11\" font-weight=\"bold\">\u2192 v\u2082</text></svg>",
+        ans: "$363$",
+        distractors: ["$121$", "$242$", "$180$"],
+        sol: "1. By equation of continuity: $a v_1 = \\left(\\frac{a}{2}\\right) v_2 \\implies v_2 = 2v_1$.\n\n2. Applying Bernoulli's equation between section 1 (height $h = 1\\text{ m}$) and section 2 (datum height $0$):\n$$P_1 + \\rho g h + \\frac{1}{2}\\rho v_1^2 = P_2 + \\frac{1}{2}\\rho v_2^2$$\n$$P_1 - P_2 + \\rho g h = \\frac{1}{2}\\rho (v_2^2 - v_1^2) = \\frac{1}{2}\\rho (4v_1^2 - v_1^2) = \\frac{3}{2}\\rho v_1^2$$\n\n3. Substituting $\\Delta P = 4100\\text{ Pa}$, $\\rho = 800\\text{ kg/m}^3$, $g = 10\\text{ m/s}^2$, $h = 1\\text{ m}$:\n$$4100 + (800 \\times 10 \\times 1) = \\frac{3}{2}(800) v_1^2$$\n$$4100 + 8000 = 12100 = 1200 v_1^2$$\n$$v_1^2 = \\frac{12100}{1200} = \\frac{121}{12} \\implies v_1 = \\frac{11}{\\sqrt{12}} = \\frac{11}{2\\sqrt{3}} = \\frac{11\\sqrt{3}}{6} = \\frac{\\sqrt{121 \\times 3}}{6} = \\frac{\\sqrt{363}}{6}$$\n\nComparing with $\\frac{\\sqrt{x}}{6}$, we obtain **$x = 363$**.",
+        tags: ["Hydrodynamics"]
+      }),
+      // arch_q50_tapering_pipe_flow_rate_24
+      () => ({
+        id: "arch_q50_tapering_pipe_flow_rate_24",
+        q: "A liquid of density $750\\text{ kg m}^{-3}$ flows smoothly through a horizontal pipe that tapers in cross-sectional area from $A_1 = 1.2 \\times 10^{-2}\\text{ m}^2$ to $A_2 = \\frac{A_1}{2}$. The pressure difference between the wide and narrow sections of the pipe is $4500\\text{ Pa}$. The rate of flow of liquid is $\\underline{\\hspace{1cm}} \\times 10^{-3}\\text{ m}^3\\text{ s}^{-1}$.",
+        svg: null,
+        ans: "$24$",
+        distractors: ["$12$", "$48$", "$36$"],
+        sol: "1. By continuity equation: $A_1 v_1 = A_2 v_2 \\implies v_2 = \\left(\\frac{A_1}{A_2}\\right) v_1 = 2v_1$.\n\n2. Applying Bernoulli's equation across the horizontal tapering pipe:\n$$\\Delta P = \\frac{1}{2}\\rho (v_2^2 - v_1^2) = \\frac{1}{2}\\rho (4v_1^2 - v_1^2) = \\frac{3}{2}\\rho v_1^2$$\n$$4500 = \\frac{3}{2}(750) v_1^2 = 1125 v_1^2 \\implies v_1^2 = \\frac{4500}{1125} = 4 \\implies v_1 = 2\\text{ m s}^{-1}$$\n\n3. The volume rate of flow is:\n$$Q = A_1 v_1 = (1.2 \\times 10^{-2}\\text{ m}^2) \\times (2\\text{ m/s}) = 2.4 \\times 10^{-2}\\text{ m}^3\\text{ s}^{-1} = 24 \\times 10^{-3}\\text{ m}^3\\text{ s}^{-1}$$\n\nHence, the missing value is **$24$**.",
+        tags: ["Hydrodynamics"]
+      }),
+      // arch_q51_water_tank_piston_load_efflux_speed
+      () => ({
+        id: "arch_q51_water_tank_piston_load_efflux_speed",
+        q: "Consider a water tank as shown in the figure. It's cross-sectional area is $0.4\\text{ m}^2$. The tank has an opening $B$ near the bottom whose cross-section area is $1\\text{ cm}^2$. A load of $24\\text{ kg}$ is applied on the water at the top when the height of the water level is $40\\text{ cm}$ above the bottom, the velocity of water coming out the opening $B$ is $v\\text{ m s}^{-1}$. The value of $v$, to the nearest integer, is $\\underline{\\hspace{1cm}}$. [Take the value of $g$ to be $10\\text{ m s}^{-2}$]",
+        svg: "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 240 180\" width=\"200\" height=\"150\"><rect x=\"60\" y=\"40\" width=\"80\" height=\"110\" fill=\"#f8fafc\" stroke=\"#1e293b\" stroke-width=\"2\"/><rect x=\"60\" y=\"40\" width=\"80\" height=\"15\" fill=\"#64748b\" stroke=\"#1e293b\" stroke-width=\"1.5\"/><text x=\"78\" y=\"32\" font-size=\"11\" font-weight=\"bold\" fill=\"#0f172a\">24 kg</text><rect x=\"61\" y=\"56\" width=\"78\" height=\"93\" fill=\"#bae6fd\" opacity=\"0.6\"/><line x1=\"140\" y1=\"135\" x2=\"165\" y2=\"135\" stroke=\"#1e293b\" stroke-width=\"2\"/><line x1=\"140\" y1=\"149\" x2=\"165\" y2=\"149\" stroke=\"#1e293b\" stroke-width=\"2\"/><path d=\"M 165 142 Q 185 142 195 160\" fill=\"none\" stroke=\"#0284c7\" stroke-width=\"2.5\"/><text x=\"145\" y=\"80\" font-size=\"11\" font-weight=\"bold\">A</text><text x=\"160\" y=\"165\" font-size=\"11\" font-weight=\"bold\">B</text><line x1=\"45\" y1=\"56\" x2=\"45\" y2=\"150\" stroke=\"#0369a1\" stroke-width=\"1.5\" marker-start=\"url(#arrow)\" marker-end=\"url(#arrow)\"/><text x=\"10\" y=\"105\" font-size=\"10\" font-weight=\"bold\" fill=\"#0369a1\">40 cm</text></svg>",
+        ans: "$3$",
+        distractors: ["$5$", "$2$", "$4$"],
+        sol: "1. Excess pressure created by the $24\\text{ kg}$ load on top surface of area $A = 0.4\\text{ m}^2$:\n$$P_{\\text{gauge}} = \\frac{M g}{A} = \\frac{24 \\times 10}{0.4} = 600\\text{ N m}^{-2}$$\n\n2. Applying Bernoulli's theorem between top surface and opening $B$ at depth $h = 40\\text{ cm} = 0.4\\text{ m}$:\n$$P_0 + P_{\\text{gauge}} + \\rho g h = P_0 + \\frac{1}{2}\\rho v^2$$\n$$v = \\sqrt{2 \\left(\\frac{P_{\\text{gauge}}}{\\rho} + g h\\right)}$$\n\n3. Substituting $\\rho = 1000\\text{ kg/m}^3, g = 10\\text{ m/s}^2, h = 0.4\\text{ m}$:\n$$v = \\sqrt{2 \\left(\\frac{600}{1000} + 10 \\times 0.4\\right)} = \\sqrt{2(0.6 + 4)} = \\sqrt{2 \\times 4.6} = \\sqrt{9.2} \\approx 3.033\\text{ m s}^{-1}$$\n\nRounding to the nearest integer gives **$v = 3$**.",
+        tags: ["Hydrodynamics"]
+      }),
+      // arch_q52_horizontal_pipe_pressure_halved_velocity
+      () => ({
+        id: "arch_q52_horizontal_pipe_pressure_halved_velocity",
+        q: "A fluid is flowing through a horizontal pipe of varying cross-section, with $v\\text{ ms}^{-1}$ at a point where the pressure is $P\\text{ Pascal}$. At another point where pressure is $\\frac{P}{2}\\text{ Pascal}$ its speed is $V\\text{ ms}^{-1}$. If the density of the fluid is $\\rho\\text{ kg m}^{-3}$ and the flow is streamline, then $V$ is equal to:",
+        svg: null,
+        ans: "$\\sqrt{\\frac{P}{\\rho} + v^2}$",
+        distractors: ["$\\sqrt{\\frac{P}{\\rho} + v}$", "$\\sqrt{\\frac{2P}{\\rho} + v^2}$", "$\\sqrt{\\frac{P}{2\\rho} + v^2}$"],
+        sol: "1. By Bernoulli's equation for steady, horizontal streamline flow:\n$$P_1 + \\frac{1}{2}\\rho v_1^2 = P_2 + \\frac{1}{2}\\rho v_2^2$$\n\n2. Given $P_1 = P, v_1 = v$ and $P_2 = \\frac{P}{2}, v_2 = V$:\n$$P + \\frac{1}{2}\\rho v^2 = \\frac{P}{2} + \\frac{1}{2}\\rho V^2$$\n$$\\frac{1}{2}\\rho V^2 = \\left(P - \\frac{P}{2}\\right) + \\frac{1}{2}\\rho v^2 = \\frac{P}{2} + \\frac{1}{2}\\rho v^2$$\n\n3. Multiplying both sides by $\\frac{2}{\\rho}$:\n$$V^2 = \\frac{P}{\\rho} + v^2 \\implies V = \\sqrt{\\frac{P}{\\rho} + v^2}$$",
+        tags: ["Hydrodynamics"]
+      }),
+      // arch_q53_horizontal_tube_constriction_flow_rate
+      () => ({
+        id: "arch_q53_horizontal_tube_constriction_flow_rate",
+        q: "Water flows in a horizontal tube (see figure). The pressure of water changes by $700\\text{ N m}^{-2}$ between $A$ and $B$ where the area of cross section are $40\\text{ cm}^2$ and $20\\text{ cm}^2$, respectively. Find the rate of flow of water through the tube. (density of water $= 1000\\text{ kg m}^{-3}$)",
+        svg: "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 260 160\" width=\"220\" height=\"135\"><path d=\"M 30 65 L 90 65 L 120 78 L 160 78 L 190 65 L 230 65\" fill=\"none\" stroke=\"#1e293b\" stroke-width=\"2\"/><path d=\"M 30 115 L 90 115 L 120 102 L 160 102 L 190 115 L 230 115\" fill=\"none\" stroke=\"#1e293b\" stroke-width=\"2\"/><line x1=\"30\" y1=\"90\" x2=\"230\" y2=\"90\" stroke=\"#94a3b8\" stroke-dasharray=\"3,3\"/><circle cx=\"60\" cy=\"90\" r=\"3.5\" fill=\"#0369a1\"/><text x=\"55\" y=\"60\" font-size=\"11\" font-weight=\"bold\">A</text><circle cx=\"140\" cy=\"90\" r=\"3.5\" fill=\"#0369a1\"/><text x=\"135\" y=\"72\" font-size=\"11\" font-weight=\"bold\">B</text></svg>",
+        ans: "$2720\\text{ cm}^3/\\text{s}$",
+        distractors: ["$3020\\text{ cm}^3/\\text{s}$", "$2420\\text{ cm}^3/\\text{s}$", "$1810\\text{ cm}^3/\\text{s}$"],
+        sol: "1. By continuity equation:\n$$A_1 v_1 = A_2 v_2 \\implies (40) v_1 = (20) v_2 \\implies v_2 = 2v_1$$\n\n2. Applying Bernoulli's equation between $A$ and $B$:\n$$P_A - P_B = \\frac{1}{2}\\rho (v_2^2 - v_1^2) = \\frac{1}{2}\\rho (4v_1^2 - v_1^2) = \\frac{3}{2}\\rho v_1^2$$\nGiven $P_A - P_B = 700\\text{ N/m}^2$ and $\\rho = 1000\\text{ kg/m}^3$:\n$$700 = \\frac{3}{2}(1000) v_1^2 = 1500 v_1^2 \\implies v_1 = \\sqrt{\\frac{7}{15}}\\text{ m s}^{-1} \\approx 0.6831\\text{ m/s} = 68.31\\text{ cm/s}$$\n\n3. Rate of volume flow:\n$$Q = A_1 v_1 = 40\\text{ cm}^2 \\times 68.31\\text{ cm/s} \\approx 2732.4\\text{ cm}^3/\\text{s} \\approx 2720\\text{ cm}^3/\\text{s}$$\n\nThe closest standard option is **$2720\\text{ cm}^3/\\text{s}$**.",
+        tags: ["Hydrodynamics"]
+      }),
+      // arch_q54_tap_falling_stream_area_contraction
+      () => ({
+        id: "arch_q54_tap_falling_stream_area_contraction",
+        q: "Water from a tap emerges vertically downwards with an initial speed of $1.0\\text{ m s}^{-1}$. The cross-sectional area of the tap is $10^{-4}\\text{ m}^2$. Assume that the pressure is constant throughout the stream of water and that the flow is streamlined. The cross-sectional area of the stream, $0.15\\text{ m}$ below the tap would be: (Take $g = 10\\text{ ms}^{-2}$)",
+        svg: null,
+        ans: "$5 \\times 10^{-5}\\text{ m}^2$",
+        distractors: ["$1 \\times 10^{-5}\\text{ m}^2$", "$5 \\times 10^{-4}\\text{ m}^2$", "$2 \\times 10^{-5}\\text{ m}^2$"],
+        sol: "1. Speed of water falling freely through vertical distance $h = 0.15\\text{ m}$:\n$$v^2 = v_0^2 + 2gh = (1.0)^2 + 2(10)(0.15) = 1.0 + 3.0 = 4.0 \\implies v = 2.0\\text{ m s}^{-1}$$\n\n2. By the equation of continuity for steady incompressible flow:\n$$A v = A_0 v_0$$\n$$A = \\frac{A_0 v_0}{v} = \\frac{(10^{-4}\\text{ m}^2) \\times (1.0\\text{ m/s})}{2.0\\text{ m/s}} = 0.5 \\times 10^{-4}\\text{ m}^2 = 5 \\times 10^{-5}\\text{ m}^2$$",
+        tags: ["Hydrodynamics"]
+      }),
+      // arch_q55_hose_pipe_mesh_momentum_pressure
+      () => ({
+        id: "arch_q55_hose_pipe_mesh_momentum_pressure",
+        q: "A liquid of density $\\rho$ is coming out of a hose pipe of radius $a$ with horizontal speed $v$ and hits a mesh. $50\\%$ of the liquid passes through the mesh unaffected. $25\\%$ looses all of its momentum and $25\\%$ comes back with the same speed. The resultant pressure on the mesh will be:",
+        svg: null,
+        ans: "$\\frac{3}{4}\\rho v^2$",
+        distractors: ["$\\frac{1}{4}\\rho v^2$", "$\\frac{1}{2}\\rho v^2$", "$\\rho v^2$"],
+        sol: "1. Mass flow rate of the incoming jet of cross-sectional area $A = \\pi a^2$:\n$$\\frac{dm}{dt} = \\rho A v$$\n\n2. Rate of change of momentum (force on mesh) for each portion of fluid:\n\u2022 $50\\%$ passes unaffected: $\\Delta v_1 = 0 \\implies F_1 = 0$.\n\u2022 $25\\%$ comes to complete rest: $\\Delta v_2 = v \\implies F_2 = (0.25 \\rho A v) v = \\frac{1}{4}\\rho A v^2$.\n\u2022 $25\\%$ bounces back with same speed: $\\Delta v_3 = v - (-v) = 2v \\implies F_3 = (0.25 \\rho A v)(2v) = \\frac{1}{2}\\rho A v^2$.\n\n3. Total force exerted on the mesh:\n$$F = F_1 + F_2 + F_3 = 0 + \\frac{1}{4}\\rho A v^2 + \\frac{1}{2}\\rho A v^2 = \\frac{3}{4}\\rho A v^2$$\n\n4. Resultant pressure on the mesh:\n$$P = \\frac{F}{A} = \\frac{3}{4}\\rho v^2$$",
+        tags: ["Efflux"]
+      }),
+      // arch_q56_tank_water_level_fall_rate
+      () => ({
+        id: "arch_q56_tank_water_level_fall_rate",
+        q: "The surface of water in a water tank of cross section area $750\\text{ cm}^2$ on the top of a house is $h\\text{ m}$ above the tap level. The speed of water coming out through the tap of cross section area $500\\text{ mm}^2$ is $30\\text{ cm s}^{-1}$. At that instant, $\\frac{dh}{dt}$ is $x \\times 10^{-3}\\text{ m s}^{-1}$. The value of $x$ will be $\\underline{\\hspace{1cm}}$.",
+        svg: null,
+        ans: "$2$",
+        distractors: ["$4$", "$1$", "$8$"],
+        sol: "1. Areas in compatible units:\n$$A_{\\text{tank}} = 750\\text{ cm}^2 = 750 \\times 10^{-4}\\text{ m}^2 = 7.5 \\times 10^{-2}\\text{ m}^2$$\n$$a_{\\text{tap}} = 500\\text{ mm}^2 = 500 \\times 10^{-6}\\text{ m}^2 = 5 \\times 10^{-4}\\text{ m}^2$$\nSpeed at tap: $v = 30\\text{ cm/s} = 0.30\\text{ m/s}$.\n\n2. By the equation of continuity:\n$$A_{\\text{tank}} \\left(-\\frac{dh}{dt}\\right) = a_{\\text{tap}} v$$\n$$\\left|\\frac{dh}{dt}\\right| = \\frac{a_{\\text{tap}} v}{A_{\\text{tank}}} = \\frac{(5 \\times 10^{-4}) \\times 0.30}{7.5 \\times 10^{-2}} = \\frac{1.5 \\times 10^{-4}}{7.5 \\times 10^{-2}} = 0.2 \\times 10^{-2} = 2 \\times 10^{-3}\\text{ m s}^{-1}$$\n\nComparing with $x \\times 10^{-3}$, we find **$x = 2$**.",
+        tags: ["Efflux"]
+      }),
+      // arch_q57_pump_jet_force_on_wall
+      () => ({
+        id: "arch_q57_pump_jet_force_on_wall",
+        q: "A pressure-pump has a horizontal tube of cross-sectional area $10\\text{ cm}^2$ for the outflow of water at a speed of $20\\text{ m s}^{-1}$. The force exerted on the vertical wall just in front of the tube which stops water horizontally flowing out of the tube, is: [given : density of water $= 1000\\text{ kg m}^{-3}$]",
+        svg: null,
+        ans: "$400\\text{ N}$",
+        distractors: ["$300\\text{ N}$", "$500\\text{ N}$", "$250\\text{ N}$"],
+        sol: "1. Mass of water striking the perpendicular wall per second:\n$$\\frac{dm}{dt} = \\rho A v$$\nGiven $A = 10\\text{ cm}^2 = 10^{-3}\\text{ m}^2, v = 20\\text{ m/s}, \\rho = 1000\\text{ kg/m}^3$:\n$$\\frac{dm}{dt} = (1000) \\times (10^{-3}) \\times (20) = 20\\text{ kg s}^{-1}$$\n\n2. Since the water stops upon impact (final normal velocity $= 0$):\n$$F = \\frac{dp}{dt} = \\left(\\frac{dm}{dt}\\right) v = \\rho A v^2 = 20\\text{ kg/s} \\times 20\\text{ m/s} = 400\\text{ N}$$\n\nHence, the force exerted on the wall is **$400\\text{ N}$**.",
+        tags: ["Efflux"]
+      }),
+      // arch_q58_loaded_tank_efflux_speed_cms
+      () => ({
+        id: "arch_q58_loaded_tank_efflux_speed_cms",
+        q: "The area of cross-section of a large tank is $0.5\\text{ m}^2$. It has a narrow opening near the bottom having area of cross-section $1\\text{ cm}^2$. A load of $25\\text{ kg}$ is applied on the water at the top in the tank. Neglecting the speed of water in the tank, the velocity of the water, coming out of the opening at the time when the height of water level in the tank is $40\\text{ cm}$ above the bottom, will be $\\underline{\\hspace{1cm}}\\text{ cm s}^{-1}$. [Take $g = 10\\text{ m s}^{-2}$]",
+        svg: null,
+        ans: "$300$",
+        distractors: ["$150$", "$450$", "$200$"],
+        sol: "1. Extra gauge pressure due to the load applied on the water top surface:\n$$P_{\\text{gauge}} = \\frac{M g}{A} = \\frac{25 \\times 10}{0.5} = 500\\text{ N m}^{-2}$$\n\n2. By Bernoulli's equation between top surface and bottom opening:\n$$P_0 + P_{\\text{gauge}} + \\rho g h = P_0 + \\frac{1}{2}\\rho v^2$$\n$$v = \\sqrt{2 \\left(\\frac{P_{\\text{gauge}}}{\\rho} + g h\\right)}$$\n\n3. Substituting values ($h = 40\\text{ cm} = 0.40\\text{ m}$, $\\rho = 1000\\text{ kg/m}^3$):\n$$v = \\sqrt{2 \\left(\\frac{500}{1000} + 10 \\times 0.40\\right)} = \\sqrt{2(0.5 + 4)} = \\sqrt{9} = 3\\text{ m s}^{-1} = 300\\text{ cm s}^{-1}$$\n\nHence, the value in $\\text{cm s}^{-1}$ is **$300$**.",
+        tags: ["Efflux"]
+      }),
+      // arch_q59_tank_max_horizontal_range_depth
+      () => ({
+        id: "arch_q59_tank_max_horizontal_range_depth",
+        q: "The water is filled up to a height of $12\\text{ m}$ in a tank having vertical sidewalls. A hole is made in one of the walls at a depth $h$ below the water level. The value of $h$ for which the emerging stream of water strikes the ground at the maximum range is $\\underline{\\hspace{1cm}}\\text{ m}$.",
+        svg: null,
+        ans: "$6$",
+        distractors: ["$3$", "$12$", "$4$"],
+        sol: "1. Let the total height of the liquid column be $H = 12\\text{ m}$.\nIf an orifice is punched at a depth $h$ below the free surface, the height of the orifice above the ground is $(H - h)$.\n\n2. Horizontal efflux velocity is $v = \\sqrt{2gh}$ and time of flight to hit the ground is $t = \\sqrt{\\frac{2(H - h)}{g}}$.\nThe horizontal range is:\n$$R = v t = \\sqrt{2gh} \\times \\sqrt{\\frac{2(H - h)}{g}} = 2\\sqrt{h(H - h)}$$\n\n3. The product $h(H - h)$ is maximized when both factors are equal:\n$$h = H - h \\implies h = \\frac{H}{2} = \\frac{12}{2} = 6\\text{ m}$$\n\nThus, the maximum range is achieved at depth **$h = 6\\text{ m}$**.",
+        tags: ["Efflux"]
+      }),
+      // arch_q60_two_drops_coalescing_energy_released
+      () => ({
+        id: "arch_q60_two_drops_coalescing_energy_released",
+        q: "Two water drops each of radius '$r$' coalesce to from a bigger drop. If '$T$' is the surface tension, the surface energy released in this process is:",
+        svg: null,
+        ans: "$4\\pi r^2 T [2 - 2^{\\frac{2}{3}}]$",
+        distractors: ["$4\\pi r^2 T [2 - 2^{\\frac{1}{3}}]$", "$4\\pi r^2 T [1 + \\sqrt{2}]$", "$4\\pi r^2 T [\\sqrt{2} - 1]$"],
+        sol: "1. By volume conservation, when two spherical droplets of radius $r$ combine into a single drop of radius $R$:\n$$\\frac{4}{3}\\pi R^3 = 2 \\times \\left(\\frac{4}{3}\\pi r^3\\right) \\implies R^3 = 2r^3 \\implies R = 2^{1/3} r$$\n\n2. Initial total surface area: $A_i = 2 \\times (4\\pi r^2) = 8\\pi r^2$.\nFinal surface area: $A_f = 4\\pi R^2 = 4\\pi (2^{1/3} r)^2 = 4\\pi r^2 \\times 2^{2/3}$.\n\n3. The surface energy released ($\\Delta U = U_i - U_f$) is:\n$$\\Delta U = T (A_i - A_f) = T [8\\pi r^2 - 4\\pi r^2 \\cdot 2^{2/3}] = 4\\pi r^2 T [2 - 2^{2/3}]$$",
+        tags: ["SurfaceTension"]
+      }),
+      // arch_q61_soap_bubble_excess_pressure_volume_ratio
+      () => ({
+        id: "arch_q61_soap_bubble_excess_pressure_volume_ratio",
+        q: "The excess pressure inside a soap bubble $A$ in air is half the excess pressure inside another soap bubble $B$ in air. If the volume of the bubble $A$ is $n\\text{ times}$ the volume of the bubble $B$, then, the value of $n$ is $\\underline{\\hspace{1cm}}$.",
+        svg: null,
+        ans: "$8$",
+        distractors: ["$4$", "$2$", "$16$"],
+        sol: "1. The excess pressure inside a spherical soap bubble in air is given by:\n$$\\Delta P = \\frac{4T}{R}$$\n\n2. Given $\\Delta P_A = \\frac{1}{2} \\Delta P_B$:\n$$\\frac{4T}{R_A} = \\frac{1}{2} \\left(\\frac{4T}{R_B}\\right) \\implies R_A = 2 R_B$$\n\n3. Volume of a spherical bubble is proportional to $R^3$:\n$$\\frac{V_A}{V_B} = \\left(\\frac{R_A}{R_B}\\right)^3 = (2)^3 = 8$$\n\nTherefore, $V_A = 8 V_B$, so **$n = 8$**.",
+        tags: ["SurfaceTension"]
+      }),
+      // arch_q62_inclined_capillary_tube_length
+      () => ({
+        id: "arch_q62_inclined_capillary_tube_length",
+        q: "A capillary tube of radius $0.1\\text{ mm}$ is partly dipped in water (surface tension $70\\text{ dyn/cm}$ and glass water contact angle $\\simeq 0^\\circ$) with $30^\\circ$ inclined with vertical. The length of water risen in the capillary is $\\underline{\\hspace{1cm}}\\text{ cm}$. (Take $g = 9.8\\text{ m/s}^2$)",
+        svg: null,
+        ans: "$\\frac{82}{5}$",
+        distractors: ["$\\frac{57}{2}$", "$\\frac{71}{5}$", "$\\frac{68}{5}$"],
+        sol: "1. Vertical height $h$ supported by capillary action:\n$$h = \\frac{2T\\cos\\theta}{r \\rho g}$$\nIn CGS units: $r = 0.1\\text{ mm} = 0.01\\text{ cm}$, $T = 70\\text{ dyn/cm}$, $\\rho = 1\\text{ g/cm}^3$, $g = 980\\text{ cm/s}^2$, $\\cos 0^\\circ = 1$:\n$$h = \\frac{2 \\times 70}{0.01 \\times 1 \\times 980} = \\frac{140}{9.8} = \\frac{100}{7}\\text{ cm} \\approx 14.286\\text{ cm}$$\n\n2. When inclined at an angle $\\alpha = 30^\\circ$ to the vertical, the length $l$ of the water column along the tube is:\n$$l = \\frac{h}{\\cos\\alpha} = \\frac{100/7}{\\cos 30^\\circ} = \\frac{100/7}{\\sqrt{3}/2} = \\frac{200}{7\\sqrt{3}} \\approx \\frac{200}{12.124} \\approx 16.49\\text{ cm}$$\n\n3. Matching with the closest option $\\frac{82}{5} = 16.4\\text{ cm}$.",
+        tags: ["SurfaceTension"]
+      }),
+      // arch_q63_submerged_air_bubble_total_excess_pressure
+      () => ({
+        id: "arch_q63_submerged_air_bubble_total_excess_pressure",
+        q: "An air bubble of radius $1.0\\text{ mm}$ is observed at a depth of $20\\text{ cm}$ below the free surface of a liquid having surface tension $0.095\\text{ J/m}^2$ and density $10^3\\text{ kg/m}^3$. The difference between pressure inside the bubble and atmospheric pressure is $\\underline{\\hspace{1cm}}\\text{ N/m}^2$. (Take $g = 10\\text{ m/s}^2$)",
+        svg: null,
+        ans: "$2190$",
+        distractors: ["$2000$", "$190$", "$2380$"],
+        sol: "1. An air bubble inside a liquid has only one liquid-air interface, so the excess pressure across its spherical boundary is:\n$$\\Delta P_{\\text{surface}} = \\frac{2T}{r} = \\frac{2 \\times 0.095}{1.0 \\times 10^{-3}} = 190\\text{ N m}^{-2}$$\n\n2. Hydrostatic pressure of the liquid column at depth $h = 20\\text{ cm} = 0.20\\text{ m}$:\n$$P_{\\text{hydrostatic}} = \\rho g h = 1000 \\times 10 \\times 0.20 = 2000\\text{ N m}^{-2}$$\n\n3. The total pressure inside the bubble is $P_{\\text{in}} = P_0 + \\rho g h + \\frac{2T}{r}$.\nThe difference between inside pressure and atmospheric pressure $P_0$ is:\n$$P_{\\text{in}} - P_0 = \\rho g h + \\frac{2T}{r} = 2000 + 190 = 2190\\text{ N m}^{-2}$$\n\nHence, the difference is **$2190\\text{ N/m}^2$**.",
+        tags: ["SurfaceTension"]
+      }),
+      // arch_q64_work_done_splitting_drop_27_to_64
+      () => ({
+        id: "arch_q64_work_done_splitting_drop_27_to_64",
+        q: "The amount of work done to break a big water drop of radius '$R$' into $27$ small drops of equal radius is $10\\text{ J}$. The work done required to break the same big drop into $64$ small drops of equal radius will be:",
+        svg: null,
+        ans: "$15\\text{ J}$",
+        distractors: ["$5\\text{ J}$", "$20\\text{ J}$", "$10\\text{ J}$"],
+        sol: "1. When a sphere of radius $R$ breaks into $n$ equal droplets of radius $r$, by volume conservation $r = R / n^{1/3}$.\nThe total increase in surface area is:\n$$\\Delta A = n(4\\pi r^2) - 4\\pi R^2 = 4\\pi R^2 (n^{1/3} - 1)$$\nWork done is directly proportional to $(n^{1/3} - 1)$:\n$$W = T \\Delta A = 4\\pi R^2 T (n^{1/3} - 1)$$\n\n2. For $n_1 = 27$ drops: $n_1^{1/3} = 3$, so:\n$$W_1 = 4\\pi R^2 T (3 - 1) = 2 (4\\pi R^2 T) = 10\\text{ J} \\implies 4\\pi R^2 T = 5\\text{ J}$$\n\n3. For $n_2 = 64$ drops: $n_2^{1/3} = 4$, so:\n$$W_2 = 4\\pi R^2 T (4 - 1) = 3 (4\\pi R^2 T) = 3 \\times 5 = 15\\text{ J}$$",
+        tags: ["SurfaceTension"]
+      }),
+      // arch_q65_submerged_air_bubble_surface_tension_eval
+      () => ({
+        id: "arch_q65_submerged_air_bubble_surface_tension_eval",
+        q: "An air bubble of radius $0.1\\text{ cm}$ lies at a depth of $20\\text{ cm}$ below the free surface of a liquid of density $1000\\text{ kg/m}^3$. If the pressure inside the bubble is $2100\\text{ N/m}^2$ greater than the atmospheric pressure, then the surface tension of the liquid in SI unit is: (use $g = 10\\text{ m/s}^2$)",
+        svg: null,
+        ans: "$0.05$",
+        distractors: ["$0.1$", "$0.02$", "$0.25$"],
+        sol: "1. For an air bubble submerged in a liquid:\n$$P_{\\text{in}} - P_0 = \\rho g h + \\frac{2T}{r}$$\n\n2. Given $P_{\\text{in}} - P_0 = 2100\\text{ N/m}^2$, $h = 20\\text{ cm} = 0.20\\text{ m}$, $r = 0.1\\text{ cm} = 10^{-3}\\text{ m}$, $\\rho = 1000\\text{ kg/m}^3$:\n$$2100 = (1000 \\times 10 \\times 0.20) + \\frac{2T}{10^{-3}}$$\n$$2100 = 2000 + \\frac{2T}{10^{-3}}$$\n$$100 = \\frac{2T}{10^{-3}} \\implies 2T = 100 \\times 10^{-3} = 0.1 \\implies T = 0.05\\text{ N m}^{-1}$$\n\nThus, the surface tension in SI units is **$0.05$**.",
+        tags: ["SurfaceTension"]
+      }),
+      // arch_q66_statements_contact_angle_capillary_radius
+      () => ({
+        id: "arch_q66_statements_contact_angle_capillary_radius",
+        q: "Given below are two statements:\n**Statement I:** The contact angle between a solid and a liquid is a property of the material of the solid and liquid as well.\n**Statement II:** The rise of a liquid in a capillary tube does not depend on the inner radius of the tube.\nIn the light of the above statements, choose the correct answer from the options given below:",
+        svg: null,
+        ans: "Statement I is true but Statement II is false.",
+        distractors: ["Statement I is false but Statement II is true.", "Both Statement I and Statement II are false.", "Both Statement I and Statement II are true."],
+        sol: "\u2022 **Statement I is true:** The angle of contact depends on the nature of the solid surface, the nature of the liquid, and the medium above the free surface (governed by Young's relation between interfacial surface energies).\n\n\u2022 **Statement II is false:** By Jurin's law, capillary rise is given by $h = \\frac{2T\\cos\\theta}{r \\rho g}$. It is inversely proportional to the inner radius $r$ of the capillary tube ($h \\propto 1/r$).",
+        tags: ["SurfaceTension"]
+      }),
+      // arch_q67_zero_rise_contact_angle_statements
+      () => ({
+        id: "arch_q67_zero_rise_contact_angle_statements",
+        q: "Given below are two statements:\n**Statement I:** When a capillary tube is dipped into a liquid, the liquid neither rises nor falls in the capillary. The contact angle may be $0^\\circ$.\n**Statement II:** The contact angle between a solid and a liquid is a property of the material of the solid and liquid as well.\nIn the light of the above statement, choose the correct answer from the options given below.",
+        svg: null,
+        ans: "Statement I is false and Statement II is true",
+        distractors: ["Both Statement I and Statement II are false", "Both Statement I and Statement II are true", "Statement I is true and Statement II is false"],
+        sol: "\u2022 **Statement I is false:** From the capillary height formula $h = \\frac{2T\\cos\\theta}{r \\rho g}$, if $h = 0$ (liquid neither rises nor falls), then $\\cos\\theta = 0 \\implies \\theta = 90^\\circ$. A contact angle of $0^\\circ$ yields maximum capillary rise ($\\cos 0^\\circ = 1$), not zero rise.\n\n\u2022 **Statement II is true:** The contact angle is an intrinsic property of the solid-liquid-vapor material system.",
+        tags: ["SurfaceTension"]
+      }),
+      // arch_q68_droplets_coalesce_surface_energy_ratio_x
+      () => ({
+        id: "arch_q68_droplets_coalesce_surface_energy_ratio_x",
+        q: "A big drop is formed by coalescing $1000$ small droplets of water. The ratio of surface energy of $1000$ droplets to that of energy of big drop is $\\frac{10}{x}$. The value of $x$ is $\\underline{\\hspace{1cm}}$.",
+        svg: null,
+        ans: "$1$",
+        distractors: ["$10$", "$100$", "$0.1$"],
+        sol: "1. Volume conservation for $n = 1000$ identical spherical drops of radius $r$ forming a big drop of radius $R$:\n$$\\frac{4}{3}\\pi R^3 = 1000 \\times \\left(\\frac{4}{3}\\pi r^3\\right) \\implies R = 10 r$$\n\n2. Total surface energy of $1000$ small droplets:\n$$E_1 = 1000 \\times (4\\pi r^2 T) = 4000\\pi r^2 T$$\n\n3. Surface energy of the single combined big drop:\n$$E_2 = 4\\pi R^2 T = 4\\pi (10r)^2 T = 400\\pi r^2 T$$\n\n4. The ratio of initial to final surface energy is:\n$$\\frac{E_1}{E_2} = \\frac{4000\\pi r^2 T}{400\\pi r^2 T} = 10 = \\frac{10}{x} \\implies x = 1$$\n\nHence, the value of $x$ is **$1$**.",
+        tags: ["SurfaceTension"]
+      }),
+      // arch_q69_liquid_column_balances_soap_bubble_diameter
+      () => ({
+        id: "arch_q69_liquid_column_balances_soap_bubble_diameter",
+        q: "A liquid column of height $0.04\\text{ cm}$ balances excess pressure of a soap bubble of certain radius. If density of liquid is $8 \\times 10^3\\text{ kg m}^{-3}$ and surface tension of soap solution is $0.28\\text{ N m}^{-1}$, then diameter of the soap bubble is $\\underline{\\hspace{1cm}}\\text{ cm}$. (if $g = 10\\text{ m s}^{-2}$)",
+        svg: null,
+        ans: "$7$",
+        distractors: ["$3.5$", "$14$", "$1.75$"],
+        sol: "1. Hydrostatic pressure of the balancing liquid column:\n$$P = \\rho g h = (8 \\times 10^3\\text{ kg/m}^3) \\times 10\\text{ m/s}^2 \\times (0.04 \\times 10^{-2}\\text{ m}) = 32\\text{ N m}^{-2}$$\n\n2. The excess pressure inside a soap bubble (having two surfaces) of radius $R$ is:\n$$\\Delta P = \\frac{4T}{R}$$\n\n3. Equating excess pressure to hydrostatic pressure:\n$$\\frac{4T}{R} = 32 \\implies R = \\frac{4 \\times 0.28}{32} = \\frac{1.12}{32} = 0.035\\text{ m} = 3.5\\text{ cm}$$\n\n4. The diameter of the soap bubble is:\n$$D = 2R = 2 \\times 3.5\\text{ cm} = 7\\text{ cm}$$\n\nHence, the diameter is **$7\\text{ cm}$**.",
+        tags: ["SurfaceTension"]
+      }),
+      // arch_q70_soap_bubble_excess_pressure_thrice_volume_ratio
+      () => ({
+        id: "arch_q70_soap_bubble_excess_pressure_thrice_volume_ratio",
+        q: "The excess pressure inside a soap bubble is thrice the excess pressure inside a second soap bubble. The ratio between the volume of the first and the second bubble is:",
+        svg: null,
+        ans: "$1 : 27$",
+        distractors: ["$1 : 9$", "$1 : 3$", "$1 : 81$"],
+        sol: "1. Excess pressure inside a soap bubble in air is inversely proportional to its radius:\n$$\\Delta P = \\frac{4T}{R} \\implies R \\propto \\frac{1}{\\Delta P}$$\n\n2. Given $\\Delta P_1 = 3 \\Delta P_2$, the ratio of their radii is:\n$$\\frac{R_1}{R_2} = \\frac{\\Delta P_2}{\\Delta P_1} = \\frac{1}{3}$$\n\n3. Volume of a spherical bubble scales with the cube of its radius:\n$$\\frac{V_1}{V_2} = \\left(\\frac{R_1}{R_2}\\right)^3 = \\left(\\frac{1}{3}\\right)^3 = \\frac{1}{27} = 1 : 27$$",
+        tags: ["SurfaceTension"]
+      }),
+      // arch_q71_thousand_drops_coalesce_energy_ratio_x
+      () => ({
+        id: "arch_q71_thousand_drops_coalesce_energy_ratio_x",
+        q: "A big drop is formed by coalescing $1000$ small identical drops of water. If $E_1$ be the total surface energy of $1000$ small drops of water and $E_2$ be the surface energy of single big drop of water, the $E_1 : E_2$ is $x : 1$, where $x = \\underline{\\hspace{1cm}}$.",
+        svg: null,
+        ans: "$10$",
+        distractors: ["$1$", "$100$", "$1000$"],
+        sol: "1. Conservation of volume: $R = n^{1/3} r = (1000)^{1/3} r = 10r$.\n\n2. Total surface energy of $1000$ small drops:\n$$E_1 = 1000 \\times (4\\pi r^2 T)$$\n\n3. Surface energy of single big drop:\n$$E_2 = 4\\pi R^2 T = 4\\pi (10r)^2 T = 100 \\times (4\\pi r^2 T)$$\n\n4. Ratio:\n$$\\frac{E_1}{E_2} = \\frac{1000 \\times 4\\pi r^2 T}{100 \\times 4\\pi r^2 T} = \\frac{10}{1} = 10 : 1$$\n\nComparing with $x : 1$, we find **$x = 10$**.",
+        tags: ["SurfaceTension"]
+      }),
+      // arch_q72_thousand_drops_coalesce_energy_fraction
+      () => ({
+        id: "arch_q72_thousand_drops_coalesce_energy_fraction",
+        q: "A big drop is formed by coalescing $1000$ small droplets of water. The surface energy will become :",
+        svg: null,
+        ans: "$\\frac{1}{10}\\text{ th}$",
+        distractors: ["$10\\text{ times}$", "$100\\text{ times}$", "$\\frac{1}{100}\\text{ th}$"],
+        sol: "1. When $n = 1000$ small droplets of radius $r$ combine into one big drop of radius $R = n^{1/3} r = 10r$:\n\u2022 Initial surface energy: $U_i = 1000 \\times (4\\pi r^2 T) = 1000 U_0$.\n\u2022 Final surface energy: $U_f = 4\\pi R^2 T = 4\\pi (10r)^2 T = 100 U_0$.\n\n2. Comparing the final surface energy to the initial energy:\n$$U_f = \\frac{100}{1000} U_i = \\frac{1}{10} U_i$$\n\nTherefore, the surface energy will become **$\\frac{1}{10}\\text{th}$** of its initial value.",
+        tags: ["SurfaceTension"]
+      }),
+      // arch_q73_work_to_expand_soap_bubble_radius
+      () => ({
+        id: "arch_q73_work_to_expand_soap_bubble_radius",
+        q: "The surface tension of soap solution is $3.5 \\times 10^{-2}\\text{ N m}^{-1}$. The amount of work done required to increase the radius of soap bubble from $10\\text{ cm}$ to $20\\text{ cm}$ is $\\underline{\\hspace{1cm}} \\times 10^{-4}\\text{ J}$. (take $\\pi = \\frac{22}{7}$)",
+        svg: null,
+        ans: "$264$",
+        distractors: ["$132$", "$528$", "$66$"],
+        sol: "1. A soap bubble in air has two free liquid surfaces (inner and outer), so the total surface area is $A = 2 \\times 4\\pi r^2 = 8\\pi r^2$.\n\n2. Increase in surface area when expanding from $r_1 = 0.10\\text{ m}$ to $r_2 = 0.20\\text{ m}$:\n$$\\Delta A = 8\\pi (r_2^2 - r_1^2) = 8\\pi [(0.20)^2 - (0.10)^2] = 8\\pi [0.04 - 0.01] = 8\\pi (0.03) = 0.24\\pi\\text{ m}^2$$\n\n3. Work done against surface tension:\n$$W = T \\times \\Delta A = (3.5 \\times 10^{-2}) \\times \\left(0.24 \\times \\frac{22}{7}\\right)$$\n$$W = \\left(\\frac{3.5}{7}\\right) \\times 10^{-2} \\times 0.24 \\times 22 = 0.5 \\times 10^{-2} \\times 5.28 = 2.64 \\times 10^{-2}\\text{ J} = 264 \\times 10^{-4}\\text{ J}$$\n\nThus, the missing integer is **$264$**.",
+        tags: ["SurfaceTension"]
+      }),
+      // arch_q74_submerged_bubble_10cm_pressure_difference
+      () => ({
+        id: "arch_q74_submerged_bubble_10cm_pressure_difference",
+        q: "There is an air bubble of radius $1.0\\text{ mm}$ in a liquid of surface tension $0.075\\text{ N m}^{-1}$ and density $1000\\text{ kg m}^{-3}$ at a depth of $10\\text{ cm}$ below the free surface. The amount by which the pressure inside the bubble is greater than the atmospheric pressure is $\\underline{\\hspace{1cm}}\\text{ Pa} (g = 10\\text{ m s}^{-2})$.",
+        svg: null,
+        ans: "$1150$",
+        distractors: ["$1000$", "$150$", "$1300$"],
+        sol: "1. An air bubble submerged in a liquid has a single interface, with excess pressure across its boundary:\n$$\\Delta P_{\\text{excess}} = \\frac{2T}{r} = \\frac{2 \\times 0.075}{1.0 \\times 10^{-3}} = 150\\text{ N m}^{-2}$$\n\n2. Hydrostatic pressure head of the liquid at depth $h = 10\\text{ cm} = 0.10\\text{ m}$:\n$$P_{\\text{liquid}} = \\rho g h = 1000 \\times 10 \\times 0.10 = 1000\\text{ N m}^{-2}$$\n\n3. Total excess pressure over the atmospheric pressure outside:\n$$P_{\\text{in}} - P_0 = \\rho g h + \\frac{2T}{r} = 1000 + 150 = 1150\\text{ Pa}$$\n\nHence, the pressure difference is **$1150\\text{ Pa}$**.",
+        tags: ["SurfaceTension"]
+      }),
+      // arch_q75_drop_splits_thousand_energy_ratio_x
+      () => ({
+        id: "arch_q75_drop_splits_thousand_energy_ratio_x",
+        q: "A spherical drop of liquid splits into $1000$ identical spherical drops. If $u_i$ is the surface energy of the original drop and $u_f$ is the total surface energy of the resulting drops, the (ignoring evaporation), $\\frac{u_f}{u_i} = \\left(\\frac{10}{x}\\right)$. Then value of $x$ is $\\underline{\\hspace{1cm}}$ :",
+        svg: null,
+        ans: "$1$",
+        distractors: ["$10$", "$100$", "$0.1$"],
+        sol: "1. Volume conservation: $V_{\\text{initial}} = 1000 V_{\\text{small}} \\implies R^3 = 1000 r^3 \\implies R = 10r$.\n\n2. Surface energy ratio:\n$$u_i = 4\\pi R^2 T = 4\\pi (10r)^2 T = 100 \\times (4\\pi r^2 T)$$\n$$u_f = 1000 \\times (4\\pi r^2 T)$$\n$$\\frac{u_f}{u_i} = \\frac{1000 \\times 4\\pi r^2 T}{100 \\times 4\\pi r^2 T} = 10$$\n\n3. Equating with $\\left(\\frac{10}{x}\\right)$:\n$$\\frac{10}{x} = 10 \\implies x = 1$$\n\nThus, the value of $x$ is **$1$**.",
+        tags: ["SurfaceTension"]
+      }),
+      // arch_q76_thousand_droplets_combine_energy_released
+      () => ({
+        id: "arch_q76_thousand_droplets_combine_energy_released",
+        q: "If $1000$ droplets of water of surface tension $0.07\\text{ N m}^{-1}$, having same radius $1\\text{ mm}$ each, combine to from a single drop. In the process the released surface energy is $\\underline{\\hspace{1cm}}$. (Take $\\pi = \\frac{22}{7}$)",
+        svg: null,
+        ans: "$7.92 \\times 10^{-4}\\text{ J}$",
+        distractors: ["$7.92 \\times 10^{-6}\\text{ J}$", "$9.68 \\times 10^{-4}\\text{ J}$", "$8.8 \\times 10^{-5}\\text{ J}$"],
+        sol: "1. Radius of each small droplet: $r = 1\\text{ mm} = 10^{-3}\\text{ m}$.\nVolume conservation: $\\frac{4}{3}\\pi R^3 = 1000 \\times \\frac{4}{3}\\pi r^3 \\implies R = 10r = 10^{-2}\\text{ m}$.\n\n2. Total decrease in surface area:\n$$\\Delta A = 1000(4\\pi r^2) - 4\\pi R^2 = 4\\pi [1000(10^{-6}) - (10^{-2})^2] = 4\\pi [10^{-3} - 10^{-4}] = 4\\pi (9 \\times 10^{-4})\\text{ m}^2$$\n\n3. Surface energy released:\n$$\\Delta U = T \\Delta A = 0.07 \\times 4 \\times \\frac{22}{7} \\times (9 \\times 10^{-4}) = 0.01 \\times 88 \\times 9 \\times 10^{-4} = 7.92 \\times 10^{-4}\\text{ J}$$",
+        tags: ["SurfaceTension"]
+      }),
+      // arch_q77_mercury_drop_split_125_energy_gain
+      () => ({
+        id: "arch_q77_mercury_drop_split_125_energy_gain",
+        q: "A mercury drop of radius $10^{-3}\\text{ m}$ is broken into $125$ equal size droplets. Surface tension of mercury is $0.45\\text{ N m}^{-1}$. The gain in surface energy is:",
+        svg: null,
+        ans: "$2.26 \\times 10^{-5}\\text{ J}$",
+        distractors: ["$28 \\times 10^{-5}\\text{ J}$", "$17.5 \\times 10^{-5}\\text{ J}$", "$5 \\times 10^{-5}\\text{ J}$"],
+        sol: "1. Volume conservation for $n = 125$ droplets from initial radius $R = 10^{-3}\\text{ m}$:\n$$r = \\frac{R}{n^{1/3}} = \\frac{10^{-3}}{125^{1/3}} = \\frac{10^{-3}}{5} = 2 \\times 10^{-4}\\text{ m}$$\n\n2. Increase in surface area:\n$$\\Delta A = 4\\pi R^2 (n^{1/3} - 1) = 4\\pi (10^{-3})^2 (5 - 1) = 16\\pi \\times 10^{-6}\\text{ m}^2$$\n\n3. Gain in surface energy:\n$$\\Delta U = T \\Delta A = 0.45 \\times 16\\pi \\times 10^{-6} = 7.2\\pi \\times 10^{-6} \\approx 22.62 \\times 10^{-6}\\text{ J} = 2.26 \\times 10^{-5}\\text{ J}$$",
+        tags: ["SurfaceTension"]
+      }),
+      // arch_q78_half_submerged_droplet_floating_radius
+      () => ({
+        id: "arch_q78_half_submerged_droplet_floating_radius",
+        q: "A drop of liquid of density $\\rho$ is floating half immersed in a liquid of density $\\sigma$ and surface tension $7.5 \\times 10^{-4}\\text{ N cm}^{-1}$. The radius of drop in $\\text{cm}$ will be : (Take : $g = 10\\text{ ms}^{-2}$)",
+        svg: null,
+        ans: "$\\frac{15}{\\sqrt{2\\rho - \\sigma}}$",
+        distractors: ["$\\frac{15}{\\sqrt{\\rho - \\sigma}}$", "$\\frac{3}{2\\sqrt{\\rho - \\sigma}}$", "$\\frac{3}{20\\sqrt{2\\rho - \\sigma}}$"],
+        sol: "1. Surface tension in SI units: $T = 7.5 \\times 10^{-4}\\text{ N/cm} = 7.5 \\times 10^{-2}\\text{ N/m}$.\nThe perimeter of contact at the equator is $2\\pi r$. Surface tension exerts an upward vertical force $F_T = 2\\pi r T$.\n\n2. For floating equilibrium, downward weight equals upward buoyancy plus surface tension force:\n$$M g = F_B + F_T$$\n$$\\left(\\frac{4}{3}\\pi r^3 \\rho\\right) g = \\left(\\frac{2}{3}\\pi r^3 \\sigma\\right) g + 2\\pi r T$$\n$$\\frac{2}{3}\\pi r^3 (2\\rho - \\sigma) g = 2\\pi r T \\implies r^2 = \\frac{3T}{(2\\rho - \\sigma) g}$$\n\n3. Substituting $T = 7.5 \\times 10^{-2}\\text{ N/m}$ and $g = 10\\text{ m/s}^2$:\n$$r^2 = \\frac{3 \\times 7.5 \\times 10^{-2}}{(2\\rho - \\sigma) \\times 10} = \\frac{225 \\times 10^{-4}}{2\\rho - \\sigma}\\text{ m}^2$$\n$$r = \\frac{15 \\times 10^{-2}}{\\sqrt{2\\rho - \\sigma}}\\text{ m} = \\frac{15}{\\sqrt{2\\rho - \\sigma}}\\text{ cm}$$",
+        tags: ["SurfaceTension"]
+      }),
+      // arch_q79_water_drop_split_729_gain_energy
+      () => ({
+        id: "arch_q79_water_drop_split_729_gain_energy",
+        q: "A water drop of radius $1\\text{ cm}$ is broken into $729$ equal droplets. If surface tension of water is $75\\text{ dyne cm}^{-1}$, then the gain in surface energy upto first decimal place will be [Given $\\pi = 3.14$]",
+        svg: null,
+        ans: "$7.5 \\times 10^{-4}\\text{ J}$",
+        distractors: ["$8.5 \\times 10^{-4}\\text{ J}$", "$8.2 \\times 10^{-4}\\text{ J}$", "$5.3 \\times 10^{-4}\\text{ J}$"],
+        sol: "1. Given $R = 1\\text{ cm} = 10^{-2}\\text{ m}$, $T = 75\\text{ dyn/cm} = 75 \\times 10^{-3}\\text{ N/m} = 0.075\\text{ N/m}$.\nNumber of droplets $n = 729 \\implies n^{1/3} = 9$.\n\n2. Increase in surface area:\n$$\\Delta A = 4\\pi R^2 (n^{1/3} - 1) = 4\\pi (10^{-2})^2 (9 - 1) = 32\\pi \\times 10^{-4}\\text{ m}^2$$\n\n3. Gain in surface energy:\n$$\\Delta U = T \\Delta A = 0.075 \\times 32 \\times 3.14 \\times 10^{-4} = 2.4 \\times 3.14 \\times 10^{-4} \\approx 7.536 \\times 10^{-4}\\text{ J} \\approx 7.5 \\times 10^{-4}\\text{ J}$$",
+        tags: ["SurfaceTension"]
+      }),
+      // arch_q80_oil_grease_stains_contact_angle_assertion_reason
+      () => ({
+        id: "arch_q80_oil_grease_stains_contact_angle_assertion_reason",
+        q: "Given below are two statements: One is labelled as **Assertion (A)** and the other is labelled as **Reason (R)**.\n**Assertion (A):** Clothes containing oil or grease stains cannot be cleaned by water wash.\n**Reason (R):** Because the angle of contact between the oil/grease and water is obtuse.\nIn the light of the above statements, choose the correct answer from the option given below.",
+        svg: null,
+        ans: "Both (A) and (R) are true and (R) is the correct explanation of (A)",
+        distractors: ["Both (A) and (R) are true but (R) is not the correct explanation of (A)", "(A) is true but (R) is false", "(A) is false but (R) is true"],
+        sol: "\u2022 **Assertion (A) is true:** Pure water alone cannot effectively clean oily and greasy fabrics without detergents.\n\n\u2022 **Reason (R) is true:** The cohesive forces within water are greater than the adhesive forces between water and oil/grease, resulting in an obtuse contact angle ($\\theta > 90^\\circ$). Consequently, water does not wet the grease-coated surface.\n\n\u2022 Because the contact angle is obtuse, water cannot penetrate the oily fibers to lift away stains. Thus, **Reason (R) is the correct explanation of Assertion (A)**.",
+        tags: ["SurfaceTension"]
+      }),
+      // arch_q81_water_drop_2cm_broken_64_droplets_gain
+      () => ({
+        id: "arch_q81_water_drop_2cm_broken_64_droplets_gain",
+        q: "A water drop of diameter $2\\text{ cm}$ is broken into $64$ equal droplets. The surface tension of water is $0.075\\text{ N m}^{-1}$. In this process the gain in surface energy will be:",
+        svg: null,
+        ans: "$2.8 \\times 10^{-4}\\text{ J}$",
+        distractors: ["$1.5 \\times 10^{-3}\\text{ J}$", "$1.9 \\times 10^{-4}\\text{ J}$", "$9.4 \\times 10^{-5}\\text{ J}$"],
+        sol: "1. Diameter $D = 2\\text{ cm} \\implies R = 1\\text{ cm} = 10^{-2}\\text{ m}$.\nNumber of droplets $n = 64 \\implies n^{1/3} = 4$.\n\n2. Total gain in surface area:\n$$\\Delta A = 4\\pi R^2 (n^{1/3} - 1) = 4\\pi (10^{-2})^2 (4 - 1) = 12\\pi \\times 10^{-4}\\text{ m}^2$$\n\n3. Gain in surface energy:\n$$\\Delta U = T \\Delta A = 0.075 \\times 12\\pi \\times 10^{-4} = 0.9\\pi \\times 10^{-4} = 0.9 \\times 3.1416 \\times 10^{-4} \\approx 2.827 \\times 10^{-4}\\text{ J} \\approx 2.8 \\times 10^{-4}\\text{ J}$$",
+        tags: ["SurfaceTension"]
+      }),
+      // arch_q82_concentric_soap_bubbles_equivalent_radius
+      () => ({
+        id: "arch_q82_concentric_soap_bubbles_equivalent_radius",
+        q: "A soap bubble of the radius $3\\text{ cm}$ is formed inside another soap bubble of radius, $6\\text{ cm}$. The radius of an equivalent soap bubble that has the same excess pressure as inside the smaller bubble with respect to the atmospheric pressure is $\\underline{\\hspace{1cm}}\\text{ cm}$.",
+        svg: null,
+        ans: "$2$",
+        distractors: ["$4.5$", "$1.5$", "$3$"],
+        sol: "1. Let the outer bubble have radius $R_2 = 6\\text{ cm}$ and inner bubble have radius $R_1 = 3\\text{ cm}$.\n\u2022 Excess pressure inside the outer bubble relative to atmosphere:\n$$P_{\\text{mid}} - P_0 = \\frac{4T}{R_2}$$\n\u2022 Excess pressure inside the inner bubble relative to the space between them:\n$$P_{\\text{in}} - P_{\\text{mid}} = \\frac{4T}{R_1}$$\n\n2. Total excess pressure inside the inner bubble w.r.t the atmosphere:\n$$\\Delta P_{\\text{net}} = (P_{\\text{in}} - P_{\\text{mid}}) + (P_{\\text{mid}} - P_0) = \\frac{4T}{R_1} + \\frac{4T}{R_2}$$\n\n3. For an equivalent single soap bubble of radius $R_{\\text{eq}}$ with the same total excess pressure:\n$$\\frac{4T}{R_{\\text{eq}}} = \\frac{4T}{R_1} + \\frac{4T}{R_2} \\implies \\frac{1}{R_{\\text{eq}}} = \\frac{1}{R_1} + \\frac{1}{R_2}$$\n$$\\frac{1}{R_{\\text{eq}}} = \\frac{1}{3} + \\frac{1}{6} = \\frac{3}{6} = \\frac{1}{2} \\implies R_{\\text{eq}} = 2\\text{ cm}$$\n\nThus, the equivalent radius is **$2\\text{ cm}$**.",
+        tags: ["SurfaceTension"]
+      }),
+      // arch_q83_u_tube_unequal_bores_level_difference
+      () => ({
+        id: "arch_q83_u_tube_unequal_bores_level_difference",
+        q: "Two narrow bores of diameter $5.0\\text{ mm}$ and $8.0\\text{ mm}$ are joined together to form a $U-$shaped tube open at both ends. If this $U-$tube contains water, what is the difference in the level of two limbs of the tube. [Take surface tension of water $T = 7.3 \\times 10^{-2}\\text{ N m}^{-1}$, angle of contact $= 0$, $g = 10\\text{ m s}^{-2}$ and density of water $= 1.0 \\times 10^3\\text{ kg m}^{-3}$]",
+        svg: null,
+        ans: "$2.19\\text{ mm}$",
+        distractors: ["$5.34\\text{ mm}$", "$3.62\\text{ mm}$", "$4.97\\text{ mm}$"],
+        sol: "1. Radii of the two limbs:\n$$r_1 = \\frac{5.0\\text{ mm}}{2} = 2.5\\text{ mm} = 2.5 \\times 10^{-3}\\text{ m}$$\n$$r_2 = \\frac{8.0\\text{ mm}}{2} = 4.0\\text{ mm} = 4.0 \\times 10^{-3}\\text{ m}$$\n\n2. By Jurin's law, capillary elevation in each limb is $h = \\frac{2T\\cos\\theta}{r \\rho g}$. The level difference between the two open limbs is:\n$$\\Delta h = h_1 - h_2 = \\frac{2T\\cos 0^\\circ}{\\rho g} \\left(\\frac{1}{r_1} - \\frac{1}{r_2}\\right)$$\n\n3. Substituting values:\n$$\\Delta h = \\frac{2(7.3 \\times 10^{-2})}{1000 \\times 10} \\left(\\frac{1}{2.5 \\times 10^{-3}} - \\frac{1}{4.0 \\times 10^{-3}}\\right)$$\n$$\\Delta h = (1.46 \\times 10^{-5}) \\times (400 - 250) = (1.46 \\times 10^{-5}) \\times 150 = 2.19 \\times 10^{-3}\\text{ m} = 2.19\\text{ mm}$$",
+        tags: ["SurfaceTension"]
+      }),
+      // arch_q84_two_drops_coalescing_surface_energy_ratio
+      () => ({
+        id: "arch_q84_two_drops_coalescing_surface_energy_ratio",
+        q: "Two small drops of mercury each of radius $R$ coalesce to form a single large drop. The ratio of total surface energy before and after the change is:",
+        svg: null,
+        ans: "$2^{\\frac{1}{3}} : 1$",
+        distractors: ["$1 : 2^{\\frac{1}{3}}$", "$2 : 1$", "$1 : 2$"],
+        sol: "1. By volume conservation: $V_f = 2 V_i \\implies \\frac{4}{3}\\pi R'^3 = 2 \\times \\left(\\frac{4}{3}\\pi R^3\\right) \\implies R' = 2^{1/3} R$.\n\n2. Total surface energy before coalescence:\n$$E_i = 2 \\times (4\\pi R^2 T) = 8\\pi R^2 T$$\n\n3. Total surface energy after coalescence:\n$$E_f = 4\\pi R'^2 T = 4\\pi (2^{1/3} R)^2 T = 2^{2/3} (4\\pi R^2 T)$$\n\n4. The ratio of energy before to after:\n$$\\frac{E_i}{E_f} = \\frac{2 \\times 4\\pi R^2 T}{2^{2/3} \\times 4\\pi R^2 T} = \\frac{2}{2^{2/3}} = 2^{1 - 2/3} = 2^{1/3} = 2^{\\frac{1}{3}} : 1$$",
+        tags: ["SurfaceTension"]
+      }),
+      // arch_q85_capillary_rise_tangents_angle_60
+      () => ({
+        id: "arch_q85_capillary_rise_tangents_angle_60",
+        q: "A capillary tube made of glass of radius $0.15\\text{ mm}$ is dipped vertically in a beaker filled with methylene iodide (surface tension $= 0.05\\text{ N m}^{-1}$, density $= 667\\text{ kg m}^{-3}$) which rises to height $h$ in the tube. It is observed that the two tangents drawn from observed that the two tangents drawn from liquid-glass interfaces (from opp. sides of the capillary) make an angle of $60^\\circ$ with one another. Then $h$ is close to ($g = 10\\text{ m s}^{-2}$)",
+        svg: null,
+        ans: "$0.087\\text{ m}$",
+        distractors: ["$0.049\\text{ m}$", "$0.137\\text{ m}$", "$0.172\\text{ m}$"],
+        sol: "1. By symmetry, the angle between the two tangents drawn on opposite sides of the meniscus is $2\\theta = 60^\\circ$, giving a contact angle $\\theta = 30^\\circ$.\n\n2. Capillary elevation formula:\n$$h = \\frac{2T\\cos\\theta}{r \\rho g}$$\n\n3. Given $r = 0.15\\text{ mm} = 1.5 \\times 10^{-4}\\text{ m}, T = 0.05\\text{ N/m}, \\rho = 667\\text{ kg/m}^3, g = 10\\text{ m/s}^2$:\n$$h = \\frac{2(0.05) \\cos 30^\\circ}{(1.5 \\times 10^{-4}) \\times 667 \\times 10} = \\frac{0.10 \\times 0.866}{1.0005} \\approx 0.0866\\text{ m} \\approx 0.087\\text{ m}$$",
+        tags: ["SurfaceTension"]
+      }),
+      // arch_q86_soap_bubbles_excess_pressure_volumes_ratio
+      () => ({
+        id: "arch_q86_soap_bubbles_excess_pressure_volumes_ratio",
+        q: "Pressure inside two soap bubbles are $1.01\\text{ atmosphere}$ and $1.02\\text{ atmosphere}$, respectively. The ratio of their volumes is :",
+        svg: null,
+        ans: "$8 : 1$",
+        distractors: ["$4 : 1$", "$0.8 : 1$", "$2 : 1$"],
+        sol: "1. Taking atmospheric pressure as $P_0 = 1.00\\text{ atm}$, the excess pressure inside each soap bubble is:\n$$\\Delta P_1 = 1.01 - 1.00 = 0.01\\text{ atm}$$\n$$\\Delta P_2 = 1.02 - 1.00 = 0.02\\text{ atm}$$\n\n2. Since excess pressure is $\\Delta P = \\frac{4T}{R}$, radius is inversely proportional to excess pressure:\n$$\\frac{R_1}{R_2} = \\frac{\\Delta P_2}{\\Delta P_1} = \\frac{0.02}{0.01} = 2$$\n\n3. Volume of a spherical bubble scales with $R^3$:\n$$\\frac{V_1}{V_2} = \\left(\\frac{R_1}{R_2}\\right)^3 = (2)^3 = 8 = 8 : 1$$",
+        tags: ["SurfaceTension"]
+      }),
+      // arch_q87_accelerating_air_bubble_mass
+      () => ({
+        id: "arch_q87_accelerating_air_bubble_mass",
+        q: "An air bubble of radius $1\\text{ cm}$ in water has an upward acceleration of $9.8\\text{ cm s}^{-2}$. The density of water is $1\\text{ gm cm}^{-3}$ and water offers negligible drag force on the bubble. The mass of the bubble is ($g = 980\\text{ cm/s}^2$).",
+        svg: null,
+        ans: "$4.15\\text{ gm}$",
+        distractors: ["$4.51\\text{ gm}$", "$3.15\\text{ gm}$", "$1.52\\text{ gm}$"],
+        sol: "1. Volume of spherical air bubble ($r = 1\\text{ cm}$):\n$$V = \\frac{4}{3}\\pi r^3 = \\frac{4}{3}\\pi (1)^3 = \\frac{4}{3}\\pi \\approx 4.1888\\text{ cm}^3$$\n\n2. Upward buoyant force exerted by water ($\\rho_w = 1\\text{ g/cm}^3$):\n$$F_B = V \\rho_w g = 4.1888 \\times 1 \\times 980 = 4105\\text{ dynes}$$\n\n3. Equation of upward motion for the bubble of mass $m$ with acceleration $a = 9.8\\text{ cm/s}^2$:\n$$F_B - m g = m a \\implies F_B = m (g + a)$$\n$$m = \\frac{F_B}{g + a} = \\frac{V \\rho_w g}{g + a} = \\frac{4.1888 \\times 980}{980 + 9.8} = \\frac{4105}{989.8} \\approx 4.147\\text{ gm} \\approx 4.15\\text{ gm}$$",
+        tags: ["PressureThrust"]
+      }),
+      // arch_q88_two_liquids_wall_forces_ratio
+      () => ({
+        id: "arch_q88_two_liquids_wall_forces_ratio",
+        q: "Two liquids of densities $\\rho_1$ and $\\rho_2 (\\rho_2 = 2\\rho_1)$ are filled up behind a square wall of side $10\\text{ m}$ as shown in figure. Each liquid has a height of $5\\text{ m}$. The ratio of the forces due to these liquids exerted on upper part $MN$ to that at the lower part $NO$ is (Assume that the liquids are not mixing):",
+        svg: "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 240 180\" width=\"200\" height=\"150\"><line x1=\"160\" y1=\"20\" x2=\"160\" y2=\"150\" stroke=\"#1e293b\" stroke-width=\"4\"/><rect x=\"40\" y=\"30\" width=\"120\" height=\"60\" fill=\"#bae6fd\" opacity=\"0.4\"/><rect x=\"40\" y=\"90\" width=\"120\" height=\"60\" fill=\"#0284c7\" opacity=\"0.4\"/><line x1=\"40\" y1=\"90\" x2=\"160\" y2=\"90\" stroke=\"#0284c7\" stroke-dasharray=\"3,3\" stroke-width=\"1.5\"/><text x=\"165\" y=\"28\" font-size=\"11\" font-weight=\"bold\">M</text><circle cx=\"160\" cy=\"90\" r=\"3\" fill=\"#0f172a\"/><text x=\"165\" y=\"94\" font-size=\"11\" font-weight=\"bold\">N</text><circle cx=\"160\" cy=\"150\" r=\"3\" fill=\"#0f172a\"/><text x=\"165\" y=\"155\" font-size=\"11\" font-weight=\"bold\">O</text><line x1=\"180\" y1=\"30\" x2=\"180\" y2=\"90\" stroke=\"#0369a1\" stroke-width=\"1.5\" marker-start=\"url(#arrow)\" marker-end=\"url(#arrow)\"/><text x=\"185\" y=\"65\" font-size=\"10\" font-weight=\"bold\">5 m</text><line x1=\"180\" y1=\"90\" x2=\"180\" y2=\"150\" stroke=\"#0369a1\" stroke-width=\"1.5\" marker-start=\"url(#arrow)\" marker-end=\"url(#arrow)\"/><text x=\"185\" y=\"125\" font-size=\"10\" font-weight=\"bold\">5 m</text><text x=\"80\" y=\"60\" font-size=\"11\" font-weight=\"bold\" fill=\"#0369a1\">\u03c1\u2081</text><text x=\"80\" y=\"125\" font-size=\"11\" font-weight=\"bold\" fill=\"#0c4a6e\">\u03c1\u2082 = 2\u03c1\u2081</text></svg>",
+        ans: "$\\frac{1}{4}$",
+        distractors: ["$\\frac{1}{3}$", "$\\frac{2}{3}$", "$\\frac{1}{2}$"],
+        sol: "1. Let wall width be $w = 10\\text{ m}$ and height of each segment be $h = 5\\text{ m}$.\nArea of segment $MN$ is $A_1 = w h = 50\\text{ m}^2$.\nAverage pressure on $MN$ is at mid-depth $h/2 = 2.5\\text{ m}$:\n$$P_{\\text{avg}, MN} = \\rho_1 g \\left(\\frac{h}{2}\\right) = 2.5 \\rho_1 g$$\n$$F_{MN} = P_{\\text{avg}, MN} \\times A_1 = (2.5 \\rho_1 g) \\times 50 = 125 \\rho_1 g$$\n\n2. Pressure acting on the lower section $NO$:\n\u2022 Uniform overlying pressure from top liquid: $P_{\\text{top}} = \\rho_1 g h = 5 \\rho_1 g$.\n\u2022 Hydrostatic pressure increasing linearly through liquid $2$ (average $= \\frac{1}{2}\\rho_2 g h = \\frac{1}{2}(2\\rho_1) g (5) = 5 \\rho_1 g$).\nTotal average pressure on $NO$:\n$$P_{\\text{avg}, NO} = 5 \\rho_1 g + 5 \\rho_1 g = 10 \\rho_1 g$$\n$$F_{NO} = P_{\\text{avg}, NO} \\times A_2 = (10 \\rho_1 g) \\times 50 = 500 \\rho_1 g$$\n\n3. The ratio of forces is:\n$$\\frac{F_{MN}}{F_{NO}} = \\frac{125 \\rho_1 g}{500 \\rho_1 g} = \\frac{1}{4}$$",
+        tags: ["PressureThrust"]
+      }),
+      // arch_q89_droplet_floating_half_immersed_formula
+      () => ({
+        id: "arch_q89_droplet_floating_half_immersed_formula",
+        q: "A small spherical droplet of density $d$ is floating exactly half immersed in a liquid of density $\\rho$ and surface tension $T$. The radius of the droplet is (take note that the surface tension applies an upward force on the droplet):",
+        svg: null,
+        ans: "$r = \\sqrt{\\frac{3T}{(2d - \\rho)g}}$",
+        distractors: ["$r = \\sqrt{\\frac{2T}{3(d + \\rho)g}}$", "$r = \\sqrt{\\frac{T}{(d - \\rho)g}}$", "$r = \\sqrt{\\frac{T}{(d + \\rho)g}}$"],
+        sol: "1. Downward gravitational weight of the spherical droplet:\n$$W = m g = \\left(\\frac{4}{3}\\pi r^3 d\\right) g$$\n\n2. Upward buoyant force from the half-submerged volume:\n$$F_B = V_{\\text{sub}} \\rho g = \\left(\\frac{2}{3}\\pi r^3\\right) \\rho g$$\n\n3. Upward vertical force exerted by surface tension around the equatorial contact perimeter ($2\\pi r$):\n$$F_T = 2\\pi r T$$\n\n4. Equating downward force to the sum of upward forces:\n$$\\frac{4}{3}\\pi r^3 d g = \\frac{2}{3}\\pi r^3 \\rho g + 2\\pi r T$$\n$$\\frac{2}{3}\\pi r^3 (2d - \\rho) g = 2\\pi r T$$\n$$\\frac{1}{3} r^2 (2d - \\rho) g = T \\implies r = \\sqrt{\\frac{3T}{(2d - \\rho)g}}$$",
+        tags: ["SurfaceTension"]
+      }),
+      // arch_q90_capillary_water_mass_radius_doubled
+      () => ({
+        id: "arch_q90_capillary_water_mass_radius_doubled",
+        q: "If '$M$' is the mass of water that rises in a capillary tube of radius '$r$', then mass of water which will rise in a capillary tube of radius '$2r$' is:",
+        svg: null,
+        ans: "$2\\text{ M}$",
+        distractors: ["$4\\text{ M}$", "$\\frac{\\text{M}}{2}$", "$\\text{M}$"],
+        sol: "1. The height of capillary rise is inversely proportional to tube radius:\n$$h = \\frac{2T\\cos\\theta}{r \\rho g} \\implies h \\propto \\frac{1}{r}$$\n\n2. The mass of the liquid column raised is:\n$$M = (\\pi r^2 h) \\rho = \\pi r^2 \\left(\\frac{2T\\cos\\theta}{r \\rho g}\\right) \\rho = \\frac{2\\pi r T \\cos\\theta}{g} \\propto r$$\n\n3. Because mass $M$ is directly proportional to radius $r$, when the radius is doubled ($r' = 2r$):\n$$M' = 2M$$",
+        tags: ["SurfaceTension"]
+      }),
+      // arch_q91_mercury_water_capillary_radius_ratio
+      () => ({
+        id: "arch_q91_mercury_water_capillary_radius_ratio",
+        q: "The ratio of surface tensions of mercury and water is given to be $7.5$, while the ratio of their densities is $13.6$. Their contact angles, with glass, are close to $135^\\circ$ and $0^\\circ$, respectively. If it is observed that mercury gets depressed by an amount $h$ in a capillary tube of radius $r_1$, while water rises by the same amount $h$ in a capillary tube of radius $r_2$, then the ratio $\\frac{r_1}{r_2}$ is close to",
+        svg: null,
+        ans: "$\\frac{2}{5}$",
+        distractors: ["$\\frac{3}{5}$", "$\\frac{2}{3}$", "$\\frac{4}{5}$"],
+        sol: "1. Using Jurin's law for capillary height:\n$$|h| = \\frac{2T |\\cos\\theta|}{r \\rho g}$$\nGiven $|h_1| = |h_2| = h$:\n$$\\frac{2T_{\\text{Hg}} |\\cos 135^\\circ|}{r_1 \\rho_{\\text{Hg}} g} = \\frac{2T_w \\cos 0^\\circ}{r_2 \\rho_w g}$$\n\n2. Rearranging for the radius ratio:\n$$\\frac{r_1}{r_2} = \\left(\\frac{T_{\\text{Hg}}}{T_w}\\right) \\left(\\frac{\\rho_w}{\\rho_{\\text{Hg}}}\\right) |\\cos 135^\\circ|$$\n\n3. Substituting values ($T_{\\text{Hg}}/T_w = 7.5, \\rho_{\\text{Hg}}/\\rho_w = 13.6, |\\cos 135^\\circ| = \\frac{1}{\\sqrt{2}} \\approx 0.707$):\n$$\\frac{r_1}{r_2} = 7.5 \\times \\frac{1}{13.6} \\times 0.707 = \\frac{5.303}{13.6} \\approx 0.39 \\approx \\frac{2}{5}$$",
+        tags: ["SurfaceTension"]
+      }),
+      // arch_q92_steel_ball_terminal_velocity_viscosity
+      () => ({
+        id: "arch_q92_steel_ball_terminal_velocity_viscosity",
+        q: "A solid steel ball of diameter $3.6\\text{ mm}$ acquired terminal velocity $2.45 \\times 10^{-2}\\text{ m/s}$ while falling under gravity through an oil of density $925\\text{ kg m}^{-3}$. Take density of steel as $7825\\text{ kg m}^{-3}$ and $g$ as $9.8\\text{ m/s}^2$. The viscosity of the oil in SI unit is:",
+        svg: null,
+        ans: "$1.99$",
+        distractors: ["$2.18$", "$2.38$", "$1.68$"],
+        sol: "1. Radius of steel ball: $r = \\frac{3.6\\text{ mm}}{2} = 1.8\\text{ mm} = 1.8 \\times 10^{-3}\\text{ m}$.\nDensity difference: $\\rho - \\sigma = 7825 - 925 = 6900\\text{ kg m}^{-3}$.\n\n2. By Stokes' terminal velocity formula:\n$$v_t = \\frac{2 r^2 (\\rho - \\sigma) g}{9 \\eta} \\implies \\eta = \\frac{2 r^2 (\\rho - \\sigma) g}{9 v_t}$$\n\n3. Substituting numerical values:\n$$\\eta = \\frac{2 \\times (1.8 \\times 10^{-3})^2 \\times 6900 \\times 9.8}{9 \\times (2.45 \\times 10^{-2})}$$\n$$\\eta = \\frac{2 \\times (3.24 \\times 10^{-6}) \\times 67620}{0.2205} = \\frac{0.43818}{0.2205} \\approx 1.987\\text{ SI units} \\approx 1.99$$",
+        tags: ["Viscosity"]
+      }),
+      // arch_q93_ball_in_glycerine_viscous_force
+      () => ({
+        id: "arch_q93_ball_in_glycerine_viscous_force",
+        q: "A small rigid spherical ball of mass $M$ is dropped in a long vertical tube containing glycerine. The velocity of the ball becomes constant after some time. If the density of glycerine is half of the density of the ball, then the viscous force acting on the ball will be (consider $g$ as acceleration due to gravity)",
+        svg: null,
+        ans: "$\\frac{\\text{Mg}}{2}$",
+        distractors: ["$2\\text{ Mg}$", "$\\text{Mg}$", "$\\frac{3}{2}\\text{Mg}$"],
+        sol: "1. When the ball reaches constant terminal velocity ($a = 0$), the downward gravitational weight is balanced by the sum of upward buoyant force and viscous drag force:\n$$M g = F_B + F_v \\implies F_v = M g - F_B$$\n\n2. Let the density of the ball be $\\rho$. The density of glycerine is $\\sigma = \\frac{\\rho}{2}$.\n$$F_B = V \\sigma g = \\left(\\frac{M}{\\rho}\\right) \\left(\\frac{\\rho}{2}\\right) g = \\frac{M g}{2}$$\n\n3. Therefore, the viscous force is:\n$$F_v = M g - \\frac{M g}{2} = \\frac{M g}{2}$$",
+        tags: ["Viscosity"]
+      }),
+      // arch_q94_viscosity_measurement_statements
+      () => ({
+        id: "arch_q94_viscosity_measurement_statements",
+        q: "In the experiment for measurement of viscosity '$\\eta$' of given liquid with a ball having radius $R$, consider following statements.\n**A.** Graph between terminal velocity $V$ and $R$ will be a parabola.\n**B.** The terminal velocities of different diameter balls are constant for a given liquid.\n**C.** Measurement of terminal velocity is dependent on the temperature.\n**D.** This experiment can be utilized to assess the density of a given liquid.\n**E.** If balls are dropped with some initial speed, the value of $\\eta$ will change.\nChoose the correct answer from the options given below:",
+        svg: null,
+        ans: "A, C and D Only",
+        distractors: ["A, B and E Only", "B, D and E Only", "C, D and E Only"],
+        sol: "\u2022 **A is correct:** Since terminal velocity $v_t = \\frac{2(\\rho-\\sigma)g}{9\\eta} R^2 \\propto R^2$, a plot of $v_t$ versus $R$ is a parabola.\n\u2022 **B is incorrect:** $v_t$ depends quadratically on radius $R$, so balls of different diameters have different terminal velocities.\n\u2022 **C is correct:** Viscosity $\\eta$ varies strongly with temperature, so $v_t$ is temperature-dependent.\n\u2022 **D is correct:** By measuring $v_t$ for known $\\eta, R, \\rho$, the liquid density $\\sigma$ can be deduced.\n\u2022 **E is incorrect:** Viscosity $\\eta$ is an intrinsic material property of the fluid, independent of initial drop speed.\n\nHence, statements **A, C and D Only** are correct.",
+        tags: ["Viscosity"]
+      }),
+      // arch_q95_fluid_mechanics_fundamental_statements
+      () => ({
+        id: "arch_q95_fluid_mechanics_fundamental_statements",
+        q: "Consider following statements:\n**A.** Surface tension arises due to extra energy of the molecules at the interior as compared to the molecules at the surface, of a liquid.\n**B.** As the temperature of liquid rises, the coefficient of viscosity increases.\n**C.** As the temperature of gas increases, the coefficient of viscosity increases\n**D.** The onset of turbulence is determined by Reynold's number.\n**E.** In a steady flow two stream lines never intersect.\nChoose the correct answer from the options given below:",
+        svg: null,
+        ans: "C, D, E Only",
+        distractors: ["A, D, E Only", "B, C, D Only", "A, B, C Only"],
+        sol: "\u2022 **A is incorrect:** Surface tension arises because surface molecules experience an unbalanced inward net attraction, giving them *higher* potential energy than interior molecules.\n\u2022 **B is incorrect:** In liquids, viscosity *decreases* with rising temperature due to weakened intermolecular bonding.\n\u2022 **C is correct:** In gases, viscosity *increases* with temperature ($(\\eta \\propto \\sqrt{T})$) because molecular momentum transfer increases.\n\u2022 **D is correct:** Reynolds number ($R_e$) characterizes the transition from laminar to turbulent flow.\n\u2022 **E is correct:** Streamlines never intersect; if they did, fluid velocity at the intersection would have two directions simultaneously.\n\nThus, the correct statements are **C, D, E Only**.",
+        tags: ["Viscosity"]
+      }),
+      // arch_q96_viscous_force_terminal_velocity_formula
+      () => ({
+        id: "arch_q96_viscous_force_terminal_velocity_formula",
+        q: "A small ball of mass $m$ and density $\\rho$ is dropped in a viscous liquid of density $\\rho_0$. After sometime, the ball falls with constant velocity. The viscous force on the ball is :",
+        svg: null,
+        ans: "$mg\\left(1 - \\frac{\\rho_0}{\\rho}\\right)$",
+        distractors: ["$mg\\left(1 - \\rho\\rho_0\\right)$", "$mg\\left(1 + \\frac{\\rho}{\\rho_0}\\right)$", "$mg\\left(\\frac{\\rho_0}{\\rho} - 1\\right)$"],
+        sol: "1. When the ball moves at constant terminal velocity, the net acceleration is zero:\n$$\\Sigma F = 0 \\implies m g - F_B - F_v = 0 \\implies F_v = m g - F_B$$\n\n2. The buoyant force exerted by the displaced liquid of density $\\rho_0$ is:\n$$F_B = V \\rho_0 g = \\left(\\frac{m}{\\rho}\\right) \\rho_0 g = m g \\left(\\frac{\\rho_0}{\\rho}\\right)$$\n\n3. Therefore, the viscous force acting on the ball is:\n$$F_v = m g - m g \\left(\\frac{\\rho_0}{\\rho}\\right) = mg\\left(1 - \\frac{\\rho_0}{\\rho}\\right)$$",
+        tags: ["Viscosity"]
+      }),
+      // arch_q97_droplets_coalesce_new_terminal_velocity
+      () => ({
+        id: "arch_q97_droplets_coalesce_new_terminal_velocity",
+        q: "Small water droplets of radius $0.01\\text{ mm}$ are formed in the upper atmosphere and falling with a terminal velocity of $10\\text{ cm/s}$. Due to condensation, if $8$ such droplets are coalesced and formed a larger drop, the new terminal velocity will be $\\underline{\\hspace{1cm}}\\text{ cm/s}$.",
+        svg: null,
+        ans: "$40$",
+        distractors: ["$20$", "$80$", "$10$"],
+        sol: "1. By volume conservation, when $n = 8$ droplets of radius $r$ combine into a larger drop of radius $R$:\n$$\\frac{4}{3}\\pi R^3 = 8 \\times \\left(\\frac{4}{3}\\pi r^3\\right) \\implies R^3 = 8r^3 \\implies R = 2r$$\n\n2. Terminal velocity of a spherical droplet falling through fluid satisfies Stokes' law:\n$$v_t = \\frac{2 r^2 (\\rho - \\sigma) g}{9 \\eta} \\implies v_t \\propto r^2$$\n\n3. Therefore, the new terminal velocity is:\n$$\\frac{v_t'}{v_t} = \\left(\\frac{R}{r}\\right)^2 = (2)^2 = 4$$\n$$v_t' = 4 \\times 10\\text{ cm/s} = 40\\text{ cm/s}$$\n\nHence, the new terminal velocity is **$40\\text{ cm/s}$**.",
+        tags: ["Viscosity"]
+      }),
+      // arch_q98_ball_falling_into_water_unchanged_height_h
+      () => ({
+        id: "arch_q98_ball_falling_into_water_unchanged_height_h",
+        q: "A spherical ball of radius $1 \\times 10^{-4}\\text{ m}$ and density $10^5\\text{ kg/m}^3$ falls freely under gravity through a distance $h$ before entering a tank of water. If after entering in water the velocity of the ball does not change, then the value of $h$ is approximately: (The coefficient of viscosity of water is $9.8 \\times 10^{-6}\\text{ N s/m}^2$)",
+        svg: null,
+        ans: "$2518\\text{ m}$",
+        distractors: ["$2296\\text{ m}$", "$2249\\text{ m}$", "$2496\\text{ m}$"],
+        sol: "1. If velocity does not change upon entering water, the impact velocity acquired during free fall must exactly equal the terminal velocity in water:\n$$v = \\sqrt{2gh} = v_t$$\n\n2. Stokes' terminal velocity in water ($\\rho = 10^5\\text{ kg/m}^3$, $\\sigma = 10^3\\text{ kg/m}^3 \\ll \\rho$):\n$$v_t = \\frac{2 r^2 (\\rho - \\sigma) g}{9 \\eta} \\approx \\frac{2 r^2 \\rho g}{9 \\eta}$$\n$$v_t = \\frac{2 \\times (10^{-4})^2 \\times 10^5 \\times 9.8}{9 \\times (9.8 \\times 10^{-6})} = \\frac{2 \\times 10^{-8} \\times 10^5}{9 \\times 10^{-6}} = \\frac{2 \\times 10^{-3}}{9 \\times 10^{-6}} = \\frac{2000}{9}\\text{ m s}^{-1} \\approx 222.22\\text{ m/s}$$\n\n3. Height of free fall:\n$$h = \\frac{v_t^2}{2g} = \\frac{(222.22)^2}{2 \\times 9.8} = \\frac{49382.7}{19.6} \\approx 2519.5\\text{ m} \\approx 2518\\text{ m}$$",
+        tags: ["Viscosity"]
+      }),
+      // arch_q99_gas_viscosity_impurity_surface_tension_statements
+      () => ({
+        id: "arch_q99_gas_viscosity_impurity_surface_tension_statements",
+        q: "Given below are two statements :\n**Statement (I) :** Viscosity of gases is greater than that of liquids.\n**Statement (II) :** Surface tension of a liquid decreases due to the presence of insoluble impurities.\nIn the light of the above statements, choose the most appropriate answer from the options given below :",
+        svg: null,
+        ans: "Statement I is incorrect but Statement II is correct",
+        distractors: ["Statement I is correct but statement II is incorrect", "Both Statement I and Statement II are incorrect", "Both Statement I and Statement II are correct"],
+        sol: "\u2022 **Statement (I) is incorrect:** Viscosity of liquids is much greater (typically hundreds of times) than that of gases because intermolecular cohesive forces are significantly stronger in liquids.\n\n\u2022 **Statement (II) is correct:** Insoluble impurities (such as dust, oil, or grease) disrupt cohesive bonding at the surface layer, thereby decreasing the surface tension of the liquid.",
+        tags: ["Viscosity"]
+      }),
+    ];
+
+    let currentQuestions = [];
+
+    function generateNewBatch() {
+      const instName = document.getElementById("inputInstitute").value.trim() || "Institute Name";
+      const dppTitle = document.getElementById("inputDppTitle").value.trim() || "DPP Title";
+      const countVal = document.getElementById("selectCount").value;
+      const moduleFilter = document.getElementById("selectModule").value;
+
+      document.getElementById("dispInstitute").textContent = instName;
+      document.getElementById("dispDppTitle").textContent = dppTitle;
+      document.getElementById("archCountBadge").textContent = `${Archetypes.length} Must-Do Archetypes Active`;
+
+      let pool = [...Archetypes];
+      if (moduleFilter !== "All") {
+        pool = Archetypes.filter(a => {
+          const item = a();
+          return item.tags && item.tags.includes(moduleFilter);
+        });
+      }
+
+      if (pool.length === 0) {
+        alert("No archetypes found matching selected module filter.");
+        return;
+      }
+
+      // Fisher-Yates Shuffle
+      for (let i = pool.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [pool[i], pool[j]] = [pool[j], pool[i]];
+      }
+
+      const count = countVal === "All" ? pool.length : Math.min(parseInt(countVal, 10), pool.length);
+
+      currentQuestions = [];
+      for (let i = 0; i < count; i++) {
+        const raw = pool[i % pool.length]();
+        const rawOptions = [raw.ans, ...raw.distractors];
+        for (let k = rawOptions.length - 1; k > 0; k--) {
+          const m = Math.floor(Math.random() * (k + 1));
+          [rawOptions[k], rawOptions[m]] = [rawOptions[m], rawOptions[k]];
+        }
+        const key = String.fromCharCode(65 + rawOptions.indexOf(raw.ans));
+        currentQuestions.push({
+          q_no: i + 1,
+          q: raw.q,
+          svg: raw.svg,
+          options: rawOptions,
+          key: key,
+          sol: raw.sol
+        });
+      }
+
+      renderWorksheet();
+    }
+
+    function renderWorksheet() {
+      const qBox = document.getElementById("questionsBox");
+      const sBox = document.getElementById("solutionsBox");
+      const kTable = document.getElementById("keyTable");
+
+      qBox.innerHTML = "";
+      sBox.innerHTML = "";
+      kTable.innerHTML = "";
+
+      currentQuestions.forEach(q => {
+        const card = document.createElement("div");
+        card.className = "q-card";
+
+        let html = `<div class="q-text"><span class="q-num">Q${q.q_no}.</span> ${q.q}</div>`;
+        if (q.svg) {
+          html += `<div class="q-diagram">${q.svg}</div>`;
+        }
+
+        html += `<div class="options-grid">`;
+        q.options.forEach((opt, idx) => {
+          const letter = String.fromCharCode(65 + idx);
+          html += `<div class="option-item">
+                    <span class="opt-tag">(${letter})</span> 
+                    <span>${formatOptionContent(opt)}</span>
+                   </div>`;
+        });
+        html += `</div>`;
+
+        html += `<button class="btn-sol-toggle" onclick="toggleSolution(${q.q_no})">👁️ Show Derivation</button>`;
+        html += `<div class="sol-preview-box" id="sol-preview-${q.q_no}" style="display:none;">
+                  <strong>Correct: Option (${q.key})</strong>
+                  <div style="margin-top: 4px;">${q.sol}</div>
+                 </div>`;
+
+        card.innerHTML = html;
+        qBox.appendChild(card);
+      });
+
+      const totalQ = currentQuestions.length;
+      const rows = Math.ceil(totalQ / 3);
+      let tableHtml = `<tr><th>Q.No</th><th>Key</th><th>Q.No</th><th>Key</th><th>Q.No</th><th>Key</th></tr>`;
+
+      for (let r = 0; r < rows; r++) {
+        tableHtml += `<tr>`;
+        for (let c = 0; c < 3; c++) {
+          const idx = r + c * rows;
+          if (idx < totalQ) {
+            tableHtml += `<td>${currentQuestions[idx].q_no}</td><td><strong>${currentQuestions[idx].key}</strong></td>`;
+          } else {
+            tableHtml += `<td>-</td><td>-</td>`;
+          }
+        }
+        tableHtml += `</tr>`;
+      }
+      kTable.innerHTML = tableHtml;
+
+      currentQuestions.forEach(q => {
+        const solDiv = document.createElement("div");
+        solDiv.className = "sol-card";
+        solDiv.innerHTML = `<strong>Sol ${q.q_no}. [Correct Option (${q.key})]</strong>
+                            <div class="sol-body">${q.sol}</div>`;
+        sBox.appendChild(solDiv);
+      });
+
+      triggerKatex();
+    }
+
+    function triggerKatex() {
+      const target = document.getElementById("printSheet");
+      if (typeof renderMathInElement === "function") {
+        renderMathInElement(target, {
+          delimiters: [
+            { left: "$$", right: "$$", display: true },
+            { left: "$", right: "$", display: false }
+          ],
+          throwOnError: false
+        });
+      } else {
+        setTimeout(triggerKatex, 200);
+      }
+    }
+
+    window.addEventListener("DOMContentLoaded", () => {
+      generateNewBatch();
+      document.getElementById("inputInstitute").addEventListener("input", (e) => {
+        document.getElementById("dispInstitute").textContent = e.target.value.trim() || "Institute Name";
+      });
+      document.getElementById("inputDppTitle").addEventListener("input", (e) => {
+        document.getElementById("dispDppTitle").textContent = e.target.value.trim() || "DPP Title";
+      });
+    });
+  </script>
+</body>
+</html>

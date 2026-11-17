@@ -1,0 +1,2078 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full bg-slate-950 text-slate-100 overflow-hidden">
+<head>
+  <title>Eduscroll: Atomic Structure Feed | Mazhar's Lab</title>
+  <meta name="description" content="High-density atomic physics card swiper feed and rapid cognitive flashcard engine with live orbital visuals.">
+  <link rel="canonical" href="https://mazhar.in/labs/eduscroll-atoms/">
+  <meta name="lab-category" content="Eduscrolling & Micro-Feeds">
+  <meta name="lab-status" content="Playground">
+  <meta name="lab-hook" content="High-density atomic structure rapid swiper feed and cognitive flashcards.">
+  <meta name="lab-tech" content="Canvas, KaTeX, Tailwind, Audio / TTS">
+  <meta name="lab-tags" content="Eduscrolling, Atomic Physics, Micro Cards, Modern Physics">
+  <!-- Open Graph / SEO -->
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Eduscroll: Atomic Structure Feed | Mazhar's Lab">
+  <meta property="og:description" content="High-density atomic physics card swiper feed and rapid cognitive flashcard engine with live orbital visuals.">
+  <meta property="og:url" content="https://mazhar.in/labs/eduscroll-atoms/">
+  <!-- Schema.org WebApplication -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "Eduscroll: Atomic Structure Feed | Mazhar's Lab",
+    "description": "High-density atomic physics card swiper feed and rapid cognitive flashcard engine with live orbital visuals.",
+    "url": "https://mazhar.in/labs/eduscroll-atoms/",
+    "applicationCategory": "EducationalApplication",
+    "author": {
+      "@type": "Person",
+      "name": "Syed Mazhar Ali",
+      "url": "https://mazhar.in"
+    }
+  }
+  </script>
+
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+  <title>Eduscroll: Atomic Structure Feed | Mazhar's Lab</title>
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              cyan: '#38bdf8',
+              emerald: '#10b981',
+              amber: '#f59e0b',
+              rose: '#f43f5e',
+              violet: '#a855f7'
+            }
+          }
+        }
+      }
+    };
+  </script>
+
+  <!-- Google Fonts: Plus Jakarta Sans & JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+
+  <!-- KaTeX for crisp formula rendering -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js"></script>
+
+  <style>
+    :root {
+      --sat: env(safe-area-inset-top, 0px);
+      --sab: env(safe-area-inset-bottom, 0px);
+      --sal: env(safe-area-inset-left, 0px);
+      --sar: env(safe-area-inset-right, 0px);
+    }
+
+    * {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      -webkit-tap-highlight-color: transparent;
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      user-select: none;
+    }
+    .font-mono {
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    /* Fixed mobile frame container for perfect screen alignment (Zero-Overflow) */
+    .mobile-frame {
+      width: 100%;
+      max-width: 430px;
+      margin-left: auto;
+      margin-right: auto;
+      box-sizing: border-box;
+    }
+
+    /* Native continuous vertical snap scroll physics like TikTok / Reels */
+    #feed-viewport {
+      height: 100dvh;
+      height: -webkit-fill-available;
+      width: 100%;
+      overflow-y: scroll;
+      overflow-x: hidden;
+      scroll-snap-type: y mandatory;
+      -webkit-overflow-scrolling: touch;
+      overscroll-behavior-y: contain;
+      scrollbar-width: none;
+      box-sizing: border-box;
+    }
+    #feed-viewport::-webkit-scrollbar {
+      display: none;
+    }
+
+    .feed-slide {
+      max-height: 100dvh;
+      height: 100dvh;
+      height: -webkit-fill-available;
+      width: 100%;
+      scroll-snap-align: start;
+      scroll-snap-stop: always;
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding-top: calc(max(6px, var(--sat)) + 40px);
+      padding-bottom: calc(max(6px, var(--sab)) + 26px);
+      padding-left: max(10px, var(--sal));
+      padding-right: max(10px, var(--sar));
+      box-sizing: border-box;
+    }
+
+    /* TRULY TRANSLUCENT ACTION PILL & BUTTONS (No dark background, No blur) */
+    .translucent-pill {
+      background: rgba(255, 255, 255, 0.04) !important;
+      border: 1px solid rgba(255, 255, 255, 0.18) !important;
+      backdrop-filter: none !important;
+      -webkit-backdrop-filter: none !important;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3) !important;
+      border-radius: 1.25rem;
+    }
+
+    .translucent-btn {
+      background: rgba(255, 255, 255, 0.04) !important;
+      border: 1px solid rgba(255, 255, 255, 0.18) !important;
+      backdrop-filter: none !important;
+      -webkit-backdrop-filter: none !important;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3) !important;
+    }
+
+    /* Semi-transparent resting icons so underlying text is 100% visible */
+    .rate-icon {
+      opacity: 0.45;
+      font-size: 1.1rem;
+      filter: drop-shadow(0 1px 3px rgba(0, 0, 0, 0.85));
+      transition: opacity 0.2s ease, transform 0.2s ease;
+      display: inline-block;
+    }
+
+    .rate-btn {
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+      background: transparent;
+      border: 1px solid transparent;
+      border-radius: 0.75rem;
+    }
+
+    .rate-btn:hover .rate-icon,
+    .rate-btn:active .rate-icon {
+      opacity: 1;
+      transform: scale(1.2);
+    }
+
+    .active-rated .rate-icon {
+      opacity: 1;
+      transform: scale(1.1);
+    }
+
+    .rate-btn-perf-active {
+      background: rgba(16, 185, 129, 0.18) !important;
+      border: 1px solid rgba(16, 185, 129, 0.6) !important;
+      box-shadow: 0 0 12px rgba(16, 185, 129, 0.35) !important;
+    }
+    .rate-btn-prac-active {
+      background: rgba(245, 158, 11, 0.18) !important;
+      border: 1px solid rgba(245, 158, 11, 0.6) !important;
+      box-shadow: 0 0 12px rgba(245, 158, 11, 0.35) !important;
+    }
+    .rate-btn-need-active {
+      background: rgba(244, 63, 94, 0.18) !important;
+      border: 1px solid rgba(244, 63, 94, 0.6) !important;
+      box-shadow: 0 0 12px rgba(244, 63, 94, 0.35) !important;
+    }
+
+    .card-text {
+      text-shadow: 0 1px 3px rgba(0, 0, 0, 0.85);
+    }
+
+    .hide-scrollbar {
+      scrollbar-width: none;
+      -ms-overflow-style: none;
+    }
+    .hide-scrollbar::-webkit-scrollbar {
+      display: none;
+    }
+
+    /* TikTok Double-Tap Heart Burst Animation */
+    @keyframes heartPopFloating {
+      0% {
+        transform: translate(-50%, -50%) scale(0) rotate(-15deg);
+        opacity: 0;
+      }
+      35% {
+        transform: translate(-50%, -50%) scale(1.3) rotate(0deg);
+        opacity: 1;
+      }
+      70% {
+        transform: translate(-50%, -70%) scale(1.1) rotate(10deg);
+        opacity: 0.9;
+      }
+      100% {
+        transform: translate(-50%, -100%) scale(1.4) rotate(0deg);
+        opacity: 0;
+      }
+    }
+    .floating-heart {
+      position: absolute;
+      pointer-events: none;
+      z-index: 60;
+      animation: heartPopFloating 0.85s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+      color: #f43f5e;
+      filter: drop-shadow(0 0 18px rgba(244, 63, 94, 0.8));
+    }
+
+    @keyframes floatSwipe {
+      0%, 100% { transform: translateY(0); opacity: 0.7; }
+      50% { transform: translateY(-5px); opacity: 1; }
+    }
+    .swipe-hint-anim {
+      animation: floatSwipe 2s ease-in-out infinite;
+    }
+
+    @keyframes heartBurst {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.35); }
+      100% { transform: scale(1); }
+    }
+    .liked-pop {
+      animation: heartBurst 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+  </style>
+</head>
+
+<body class="h-full w-full bg-slate-950 text-slate-100 select-none overflow-hidden">
+
+  <!-- Top Progress Bar & Header HUD (Mobile-first, zero overflow) -->
+  <header class="fixed top-0 inset-x-0 z-50 pointer-events-none px-2.5 sm:px-3 pt-2 pb-1 flex flex-col gap-1.5 mobile-frame">
+    <!-- Progress bar -->
+    <div class="w-full h-1 bg-white/10 rounded-full overflow-hidden">
+      <div id="progress-bar" class="h-full bg-gradient-to-r from-violet-400 via-brand-cyan to-brand-emerald transition-all duration-300" style="width: 3%;"></div>
+    </div>
+
+    <!-- Topbar Controls -->
+    <div class="flex items-center justify-between gap-1.5 pointer-events-auto w-full min-w-0">
+      <!-- Left: Home Portal Link + Topic Badge + Sound -->
+      <div class="flex items-center gap-1.5 flex-shrink-0">
+        <a href="index.html" class="w-6 h-6 rounded-full translucent-btn flex items-center justify-center text-[11px] text-slate-300 hover:text-cyan-400 transition active:scale-90 shadow" title="Back to All Chapters">
+          <i class="fas fa-home"></i>
+        </a>
+        <span id="hud-topic-badge" class="px-2 py-0.5 rounded-full text-[10px] font-extrabold uppercase tracking-wider bg-violet-500/20 text-violet-300 border border-violet-500/30 flex items-center gap-1 shadow-md shadow-violet-950/40">
+          <span class="w-1.5 h-1.5 rounded-full bg-violet-400 animate-pulse"></span>
+          ATOMS
+        </span>
+        <button id="shuffle-btn" onclick="shuffleFeed()" class="w-6 h-6 rounded-full translucent-btn flex items-center justify-center text-[10px] text-slate-300 hover:text-violet-400 transition active:scale-90 shadow" title="Shuffle 50 Cards">
+          <i class="fas fa-random"></i>
+        </button>
+        <button id="sound-btn" class="w-6 h-6 rounded-full translucent-btn flex items-center justify-center text-[10px] text-slate-300 hover:text-cyan-400 transition active:scale-90 shadow" title="Toggle Sound">
+          <i id="sound-icon" class="fas fa-volume-up"></i>
+        </button>
+      </div>
+
+      <!-- Right: Stats & Progress Indicator -->
+      <button id="open-stats-btn" class="px-2 py-0.5 rounded-full translucent-btn text-[11px] font-mono font-bold flex items-center gap-1.5 text-slate-200 shadow hover:border-slate-500 transition active:scale-95 flex-shrink-0">
+        <span class="text-emerald-400 flex items-center gap-0.5 text-[10px]">🔥<span id="hud-perfect">0</span></span>
+        <span class="text-amber-400 flex items-center gap-0.5 text-[10px]">⚡<span id="hud-practicing">0</span></span>
+        <span class="text-rose-400 flex items-center gap-0.5 text-[10px]">🧠<span id="hud-need">0</span></span>
+        <span class="text-slate-400 font-normal pl-1 border-l border-slate-700/80 text-[10px] whitespace-nowrap"><span id="hud-index">1</span>/<span id="hud-total">50</span></span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Continuous Frictionless Vertical Scroll Feed -->
+  <main id="feed-viewport" class="w-full mobile-frame relative">
+    <div id="loading-spinner" class="h-full flex flex-col items-center justify-center gap-3 text-slate-400">
+      <i class="fas fa-circle-notch fa-spin text-2xl text-violet-400"></i>
+      <span class="text-xs font-mono tracking-wider">Loading Atoms curriculum data...</span>
+    </div>
+  </main>
+
+  <!-- Floating Toast for Share and Actions -->
+  <div id="toast" class="fixed top-12 left-1/2 -translate-x-1/2 z-50 pointer-events-none opacity-0 transition-all duration-300 transform scale-90 px-4 py-1.5 rounded-full bg-slate-900/90 border border-violet-500/40 text-violet-300 text-xs font-semibold shadow-2xl flex items-center gap-2">
+    <i class="fas fa-check-circle text-emerald-400"></i>
+    <span id="toast-msg">Concept copied to clipboard!</span>
+  </div>
+
+  <!-- Desktop Floating Navigation Controls -->
+  <div class="fixed right-6 bottom-8 z-40 hidden md:flex flex-col gap-2 pointer-events-auto">
+    <button onclick="scrollByDelta(-1)" class="w-11 h-11 rounded-full translucent-btn hover:bg-slate-800/80 transition flex items-center justify-center text-slate-200 active:scale-90 shadow-xl" title="Previous Card (Up Arrow / k)">
+      <i class="fas fa-chevron-up text-sm"></i>
+    </button>
+    <button onclick="scrollByDelta(1)" class="w-11 h-11 rounded-full translucent-btn hover:bg-slate-800/80 transition flex items-center justify-center text-slate-200 active:scale-90 shadow-xl" title="Next Card (Down Arrow / j)">
+      <i class="fas fa-chevron-down text-sm"></i>
+    </button>
+  </div>
+
+  <!-- Stats, Topics & Leitner Review Modal -->
+  <div id="stats-modal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-md hidden opacity-0 transition-opacity duration-300 flex items-end justify-center">
+    <div class="w-full max-w-md bg-slate-900 border-t border-slate-800 rounded-t-3xl p-6 shadow-2xl space-y-4 max-h-[85vh] overflow-y-auto hide-scrollbar">
+      <div class="w-12 h-1 bg-slate-700 rounded-full mx-auto mb-2"></div>
+      <div class="flex items-center justify-between">
+        <h3 id="modal-topic-title" class="text-base font-bold text-white flex items-center gap-2">
+          <i class="fas fa-atom text-violet-400"></i> Atoms Mastery
+        </h3>
+        <button onclick="closeStatsModal()" class="text-slate-400 hover:text-white p-1 active:scale-90">
+          <i class="fas fa-times text-lg"></i>
+        </button>
+      </div>
+
+      <!-- Topics List from JSON -->
+      <div id="modal-topics-section" class="space-y-1.5">
+        <div class="text-[10px] uppercase font-bold tracking-wider text-slate-400 flex items-center justify-between">
+          <span>Curriculum Topic</span>
+          <span id="modal-curriculum-name" class="text-violet-400 font-mono">NEET / JEE Physics</span>
+        </div>
+        <div id="modal-topics-list" class="space-y-1.5"></div>
+      </div>
+
+      <!-- Leitner Stats Grid -->
+      <div class="grid grid-cols-3 gap-2.5 text-center">
+        <div class="p-3 rounded-2xl bg-emerald-950/40 border border-emerald-500/30">
+          <div id="modal-perf" class="text-2xl font-black text-emerald-400">0</div>
+          <div class="text-[11px] text-emerald-300/80 font-bold uppercase mt-1">Mastered</div>
+        </div>
+        <div class="p-3 rounded-2xl bg-amber-950/40 border border-amber-500/30">
+          <div id="modal-prac" class="text-2xl font-black text-amber-400">0</div>
+          <div class="text-[11px] text-amber-300/80 font-bold uppercase mt-1">Practicing</div>
+        </div>
+        <div class="p-3 rounded-2xl bg-rose-950/40 border border-rose-500/30">
+          <div id="modal-need" class="text-2xl font-black text-rose-400">0</div>
+          <div class="text-[11px] text-rose-300/80 font-bold uppercase mt-1">Reviewing</div>
+        </div>
+      </div>
+
+      <!-- Cards Marked for Review -->
+      <div class="space-y-1.5">
+        <span class="text-[10px] uppercase font-bold tracking-wider text-slate-400 block">Queue for Review</span>
+        <div class="space-y-2 max-h-40 overflow-y-auto pr-1 hide-scrollbar" id="review-list"></div>
+      </div>
+
+      <div class="flex gap-2">
+        <a href="index.html" class="flex-1 py-3 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 text-center font-bold text-sm transition active:scale-[0.98]">
+          <i class="fas fa-home mr-1"></i> Chapters Hub
+        </a>
+        <button onclick="closeStatsModal()" class="flex-1 py-3 rounded-xl bg-violet-600 hover:bg-violet-500 text-white font-bold text-sm transition active:scale-[0.98]">
+          Continue
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    /* Lightweight synthesized Web Audio API sound effects */
+    class HapticsAudio {
+      constructor() {
+        this.ctx = null;
+        this.enabled = true;
+      }
+      init() {
+        if (!this.ctx) {
+          const AudioCtx = window.AudioContext || window.webkitAudioContext;
+          if (AudioCtx) this.ctx = new AudioCtx();
+        }
+        if (this.ctx && this.ctx.state === 'suspended') {
+          this.ctx.resume();
+        }
+      }
+      toggle() {
+        this.enabled = !this.enabled;
+        return this.enabled;
+      }
+      playPop() {
+        if (!this.enabled) return;
+        this.init();
+        if (!this.ctx) return;
+        const now = this.ctx.currentTime;
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        osc.frequency.setValueAtTime(480, now);
+        osc.frequency.exponentialRampToValueAtTime(840, now + 0.05);
+        gain.gain.setValueAtTime(0.08, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.05);
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+        osc.start(now);
+        osc.stop(now + 0.05);
+      }
+      playCorrect() {
+        if (!this.enabled) return;
+        this.init();
+        if (!this.ctx) return;
+        const now = this.ctx.currentTime;
+        [587.33, 739.99, 880.00].forEach((f, i) => {
+          const osc = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+          osc.type = 'triangle';
+          osc.frequency.setValueAtTime(f, now + i * 0.06);
+          gain.gain.setValueAtTime(0.15, now + i * 0.06);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + i * 0.06 + 0.18);
+          osc.connect(gain);
+          gain.connect(this.ctx.destination);
+          osc.start(now + i * 0.06);
+          osc.stop(now + i * 0.06 + 0.2);
+        });
+      }
+      playError() {
+        if (!this.enabled) return;
+        this.init();
+        if (!this.ctx) return;
+        const now = this.ctx.currentTime;
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        osc.type = 'sawtooth';
+        osc.frequency.setValueAtTime(220, now);
+        osc.frequency.linearRampToValueAtTime(130, now + 0.15);
+        gain.gain.setValueAtTime(0.15, now);
+        gain.gain.exponentialRampToValueAtTime(0.01, now + 0.15);
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+        osc.start(now);
+        osc.stop(now + 0.16);
+      }
+      playRate() {
+        if (!this.enabled) return;
+        this.init();
+        if (!this.ctx) return;
+        const now = this.ctx.currentTime;
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(920, now);
+        gain.gain.setValueAtTime(0.12, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.2);
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+        osc.start(now);
+        osc.stop(now + 0.2);
+      }
+    }
+    const audio = new HapticsAudio();
+  </script>
+
+  <script>
+    /* Global Application State */
+    let CARDS = [];
+    let TOPICS = [];
+    let CURRICULUM_DATA = null;
+
+    const feedState = {
+      ratings: {},
+      likes: {},
+      bookmarks: {},
+      simInstances: {},
+      currentIndex: 0
+    };
+
+    const feedViewport = document.getElementById('feed-viewport');
+
+    function showToast(msg) {
+      const toast = document.getElementById('toast');
+      const msgEl = document.getElementById('toast-msg');
+      if (toast && msgEl) {
+        msgEl.innerText = msg;
+        toast.classList.remove('opacity-0', 'scale-90');
+        toast.classList.add('opacity-100', 'scale-100');
+        setTimeout(() => {
+          toast.classList.remove('opacity-100', 'scale-100');
+          toast.classList.add('opacity-0', 'scale-90');
+        }, 1800);
+      }
+    }
+
+    async function loadCurriculumData() {
+      try {
+        const response = await fetch('atoms_data.json');
+        if (!response.ok) {
+          throw new Error(`HTTP ${response.status} when fetching atoms_data.json`);
+        }
+        const data = await response.json();
+        initCurriculum(data);
+      } catch (err) {
+        console.warn('Direct fetch of atoms_data.json failed, checking fallback...', err);
+        const fallbackScript = document.getElementById('embedded-data-fallback');
+        if (fallbackScript) {
+          try {
+            const data = JSON.parse(fallbackScript.textContent);
+            initCurriculum(data);
+            return;
+          } catch (e) {
+            console.error('Failed to parse fallback data:', e);
+          }
+        }
+      }
+    }
+
+    function initCurriculum(data) {
+      CURRICULUM_DATA = data;
+      TOPICS = data.topics || [];
+      CARDS = data.cards || [];
+
+      if (TOPICS.length > 0) {
+        const activeTopic = TOPICS[0];
+        const badgeEl = document.getElementById('hud-topic-badge');
+        if (badgeEl && activeTopic.badge) {
+          badgeEl.innerHTML = `
+            <span class="w-1.5 h-1.5 rounded-full bg-violet-400 animate-pulse"></span>
+            ${activeTopic.badge}
+          `;
+        }
+
+        const modalTopicTitle = document.getElementById('modal-topic-title');
+        if (modalTopicTitle && activeTopic.title) {
+          modalTopicTitle.innerHTML = `<i class="fas fa-atom text-violet-400"></i> ${activeTopic.title} Mastery`;
+        }
+
+        const modalCurriculumName = document.getElementById('modal-curriculum-name');
+        if (modalCurriculumName && data.curriculum) {
+          modalCurriculumName.innerText = data.curriculum;
+        }
+
+        document.title = `Eduscroll: ${data.curriculum || 'NEET/JEE'} ${activeTopic.title || 'Atoms'} (${CARDS.length} Cards)`;
+      }
+
+      document.getElementById('hud-total').innerText = CARDS.length;
+
+      renderTopicsModalList();
+      renderEntireFeed();
+      setupSlideObservers();
+    }
+
+    function renderTopicsModalList() {
+      const container = document.getElementById('modal-topics-list');
+      if (!container || TOPICS.length === 0) return;
+
+      container.innerHTML = TOPICS.map((t, idx) => `
+        <div class="p-3 rounded-xl bg-slate-800/80 border ${idx === 0 ? 'border-violet-500/40 bg-violet-950/20' : 'border-slate-700'} flex items-center justify-between">
+          <div class="flex items-center gap-2.5">
+            <span class="w-2 h-2 rounded-full ${idx === 0 ? 'bg-violet-400 animate-pulse' : 'bg-slate-500'}"></span>
+            <div>
+              <span class="text-xs font-bold text-white block">${t.title}</span>
+              <span class="text-[10px] text-slate-400">${t.grade || 'Class 12'} • ${t.totalCards || CARDS.length} Cards</span>
+            </div>
+          </div>
+          <span class="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded ${idx === 0 ? 'bg-violet-500/20 text-violet-300' : 'bg-slate-700 text-slate-300'}">
+            ${idx === 0 ? 'Active' : 'Locked'}
+          </span>
+        </div>
+      `).join('');
+    }
+
+    function createCardSlide(c, index) {
+      let contentMarkup = '';
+
+      if (c.type === 'definition') {
+        contentMarkup = `
+          <div class="my-auto space-y-3 pr-1.5 sm:pr-2">
+            <div class="p-4 rounded-2xl bg-slate-900/90 border border-slate-800 shadow-inner">
+              <span class="text-[10px] uppercase font-bold tracking-wider text-violet-400 block mb-1">Core Principle</span>
+              <p class="text-xs sm:text-sm font-semibold text-slate-100 leading-snug card-text">${c.core}</p>
+            </div>
+            <div class="p-3 rounded-xl bg-violet-950/20 border border-violet-500/20 text-center">
+              <div class="katex-box text-sm sm:text-base font-mono text-violet-300" data-formula="${c.latex}"></div>
+            </div>
+            <div class="p-3 rounded-xl bg-slate-800/40 border border-slate-700/60 flex items-start gap-2.5">
+              <div class="w-6 h-6 rounded-full bg-cyan-500/20 flex-shrink-0 flex items-center justify-center text-cyan-400 text-xs mt-0.5">
+                <i class="fas fa-lightbulb text-[10px]"></i>
+              </div>
+              <div class="min-w-0">
+                <span class="text-[10px] font-bold text-cyan-300 block">Intuitive Analogy</span>
+                <p class="text-xs text-slate-300 leading-relaxed card-text">${c.analogy}</p>
+              </div>
+            </div>
+            <div class="p-3 rounded-xl bg-emerald-950/30 border border-emerald-500/30 text-xs text-emerald-300 font-medium card-text">
+              💡 <strong>Key Takeaway:</strong> ${c.takeaway}
+            </div>
+          </div>
+        `;
+      } else if (c.type === 'true_false') {
+        contentMarkup = `
+          <div class="my-auto space-y-3 pr-1.5 sm:pr-2">
+            <div class="p-4 sm:p-5 rounded-2xl bg-slate-900/90 border border-slate-800 shadow-lg relative overflow-hidden">
+              <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-rose-500/20 text-rose-400 text-[10px] font-bold uppercase tracking-wider mb-2">
+                <i class="fas fa-triangle-exclamation"></i> Conceptual Trap
+              </span>
+              <h4 class="text-xs sm:text-sm font-semibold text-slate-100 leading-relaxed card-text">${c.statement}</h4>
+            </div>
+            <div class="grid grid-cols-2 gap-2.5 pr-10 sm:pr-0" id="tf-actions-${c.id}">
+              <button onclick="handleTFAnswer(${c.id}, true)" class="tf-btn py-3 sm:py-3.5 rounded-xl border border-slate-700 bg-slate-800/80 hover:bg-slate-700 transition font-bold text-xs sm:text-sm text-slate-200 flex items-center justify-center gap-2 active:scale-95 shadow">
+                <i class="fas fa-check text-emerald-400"></i> True
+              </button>
+              <button onclick="handleTFAnswer(${c.id}, false)" class="tf-btn py-3 sm:py-3.5 rounded-xl border border-slate-700 bg-slate-800/80 hover:bg-slate-700 transition font-bold text-xs sm:text-sm text-slate-200 flex items-center justify-center gap-2 active:scale-95 shadow">
+                <i class="fas fa-times text-rose-400"></i> False
+              </button>
+            </div>
+            <div id="tf-feed-${c.id}" class="hidden p-3 rounded-xl border text-xs leading-relaxed transition-all card-text"></div>
+          </div>
+        `;
+      } else if (c.type === 'formula_xray') {
+        contentMarkup = `
+          <div class="my-auto space-y-3 pr-1.5 sm:pr-2">
+            <div class="p-3 rounded-xl bg-slate-900/80 border border-slate-800 text-center">
+              <div class="katex-box text-sm sm:text-base font-mono text-cyan-300 mb-1" data-formula="${c.latex}"></div>
+              <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400">${c.title}</span>
+            </div>
+            <p class="text-xs sm:text-sm font-semibold text-slate-200 px-0.5 card-text">${c.question}</p>
+            <div class="space-y-2" id="xray-opts-${c.id}">
+              ${c.options.map((opt, i) => `
+                <button onclick="handleXRay(${c.id}, ${i}, ${i === c.correct})" class="xray-btn w-full text-left pl-3.5 pr-10 py-2.5 sm:py-3 rounded-xl border border-slate-700/70 bg-slate-800/60 hover:bg-slate-700 transition text-xs sm:text-sm font-medium text-slate-200 flex items-center justify-between active:scale-[0.98]">
+                  <span class="card-text pr-2 leading-tight">${opt}</span>
+                  <i class="far fa-circle text-slate-500 text-xs status-icon flex-shrink-0"></i>
+                </button>
+              `).join('')}
+            </div>
+            <div id="xray-feed-${c.id}" class="hidden p-3 rounded-xl border text-xs leading-relaxed card-text"></div>
+          </div>
+        `;
+      } else if (c.type === 'spot_error') {
+        contentMarkup = `
+          <div class="my-auto space-y-2.5 pr-1.5 sm:pr-2">
+            <div class="p-3 rounded-xl bg-slate-900/90 border border-slate-800">
+              <span class="text-[10px] font-bold text-amber-400 uppercase tracking-wider flex items-center gap-1.5 mb-1">
+                <i class="fas fa-bug"></i> Spot the Derivation Flaw
+              </span>
+              <p class="text-xs sm:text-sm font-medium text-slate-200 card-text">${c.prompt}</p>
+            </div>
+            <div class="space-y-2" id="error-steps-${c.id}">
+              ${c.steps.map((st, i) => `
+                <div onclick="handleStepPick(${c.id}, ${i}, ${st.err})" class="step-btn cursor-pointer pl-3 pr-10 py-2.5 rounded-xl border border-slate-700/80 bg-slate-800/60 hover:border-slate-500 transition flex items-center justify-between active:scale-[0.99]">
+                  <div class="flex items-center gap-2 min-w-0 pr-2">
+                    <span class="w-5 h-5 rounded-full bg-slate-700 text-slate-300 font-mono text-[10px] flex items-center justify-center font-bold flex-shrink-0">${i+1}</span>
+                    <span class="katex-box text-xs sm:text-sm font-mono text-slate-200 truncate" data-formula="${st.line}"></span>
+                  </div>
+                  <i class="far fa-circle text-slate-500 text-xs status-step flex-shrink-0"></i>
+                </div>
+              `).join('')}
+            </div>
+            <div id="error-feed-${c.id}" class="hidden p-3 rounded-xl border text-xs leading-relaxed card-text"></div>
+          </div>
+        `;
+      } else if (c.type === 'canvas_sim') {
+        contentMarkup = `
+          <div class="my-auto space-y-2.5 pr-1.5 sm:pr-2">
+            <p class="text-xs font-semibold text-slate-200 card-text">${c.prompt}</p>
+            <div class="w-full aspect-[16/10] bg-slate-950 rounded-2xl border border-slate-800 overflow-hidden relative shadow-inner">
+              <canvas id="canvas-${c.id}" class="w-full h-full block"></canvas>
+              <div class="absolute top-2 right-2 px-2 py-0.5 rounded-md bg-slate-900/80 border border-slate-700 text-[10px] font-mono text-violet-300" id="canvas-val-${c.id}">
+                ${c.defaultVal} ${c.unit}
+              </div>
+            </div>
+            <div class="p-2.5 rounded-xl bg-slate-900/80 border border-slate-800 flex items-center gap-3 pr-2">
+              <input type="range" id="slider-${c.id}" min="${c.min}" max="${c.max}" value="${c.defaultVal}" step="${(c.max - c.min)/50}" oninput="handleSimSlider(${c.id}, this.value)" class="flex-1 accent-violet-400 cursor-pointer" />
+            </div>
+            <div class="p-2.5 rounded-xl bg-violet-950/30 border border-violet-500/30 text-xs text-violet-200 card-text">
+              ✨ <strong>Insight:</strong> ${c.takeaway}
+            </div>
+          </div>
+        `;
+      } else if (c.type === 'binary_sorter') {
+        contentMarkup = `
+          <div class="my-auto space-y-3 pr-1.5 sm:pr-2">
+            <p class="text-xs font-semibold text-slate-300 text-center card-text">${c.instruction}</p>
+            <div id="sorter-card-${c.id}" class="p-4 sm:p-5 rounded-2xl bg-gradient-to-br from-slate-900 to-slate-800 border-2 border-violet-500/40 text-center shadow-lg transition-all duration-300 min-h-[85px] flex flex-col justify-center items-center">
+              <span class="text-[10px] uppercase font-bold tracking-widest text-slate-400 mb-0.5" id="sort-step-${c.id}">Item 1 of ${c.items.length}</span>
+              <h5 class="text-xs sm:text-sm font-bold text-white card-text" id="sort-label-${c.id}">${c.items[0].name}</h5>
+            </div>
+            <div class="grid grid-cols-2 gap-2.5 pr-1">
+              <button onclick="handleSortChoice(${c.id}, 0)" class="p-3 rounded-xl border border-violet-500/30 bg-violet-950/20 hover:bg-violet-900/40 text-left active:scale-95 transition">
+                <span class="text-[10px] font-bold text-violet-400 uppercase block">Bucket A</span>
+                <span class="text-xs font-bold text-slate-100">${c.buckets[0]}</span>
+              </button>
+              <button onclick="handleSortChoice(${c.id}, 1)" class="p-3 rounded-xl border border-cyan-500/30 bg-cyan-950/20 hover:bg-cyan-900/40 text-left active:scale-95 transition">
+                <span class="text-[10px] font-bold text-cyan-400 uppercase block">Bucket B</span>
+                <span class="text-xs font-bold text-slate-100">${c.buckets[1]}</span>
+              </button>
+            </div>
+            <div id="sort-feed-${c.id}" class="hidden p-3 rounded-xl border text-xs text-center font-medium card-text"></div>
+          </div>
+        `;
+      }
+
+      return `
+        <article class="feed-slide" data-index="${index}" data-card-id="${c.id}" ondblclick="handleCardDoubleTap(event, ${c.id})">
+          <div class="flex-1 flex flex-col justify-between w-full relative z-10 min-h-0">
+            <!-- Top Card Topic & Type Badge -->
+            <div class="flex items-center justify-between pb-1.5 border-b border-slate-800/80 gap-2 min-w-0">
+              <span class="px-2 py-0.5 rounded-full text-[10px] font-bold font-mono tracking-wider bg-slate-800/90 text-slate-300 border border-slate-700/60 truncate min-w-0">
+                #${c.id} • ${c.topic}
+              </span>
+              <span class="text-[10px] uppercase tracking-widest font-extrabold text-slate-400 flex-shrink-0">${c.type.replace('_', ' ')}</span>
+            </div>
+
+            <!-- Card Interactive Body -->
+            <div class="flex-1 flex flex-col py-1 overflow-y-auto hide-scrollbar min-h-0">
+              ${contentMarkup}
+            </div>
+
+            <!-- TikTok / Reels Style Bottom Audio Marquee & Swipe Indicator -->
+            <div class="pt-1.5 flex items-center justify-between text-[11px] text-slate-400/90 pointer-events-none px-1">
+              <div class="flex items-center gap-2 min-w-0 pr-12">
+                <i class="fas fa-compact-disc text-violet-400 text-xs animate-spin" style="animation-duration: 4s;"></i>
+                <span class="truncate font-mono text-[10px] text-slate-300">Grade 12 Physics • ${c.topic}</span>
+              </div>
+              <div class="flex items-center gap-1 text-[10px] text-slate-400 flex-shrink-0 swipe-hint-anim">
+                <i class="fas fa-chevron-up text-[9px] text-violet-400"></i>
+                <span>Swipe</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- TRULY TRANSLUCENT TIKTOK-STYLE ACTION COLUMN -->
+          <aside class="absolute right-2 bottom-8 sm:bottom-9 z-30 flex flex-col items-center gap-2.5 pointer-events-auto">
+            <!-- Like Button -->
+            <button onclick="toggleLike(${c.id})" class="group flex flex-col items-center gap-0.5 active:scale-75 transition" title="Like Card (or Double Tap)">
+              <div id="like-icon-wrap-${c.id}" class="w-9 h-9 rounded-full translucent-btn flex items-center justify-center text-slate-300/80 group-hover:text-rose-400 shadow-md">
+                <i class="fas fa-heart text-sm rate-icon"></i>
+              </div>
+              <span class="text-[9px] font-bold text-slate-400" id="like-count-${c.id}">0</span>
+            </button>
+
+            <!-- Translucent Rating Pill -->
+            <div class="flex flex-col gap-1 p-1 rounded-2xl translucent-pill">
+              <button onclick="setCardRating(${c.id}, 'perfect')" id="rate-btn-perf-${c.id}" class="rate-btn w-8 h-8 flex items-center justify-center active:scale-90" title="🔥 Mastered">
+                <span class="rate-icon">🔥</span>
+              </button>
+              <button onclick="setCardRating(${c.id}, 'practicing')" id="rate-btn-prac-${c.id}" class="rate-btn w-8 h-8 flex items-center justify-center active:scale-90" title="⚡ Practicing">
+                <span class="rate-icon">⚡</span>
+              </button>
+              <button onclick="setCardRating(${c.id}, 'need')" id="rate-btn-need-${c.id}" class="rate-btn w-8 h-8 flex items-center justify-center active:scale-90" title="🧠 Reviewing">
+                <span class="rate-icon">🧠</span>
+              </button>
+            </div>
+
+            <!-- Bookmark Button -->
+            <button onclick="toggleBookmark(${c.id})" class="w-9 h-9 rounded-full translucent-btn flex items-center justify-center text-slate-300/80 hover:text-cyan-400 active:scale-75 transition shadow-md" title="Bookmark">
+              <i id="bookmark-icon-${c.id}" class="far fa-bookmark text-xs rate-icon"></i>
+            </button>
+
+            <!-- Share Button -->
+            <button onclick="handleShareCard(${c.id})" class="w-9 h-9 rounded-full translucent-btn flex items-center justify-center text-slate-300/80 hover:text-cyan-400 active:scale-75 transition shadow-md" title="Share Concept">
+              <i class="fas fa-share text-xs rate-icon"></i>
+            </button>
+          </aside>
+        </article>
+      `;
+    }
+
+    function renderEntireFeed() {
+      feedViewport.innerHTML = CARDS.map((c, idx) => createCardSlide(c, idx)).join('');
+      renderAllFormulas();
+      initCanvasSimulations();
+    }
+
+    function renderAllFormulas() {
+      if (typeof katex === 'undefined') return;
+      document.querySelectorAll('.katex-box').forEach(el => {
+        const formula = el.getAttribute('data-formula');
+        if (formula) {
+          try {
+            katex.render(formula, el, { throwOnError: false, displayMode: false });
+          } catch (e) {
+            el.innerText = formula;
+          }
+        }
+      });
+    }
+  </script>
+
+  <script>
+    /* Canvas Physics Simulations: Alpha Scattering & Bohr Orbits */
+    function initCanvasSimulations() {
+      setupAlphaScatterSim(5);
+      setupBohrOrbitSim(12);
+    }
+
+    function setupAlphaScatterSim(cardId) {
+      const canvas = document.getElementById(`canvas-${cardId}`);
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+
+      function resize() {
+        const rect = canvas.getBoundingClientRect();
+        if (rect.width === 0) return;
+        canvas.width = rect.width * (window.devicePixelRatio || 1);
+        canvas.height = rect.height * (window.devicePixelRatio || 1);
+        ctx.scale(window.devicePixelRatio || 1, window.devicePixelRatio || 1);
+      }
+      resize();
+
+      let bVal = 20; // impact parameter
+      let t = 0;
+
+      function loop() {
+        const rect = canvas.getBoundingClientRect();
+        const w = rect.width;
+        const h = rect.height;
+        if (w === 0) return;
+        ctx.clearRect(0, 0, w, h);
+
+        const cx = w / 2;
+        const cy = h / 2;
+
+        // Gold nucleus (+79e)
+        ctx.beginPath();
+        ctx.arc(cx, cy, 14, 0, Math.PI * 2);
+        ctx.fillStyle = '#f59e0b';
+        ctx.fill();
+        ctx.strokeStyle = '#fbbf24';
+        ctx.lineWidth = 2;
+        ctx.stroke();
+
+        ctx.font = '10px Plus Jakarta Sans, sans-serif';
+        ctx.fillStyle = '#ffffff';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText('+79e', cx, cy);
+
+        // Alpha particle trajectories
+        t = (t + 0.02) % 1;
+        const startX = 20;
+        const currentX = startX + t * (w - 40);
+
+        // Hyperbolic path approximation
+        const normB = (bVal - 30) * 0.8;
+        const rDist = Math.hypot(currentX - cx, normB);
+        const deflection = (1 / Math.max(0.1, rDist * 0.05)) * (normB >= 0 ? 1 : -1);
+        const currentY = cy + normB + (currentX > cx ? deflection * 12 : 0);
+
+        // Trajectory line
+        ctx.beginPath();
+        ctx.moveTo(startX, cy + normB);
+        ctx.quadraticCurveTo(cx - 20, cy + normB, cx + 10, cy + normB + deflection * 6);
+        ctx.lineTo(w - 20, cy + normB + deflection * 22);
+        ctx.strokeStyle = 'rgba(168, 85, 247, 0.4)';
+        ctx.setLineDash([3, 3]);
+        ctx.stroke();
+        ctx.setLineDash([]);
+
+        // Animated Alpha Particle
+        ctx.beginPath();
+        ctx.arc(currentX, currentY, 5, 0, Math.PI * 2);
+        ctx.fillStyle = '#38bdf8';
+        ctx.fill();
+
+        ctx.font = '10px JetBrains Mono, monospace';
+        ctx.fillStyle = '#94a3b8';
+        ctx.textAlign = 'left';
+        ctx.fillText(`b = ${bVal} fm`, 12, 18);
+
+        requestAnimationFrame(loop);
+      }
+      loop();
+
+      feedState.simInstances[cardId] = {
+        setVal: (v) => { bVal = parseFloat(v); },
+        resize
+      };
+    }
+
+    function setupBohrOrbitSim(cardId) {
+      const canvas = document.getElementById(`canvas-${cardId}`);
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+
+      function resize() {
+        const rect = canvas.getBoundingClientRect();
+        if (rect.width === 0) return;
+        canvas.width = rect.width * (window.devicePixelRatio || 1);
+        canvas.height = rect.height * (window.devicePixelRatio || 1);
+        ctx.scale(window.devicePixelRatio || 1, window.devicePixelRatio || 1);
+      }
+      resize();
+
+      let nLevel = 3;
+      let angle = 0;
+      let waveT = 0;
+
+      function loop() {
+        const rect = canvas.getBoundingClientRect();
+        const w = rect.width;
+        const h = rect.height;
+        if (w === 0) return;
+        ctx.clearRect(0, 0, w, h);
+
+        const cx = w / 2;
+        const cy = h / 2;
+
+        // Nucleus (Proton)
+        ctx.beginPath();
+        ctx.arc(cx, cy, 10, 0, Math.PI * 2);
+        ctx.fillStyle = '#f43f5e';
+        ctx.fill();
+        ctx.strokeStyle = '#fb7185';
+        ctx.lineWidth = 1.5;
+        ctx.stroke();
+
+        ctx.font = '8px Plus Jakarta Sans, sans-serif';
+        ctx.fillStyle = '#ffffff';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText('p⁺', cx, cy);
+
+        // Allowed Bohr Orbits (n=1, 2, 3, 4)
+        const baseR = 24;
+        [1, 2, 3, 4].forEach(level => {
+          const r = baseR + (level - 1) * 22;
+          ctx.beginPath();
+          ctx.arc(cx, cy, r, 0, Math.PI * 2);
+          ctx.strokeStyle = level === nLevel ? 'rgba(168, 85, 247, 0.7)' : 'rgba(255, 255, 255, 0.12)';
+          ctx.lineWidth = level === nLevel ? 2 : 1;
+          ctx.setLineDash([4, 4]);
+          ctx.stroke();
+          ctx.setLineDash([]);
+        });
+
+        // Orbiting electron
+        const activeR = baseR + (nLevel - 1) * 22;
+        const speed = 0.05 / Math.pow(nLevel, 0.8);
+        angle += speed;
+
+        const ex = cx + Math.cos(angle) * activeR;
+        const ey = cy + Math.sin(angle) * activeR;
+
+        ctx.beginPath();
+        ctx.arc(ex, ey, 5, 0, Math.PI * 2);
+        ctx.fillStyle = '#38bdf8';
+        ctx.fill();
+
+        // Emitted photon wave packet escaping outward
+        waveT = (waveT + 0.02) % 1;
+        const photonR = activeR + waveT * (w * 0.4);
+        const px = cx + Math.cos(angle - 0.6) * photonR;
+        const py = cy + Math.sin(angle - 0.6) * photonR;
+
+        ctx.beginPath();
+        ctx.arc(px, py, 3.5, 0, Math.PI * 2);
+        ctx.fillStyle = '#10b981';
+        ctx.fill();
+
+        const deltaE = (13.6 * (1 - 1 / (nLevel * nLevel))).toFixed(2);
+        ctx.font = '10px JetBrains Mono, monospace';
+        ctx.fillStyle = '#a855f7';
+        ctx.textAlign = 'left';
+        ctx.fillText(`n=${nLevel} → n=1 | ΔE = ${deltaE} eV`, 12, 18);
+
+        requestAnimationFrame(loop);
+      }
+      loop();
+
+      feedState.simInstances[cardId] = {
+        setVal: (v) => { nLevel = Math.round(parseFloat(v)); },
+        resize
+      };
+    }
+
+    function handleSimSlider(cardId, val) {
+      audio.playPop();
+      const readOut = document.getElementById(`canvas-val-${cardId}`);
+      const card = CARDS.find(c => c.id === cardId);
+      if (readOut && card) {
+        readOut.innerText = `${val} ${card.unit}`;
+      }
+      if (feedState.simInstances[cardId]) {
+        feedState.simInstances[cardId].setVal(val);
+      }
+    }
+  </script>
+
+  <script>
+    /* Quiz Interactions */
+    function handleTFAnswer(cardId, pickBool) {
+      const card = CARDS.find(c => c.id === cardId);
+      const isCorrect = pickBool === card.answer;
+      const feedback = document.getElementById(`tf-feed-${cardId}`);
+      const actionRow = document.getElementById(`tf-actions-${cardId}`);
+
+      if (isCorrect) audio.playCorrect();
+      else audio.playError();
+
+      actionRow.querySelectorAll('.tf-btn').forEach(btn => btn.classList.add('opacity-40', 'pointer-events-none'));
+      feedback.classList.remove('hidden');
+
+      if (isCorrect) {
+        feedback.className = 'p-3 rounded-xl border border-emerald-500/40 bg-emerald-950/40 text-emerald-200 text-xs leading-relaxed card-text';
+        feedback.innerHTML = `<strong>🎉 Nailed it!</strong> ${card.explanation}`;
+      } else {
+        feedback.className = 'p-3 rounded-xl border border-rose-500/40 bg-rose-950/40 text-rose-200 text-xs leading-relaxed card-text';
+        feedback.innerHTML = `<strong>⚠️ Classic Trap!</strong> ${card.explanation}`;
+      }
+    }
+
+    function handleXRay(cardId, optIdx, isCorrect) {
+      const card = CARDS.find(c => c.id === cardId);
+      const container = document.getElementById(`xray-opts-${cardId}`);
+      const feedback = document.getElementById(`xray-feed-${cardId}`);
+
+      if (isCorrect) audio.playCorrect();
+      else audio.playError();
+
+      container.querySelectorAll('.xray-btn').forEach((btn, i) => {
+        btn.classList.add('pointer-events-none');
+        const icon = btn.querySelector('.status-icon');
+        if (i === optIdx) {
+          if (isCorrect) {
+            btn.className = 'w-full text-left pl-3.5 pr-10 py-2.5 sm:py-3 rounded-xl border border-emerald-500 bg-emerald-950/50 text-emerald-200 text-xs sm:text-sm font-semibold flex items-center justify-between';
+            icon.className = 'fas fa-check-circle text-emerald-400';
+          } else {
+            btn.className = 'w-full text-left pl-3.5 pr-10 py-2.5 sm:py-3 rounded-xl border border-rose-500 bg-rose-950/50 text-rose-200 text-xs sm:text-sm font-semibold flex items-center justify-between';
+            icon.className = 'fas fa-times-circle text-rose-400';
+          }
+        } else if (i === card.correct) {
+          btn.className = 'w-full text-left pl-3.5 pr-10 py-2.5 sm:py-3 rounded-xl border border-emerald-500/60 bg-emerald-950/30 text-emerald-300 text-xs sm:text-sm flex items-center justify-between opacity-80';
+          icon.className = 'fas fa-check-circle text-emerald-400';
+        } else {
+          btn.classList.add('opacity-40');
+        }
+      });
+
+      feedback.classList.remove('hidden');
+      feedback.className = isCorrect ? 'p-3 rounded-xl border border-emerald-500/40 bg-emerald-950/40 text-emerald-200 text-xs card-text' : 'p-3 rounded-xl border border-amber-500/40 bg-amber-950/40 text-amber-200 text-xs card-text';
+      feedback.innerHTML = `<strong>${isCorrect ? '✅ Spot On:' : '💡 Key Insight:'}</strong> ${card.reasoning}`;
+    }
+
+    function handleStepPick(cardId, stepIdx, isError) {
+      const card = CARDS.find(c => c.id === cardId);
+      const container = document.getElementById(`error-steps-${cardId}`);
+      const feedback = document.getElementById(`error-feed-${cardId}`);
+
+      if (isError) audio.playCorrect();
+      else audio.playError();
+
+      container.querySelectorAll('.step-btn').forEach((row, i) => {
+        row.classList.add('pointer-events-none');
+        const icon = row.querySelector('.status-step');
+        if (i === stepIdx) {
+          if (isError) {
+            row.className = 'step-btn pl-3 pr-10 py-2.5 rounded-xl border-2 border-emerald-500 bg-emerald-950/50 flex items-center justify-between';
+            icon.className = 'fas fa-bullseye text-emerald-400';
+          } else {
+            row.className = 'step-btn pl-3 pr-10 py-2.5 rounded-xl border-2 border-rose-500 bg-rose-950/50 flex items-center justify-between';
+            icon.className = 'fas fa-times text-rose-400';
+          }
+        } else if (card.steps[i].err) {
+          row.className = 'step-btn pl-3 pr-10 py-2.5 rounded-xl border border-emerald-500/50 bg-emerald-950/30 flex items-center justify-between';
+          icon.className = 'fas fa-arrow-left text-emerald-400 text-xs';
+        } else {
+          row.classList.add('opacity-40');
+        }
+      });
+
+      feedback.classList.remove('hidden');
+      feedback.className = isError ? 'p-3 rounded-xl border border-emerald-500/40 bg-emerald-950/40 text-emerald-200 text-xs card-text' : 'p-3 rounded-xl border border-amber-500/40 bg-amber-950/40 text-amber-200 text-xs card-text';
+      feedback.innerHTML = `<strong>${isError ? '🎯 Bug Spotted!' : '🔍 Keep Looking:'}</strong> ${card.correction}`;
+    }
+
+    const sortStates = {};
+    function handleSortChoice(cardId, bucketIdx) {
+      const card = CARDS.find(c => c.id === cardId);
+      if (!sortStates[cardId]) sortStates[cardId] = { idx: 0, score: 0 };
+      const s = sortStates[cardId];
+      const item = card.items[s.idx];
+
+      const isRight = bucketIdx === item.target;
+      const box = document.getElementById(`sorter-card-${cardId}`);
+      const feed = document.getElementById(`sort-feed-${cardId}`);
+
+      if (isRight) {
+        audio.playCorrect();
+        s.score++;
+        box.classList.add('border-violet-500', 'bg-violet-950/30');
+      } else {
+        audio.playError();
+        box.classList.add('border-rose-500', 'bg-rose-950/30');
+      }
+
+      setTimeout(() => {
+        box.classList.remove('border-violet-500', 'bg-violet-950/30', 'border-rose-500', 'bg-rose-950/30');
+        s.idx++;
+        if (s.idx < card.items.length) {
+          document.getElementById(`sort-step-${cardId}`).innerText = `Item ${s.idx + 1} of ${card.items.length}`;
+          document.getElementById(`sort-label-${cardId}`).innerText = card.items[s.idx].name;
+        } else {
+          document.getElementById(`sort-step-${cardId}`).innerText = 'Completed!';
+          document.getElementById(`sort-label-${cardId}`).innerText = `Matched ${s.score}/${card.items.length}`;
+          feed.classList.remove('hidden');
+          feed.className = 'p-3 rounded-xl border border-violet-500/50 bg-violet-950/40 text-violet-300 text-xs text-center font-bold card-text';
+          feed.innerHTML = `🎉 Rapid classification finished!`;
+        }
+      }, 240);
+    }
+  </script>
+
+  <script>
+    /* TikTok / Reels Gestures & Ratings */
+    function handleCardDoubleTap(e, cardId) {
+      if (e.target.closest('button') || e.target.closest('input') || e.target.closest('a') || e.target.closest('.step-btn') || e.target.closest('aside')) {
+        return;
+      }
+      
+      const slide = e.currentTarget;
+      const rect = slide.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+
+      const heart = document.createElement('div');
+      heart.className = 'floating-heart';
+      heart.style.left = `${x}px`;
+      heart.style.top = `${y}px`;
+      heart.innerHTML = '<i class="fas fa-heart text-4xl"></i>';
+      slide.appendChild(heart);
+
+      setTimeout(() => heart.remove(), 900);
+
+      if (!feedState.likes[cardId]) {
+        toggleLike(cardId);
+      } else {
+        audio.playPop();
+      }
+    }
+
+    function handleShareCard(cardId) {
+      audio.playPop();
+      const card = CARDS.find(c => c.id === cardId);
+      const text = `Atoms Physics Concept #${cardId}: ${card.title || card.topic}`;
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text).then(() => {
+          showToast('🚀 Concept copied to clipboard!');
+        }).catch(() => {
+          showToast('🚀 Card ready to share!');
+        });
+      } else {
+        showToast('🚀 Concept copied to clipboard!');
+      }
+    }
+
+    function setCardRating(cardId, rating) {
+      audio.playRate();
+      feedState.ratings[cardId] = rating;
+
+      const pBtn = document.getElementById(`rate-btn-perf-${cardId}`);
+      const prBtn = document.getElementById(`rate-btn-prac-${cardId}`);
+      const nBtn = document.getElementById(`rate-btn-need-${cardId}`);
+
+      [pBtn, prBtn, nBtn].forEach(b => {
+        if (b) {
+          b.classList.remove('rate-btn-perf-active', 'rate-btn-prac-active', 'rate-btn-need-active', 'active-rated');
+        }
+      });
+
+      if (rating === 'perfect' && pBtn) pBtn.classList.add('rate-btn-perf-active', 'active-rated');
+      if (rating === 'practicing' && prBtn) prBtn.classList.add('rate-btn-prac-active', 'active-rated');
+      if (rating === 'need' && nBtn) nBtn.classList.add('rate-btn-need-active', 'active-rated');
+
+      updateStatsCounters();
+    }
+
+    function toggleLike(cardId) {
+      audio.playPop();
+      feedState.likes[cardId] = !feedState.likes[cardId];
+      const wrap = document.getElementById(`like-icon-wrap-${cardId}`);
+      const count = document.getElementById(`like-count-${cardId}`);
+      if (feedState.likes[cardId]) {
+        wrap.className = 'w-9 h-9 rounded-full bg-rose-500/80 text-white flex items-center justify-center liked-pop shadow-lg shadow-rose-950/50 border border-rose-400/50';
+        count.innerText = '1';
+        count.classList.add('text-rose-400');
+      } else {
+        wrap.className = 'w-9 h-9 rounded-full translucent-btn flex items-center justify-center text-slate-300/80 shadow-md';
+        count.innerText = '0';
+        count.classList.remove('text-rose-400');
+      }
+    }
+
+    function toggleBookmark(cardId) {
+      audio.playPop();
+      feedState.bookmarks[cardId] = !feedState.bookmarks[cardId];
+      const icon = document.getElementById(`bookmark-icon-${cardId}`);
+      if (feedState.bookmarks[cardId]) {
+        icon.className = 'fas fa-bookmark text-violet-400 text-xs rate-icon opacity-100';
+      } else {
+        icon.className = 'far fa-bookmark text-slate-300 text-xs rate-icon';
+      }
+    }
+
+    function updateStatsCounters() {
+      let p = 0, pr = 0, n = 0;
+      Object.values(feedState.ratings).forEach(val => {
+        if (val === 'perfect') p++;
+        if (val === 'practicing') pr++;
+        if (val === 'need') n++;
+      });
+      document.getElementById('hud-perfect').innerText = p;
+      document.getElementById('hud-practicing').innerText = pr;
+      document.getElementById('hud-need').innerText = n;
+      document.getElementById('modal-perf').innerText = p;
+      document.getElementById('modal-prac').innerText = pr;
+      document.getElementById('modal-need').innerText = n;
+
+      const reviewList = document.getElementById('review-list');
+      const needCards = CARDS.filter(c => feedState.ratings[c.id] === 'need');
+      if (needCards.length === 0) {
+        reviewList.innerHTML = `<div class="text-xs text-slate-400 text-center py-3 italic">No concepts marked for review yet!</div>`;
+      } else {
+        reviewList.innerHTML = needCards.map(c => `
+          <div class="p-2.5 rounded-xl bg-slate-800 border border-slate-700 flex items-center justify-between">
+            <span class="text-xs font-bold text-slate-200 truncate pr-2">#${c.id} ${c.title || c.topic}</span>
+            <button onclick="jumpToCardIndex(${c.id - 1})" class="px-2.5 py-1 rounded bg-rose-500/20 text-rose-400 hover:bg-rose-500/30 text-[10px] font-bold">Jump</button>
+          </div>
+        `).join('');
+      }
+    }
+
+    function setupSlideObservers() {
+      const slideObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            const idx = parseInt(entry.target.getAttribute('data-index'));
+            if (!isNaN(idx)) {
+              feedState.currentIndex = idx;
+              document.getElementById('hud-index').innerText = idx + 1;
+              const pct = ((idx + 1) / CARDS.length) * 100;
+              document.getElementById('progress-bar').style.width = `${pct}%`;
+
+              const cardId = parseInt(entry.target.getAttribute('data-card-id'));
+              if (feedState.simInstances[cardId]) {
+                feedState.simInstances[cardId].resize();
+              }
+            }
+          }
+        });
+      }, {
+        root: feedViewport,
+        threshold: 0.6
+      });
+
+      document.querySelectorAll('.feed-slide').forEach(slide => {
+        slideObserver.observe(slide);
+      });
+    }
+
+    function scrollByDelta(delta) {
+      audio.playPop();
+      const targetIndex = Math.min(Math.max(0, feedState.currentIndex + delta), CARDS.length - 1);
+      jumpToCardIndex(targetIndex);
+    }
+
+    function jumpToCardIndex(idx) {
+      closeStatsModal();
+      const targetSlide = feedViewport.children[idx];
+      if (targetSlide) {
+        targetSlide.scrollIntoView({ behavior: 'smooth' });
+      }
+    }
+
+    /* Frictionless Touch Swipe Gestures */
+    let touchStartY = 0;
+    let touchStartX = 0;
+    let touchStartTime = 0;
+
+    feedViewport.addEventListener('touchstart', (e) => {
+      touchStartY = e.changedTouches[0].screenY;
+      touchStartX = e.changedTouches[0].screenX;
+      touchStartTime = Date.now();
+    }, { passive: true });
+
+    feedViewport.addEventListener('touchend', (e) => {
+      const touchEndY = e.changedTouches[0].screenY;
+      const touchEndX = e.changedTouches[0].screenX;
+      const deltaY = touchStartY - touchEndY;
+      const deltaX = touchStartX - touchEndX;
+      const deltaTime = Date.now() - touchStartTime;
+
+      if (Math.abs(deltaY) > Math.abs(deltaX) && Math.abs(deltaY) > 35) {
+        if (deltaY > 0) {
+          scrollByDelta(1);
+        } else {
+          scrollByDelta(-1);
+        }
+      }
+    }, { passive: true });
+
+    /* Frictionless Wheel Scroll */
+    let wheelTimeout = null;
+    window.addEventListener('wheel', (e) => {
+      if (wheelTimeout) return;
+      if (Math.abs(e.deltaY) > 25) {
+        wheelTimeout = setTimeout(() => { wheelTimeout = null; }, 320);
+        if (e.deltaY > 0) scrollByDelta(1);
+        else scrollByDelta(-1);
+      }
+    }, { passive: true });
+
+    window.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowDown' || e.key === 'j' || e.key === ' ') {
+        e.preventDefault();
+        scrollByDelta(1);
+      } else if (e.key === 'ArrowUp' || e.key === 'k') {
+        e.preventDefault();
+        scrollByDelta(-1);
+      }
+    });
+
+    document.getElementById('sound-btn').addEventListener('click', () => {
+      const active = audio.toggle();
+      document.getElementById('sound-icon').className = active ? 'fas fa-volume-up text-violet-400' : 'fas fa-volume-mute text-slate-500';
+    });
+
+    document.getElementById('open-stats-btn').addEventListener('click', () => {
+      audio.playPop();
+      updateStatsCounters();
+      const modal = document.getElementById('stats-modal');
+      modal.classList.remove('hidden');
+      setTimeout(() => modal.classList.remove('opacity-0'), 10);
+    });
+
+    
+    function shuffleFeed() {
+      audio.playPop();
+      for (let i = CARDS.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [CARDS[i], CARDS[j]] = [CARDS[j], CARDS[i]];
+      }
+      renderEntireFeed();
+      setupSlideObservers();
+      scrollToCard(0);
+      showToast('🔀 Shuffled 50 Atoms Cards!');
+    }
+
+    function closeStatsModal() {
+      const modal = document.getElementById('stats-modal');
+      modal.classList.add('opacity-0');
+      setTimeout(() => modal.classList.add('hidden'), 300);
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      loadCurriculumData();
+    });
+  </script>
+
+  <script id="embedded-data-fallback" type="application/json">
+{
+  "curriculum": "NEET / JEE Physics",
+  "activeTopic": "Atoms",
+  "topics": [
+    {
+      "id": "atoms",
+      "title": "Atoms",
+      "badge": "ATOMS",
+      "grade": "Class 12",
+      "totalCards": 50,
+      "description": "Rutherford scattering, Bohr atomic model, energy quantization, hydrogen spectral series, reduced mass, X-rays, and de Broglie matter waves."
+    }
+  ],
+  "cards": [
+    {
+      "id": 1,
+      "type": "definition",
+      "topic": "Alpha Scattering",
+      "title": "Geiger-Marsden Experiment",
+      "core": "Collimated 7.7 MeV alpha particles from ²¹⁴Bi hit thin gold foil (400 nm). 99.86% pass undeflected, but ~1 in 8000 turns back (>90°), proving the atom's positive charge and mass reside in a tiny, dense core.",
+      "latex": "N(\\theta) \\propto \\frac{1}{\\sin^4(\\theta / 2)}",
+      "analogy": "Firing a 15-inch artillery shell at tissue paper and having it ricochet back at your chest!",
+      "takeaway": "Trainer Note: Nuclear radius is ~10⁻¹⁵ to 10⁻¹⁴ m, while atomic radius is ~10⁻¹⁰ m. The atom is 99.9999999999999% vacuum!"
+    },
+    {
+      "id": 2,
+      "type": "true_false",
+      "topic": "Nuclear Energy Conversion",
+      "statement": "In head-on α-nucleus collision, the total mechanical energy of the α-particle at distance of closest approach r₀ is zero.",
+      "isTrap": true,
+      "answer": false,
+      "explanation": "Trap Alert! At r₀, instantaneous velocity is zero so Kinetic Energy = 0. But Potential Energy is maximum: U = (1/4πε₀)(2Ze²/r₀). By conservation of energy, Total Energy remains constant and equals initial KE!"
+    },
+    {
+      "id": 3,
+      "type": "formula_xray",
+      "topic": "Distance of Closest Approach",
+      "title": "Closest Approach (r₀)",
+      "latex": "r_0 = \\frac{1}{4\\pi\\varepsilon_0} \\frac{2 Z e^2}{K} = \\frac{1}{4\\pi\\varepsilon_0} \\frac{4 Z e^2}{m v^2}",
+      "question": "If the incident α-particle velocity is doubled (2v), the distance of closest approach r₀ becomes:",
+      "options": [
+        "Halved (r₀ / 2)",
+        "Divided by 4 (r₀ / 4)",
+        "Doubled (2 r₀)",
+        "Divided by 8 (r₀ / 8)"
+      ],
+      "correct": 1,
+      "reasoning": "Physics Trainer Shortcut: r₀ ∝ 1/K ∝ 1/v². Doubling velocity multiplies kinetic energy by 4, compressing r₀ by a factor of 4 (r₀/4)!"
+    },
+    {
+      "id": 4,
+      "type": "spot_error",
+      "topic": "Impact Parameter",
+      "title": "Impact Parameter b vs Scattering Angle θ",
+      "prompt": "Spot the conceptual flaw in analyzing impact parameter b:",
+      "steps": [
+        {
+          "line": "b = \\frac{1}{4\\pi\\varepsilon_0} \\frac{Z e^2 \\cot(\\theta/2)}{K}",
+          "err": false
+        },
+        {
+          "line": "\\text{For head-on collision } (b = 0), \\cot(\\theta/2) = 0 \\implies \\theta = 90^\\circ",
+          "err": true
+        },
+        {
+          "line": "\\text{For grazing incidence } (b \\to \\infty), \\cot(\\theta/2) \\to \\infty \\implies \\theta \\to 0^\\circ",
+          "err": false
+        }
+      ],
+      "correction": "Exam Trap: cot(θ/2) = 0 means θ/2 = 90°, so θ = 180° (rebound backwards), NOT 90°! Head-on collision produces complete backscattering."
+    },
+    {
+      "id": 5,
+      "type": "canvas_sim",
+      "topic": "Alpha Trajectory Simulation",
+      "simType": "alpha_scatter",
+      "prompt": "Scrub the impact parameter b to inspect the hyperbolic trajectory around the gold nucleus (Z = 79):",
+      "defaultVal": 20,
+      "min": 0,
+      "max": 60,
+      "unit": "fm",
+      "takeaway": "Trainer Visual Insight: Small b means close encounter, intense inverse-square Coulomb repulsion, and huge deflection angles."
+    },
+    {
+      "id": 6,
+      "type": "definition",
+      "topic": "Bohr Postulate I",
+      "title": "Stationary Non-Radiating Orbits",
+      "core": "Electrons revolve only in specific stationary circular orbits where they do NOT radiate energy, defying classical Larmor electrodynamics (which predicts atomic collapse in 10⁻¹⁰ s).",
+      "latex": "\\frac{m v_n^2}{r_n} = \\frac{1}{4\\pi\\varepsilon_0} \\frac{Z e^2}{r_n^2}",
+      "analogy": "Planets orbiting the Sun, but quantized into fixed gravitational energy rungs.",
+      "takeaway": "Trainer Note: Electrostatic Coulomb attraction provides 100% of the centripetal force required for circular orbit."
+    },
+    {
+      "id": 7,
+      "type": "formula_xray",
+      "topic": "Bohr Postulate II",
+      "title": "Angular Momentum Quantization",
+      "latex": "L_n = m v_n r_n = n \\frac{h}{2\\pi} = n \\hbar \\quad (n = 1, 2, 3...)",
+      "question": "The orbital angular momentum L of an electron in the 3rd excited state of hydrogen is:",
+      "options": [
+        "1.5 h / π",
+        "2 h / π",
+        "2.5 h / π",
+        "3 h / π"
+      ],
+      "correct": 1,
+      "reasoning": "Watch the wording! 3rd excited state means principal quantum number n = 4 (Ground is n=1, 1st excited is n=2, 3rd excited is n=4). L = 4 × h/(2π) = 2h/π!"
+    },
+    {
+      "id": 8,
+      "type": "true_false",
+      "topic": "Bohr Postulate III",
+      "title": "Frequency Condition",
+      "statement": "When an electron transitions from orbit n₂ to n₁ (n₂ > n₁), it continuously emits electromagnetic radiation throughout the journey.",
+      "isTrap": true,
+      "answer": false,
+      "explanation": "False! Transition is instantaneous quantum jump. A single photon of discrete energy hν = E₂ - E₁ is emitted instantaneously, not continuously."
+    },
+    {
+      "id": 9,
+      "type": "formula_xray",
+      "topic": "Bohr Orbit Radius",
+      "title": "Orbit Radius Scaling Formula",
+      "latex": "r_n = \\frac{\\varepsilon_0 h^2}{\\pi m e^2} \\frac{n^2}{Z} = 0.529 \\frac{n^2}{Z} \\text{ \\AA}",
+      "question": "The ratio of the radius of the 2nd orbit of Li²⁺ (Z=3) to the 1st orbit of H (Z=1) is:",
+      "options": [
+        "4 : 3",
+        "3 : 4",
+        "2 : 3",
+        "4 : 1"
+      ],
+      "correct": 0,
+      "reasoning": "r ∝ n²/Z. For Li²⁺ (n=2, Z=3): r ∝ 2²/3 = 4/3. For H (n=1, Z=1): r ∝ 1²/1 = 1. Ratio = (4/3) / 1 = 4 : 3!"
+    },
+    {
+      "id": 10,
+      "type": "formula_xray",
+      "topic": "Orbital Velocity",
+      "title": "Orbital Velocity Scaling",
+      "latex": "v_n = \\frac{e^2}{2\\varepsilon_0 h} \\frac{Z}{n} = c \\cdot \\alpha \\cdot \\frac{Z}{n} \\approx \\frac{c}{137} \\frac{Z}{n} = 2.18 \\times 10^6 \\frac{Z}{n} \\text{ m/s}",
+      "question": "What fraction of the speed of light c is the electron's speed in the ground state (n=1) of hydrogen?",
+      "options": [
+        "1 / 137 (~ 0.73%)",
+        "1 / 42 (~ 2.38%)",
+        "1 / 1836 (~ 0.05%)",
+        "1 / 10 (~ 10%)"
+      ],
+      "correct": 0,
+      "reasoning": "Trainer Key Constant: The fine structure constant α = e²/(2ε₀hc) ≈ 1/137. So v₁ = c/137 ≈ 2.18 × 10⁶ m/s."
+    },
+    {
+      "id": 11,
+      "type": "spot_error",
+      "topic": "Orbital Time Period",
+      "title": "Orbital Period vs Quantum Number n",
+      "prompt": "Spot the error in establishing the orbital period T scaling with n:",
+      "steps": [
+        {
+          "line": "T = \\frac{2\\pi r_n}{v_n}",
+          "err": false
+        },
+        {
+          "line": "r_n \\propto n^2 \\quad \\text{and} \\quad v_n \\propto \\frac{1}{n}",
+          "err": false
+        },
+        {
+          "line": "T \\propto \\frac{n^2}{1/n} = n^2",
+          "err": true
+        }
+      ],
+      "correction": "Mathematical blunder! n² / (1/n) = n² × n = n³! Therefore, T ∝ n³/Z² and frequency f ∝ Z²/n³."
+    },
+    {
+      "id": 12,
+      "type": "formula_xray",
+      "topic": "Virial Theorem in Atoms",
+      "title": "Kinetic vs Potential vs Total Energy",
+      "latex": "KE = -E_n, \\quad PE = 2 E_n, \\quad TE = E_n = -KE = \\frac{PE}{2}",
+      "question": "If the total energy of an electron in a hydrogen orbit is -3.4 eV, what are its Kinetic Energy (KE) and Potential Energy (PE)?",
+      "options": [
+        "KE = +3.4 eV, PE = -6.8 eV",
+        "KE = -3.4 eV, PE = +6.8 eV",
+        "KE = +6.8 eV, PE = -3.4 eV",
+        "KE = +1.7 eV, PE = -5.1 eV"
+      ],
+      "correct": 0,
+      "reasoning": "Trainer Virial Rule: Kinetic energy is ALWAYS strictly positive (KE = -TE = +3.4 eV). Potential energy is double total energy (PE = 2 × (-3.4) = -6.8 eV). Total = 3.4 + (-6.8) = -3.4 eV!"
+    },
+    {
+      "id": 13,
+      "type": "definition",
+      "topic": "Total Energy Formula",
+      "title": "Bohr Total Energy Quantization",
+      "core": "Electron total energy is negative, indicating a bound state. The energy levels cluster closer and closer together as n → ∞, reaching 0 eV (ionization continuum).",
+      "latex": "E_n = -\\frac{m e^4}{8\\varepsilon_0^2 h^2} \\frac{Z^2}{n^2} = -13.6 \\frac{Z^2}{n^2} \\text{ eV}",
+      "analogy": "Climbing a quantum ladder where the rungs get exponentially narrower towards the top.",
+      "takeaway": "Trainer Golden Rule: E₁ = -13.6 eV, E₂ = -3.4 eV, E₃ = -1.51 eV, E₄ = -0.85 eV, E₅ = -0.54 eV. Memorize these 5 values!"
+    },
+    {
+      "id": 14,
+      "type": "formula_xray",
+      "topic": "Excitation Energy",
+      "title": "1st & 2nd Excitation Energies",
+      "latex": "\\Delta E_{1 \\to n} = E_n - E_1 = 13.6 \\left(1 - \\frac{1}{n^2}\\right) \\text{ eV}",
+      "question": "The second excitation potential of a hydrogen atom is:",
+      "options": [
+        "12.09 V",
+        "10.2 V",
+        "13.6 V",
+        "3.4 V"
+      ],
+      "correct": 0,
+      "reasoning": "Trap Alert! 2nd excitation means state n = 3 (1st excitation is n = 2). ΔE = E₃ - E₁ = -1.51 - (-13.6) = 12.09 eV. Hence excitation potential is 12.09 V!"
+    },
+    {
+      "id": 15,
+      "type": "true_false",
+      "topic": "Ionization vs Binding Energy",
+      "statement": "The binding energy of an electron in the first excited state of hydrogen is 3.4 eV.",
+      "isTrap": false,
+      "answer": true,
+      "explanation": "True! In the 1st excited state (n=2), total energy is E₂ = -3.4 eV. Binding energy is the minimum energy required to liberate it to infinity: BE = -E₂ = +3.4 eV."
+    },
+    {
+      "id": 16,
+      "type": "formula_xray",
+      "topic": "Rydberg Formula",
+      "title": "Rydberg Wave Number Equation",
+      "latex": "\\bar{\\nu} = \\frac{1}{\\lambda} = R_H Z^2 \\left(\\frac{1}{n_1^2} - \\frac{1}{n_2^2}\\right), \\quad R_H = 1.097 \\times 10^7 \\text{ m}^{-1}",
+      "question": "What is the approximate value of 1/R_H in Angstroms (useful JEE calculation shortcut)?",
+      "options": [
+        "912 Å",
+        "1216 Å",
+        "6563 Å",
+        "8204 Å"
+      ],
+      "correct": 0,
+      "reasoning": "Trainer Calculation Hack: 1/R_H = 1 / (1.09737 × 10⁷) m ≈ 911.5 × 10⁻¹⁰ m ≈ 912 Å. Memorizing 1/R ≈ 912 Å saves 60 seconds in spectral calculations!"
+    },
+    {
+      "id": 17,
+      "type": "definition",
+      "topic": "Lyman Spectral Series",
+      "title": "Lyman Series (Ultraviolet)",
+      "core": "Transitions where electrons cascade from outer orbits (n₂ = 2, 3, 4...) down to the ground state (n₁ = 1). All lines lie strictly in the Ultraviolet (UV) spectrum.",
+      "latex": "\\frac{1}{\\lambda} = R \\left(1 - \\frac{1}{n_2^2}\\right), \\quad \\lambda_{max} = \\frac{4}{3R} \\approx 1216\\text{ \\AA}, \\quad \\lambda_{min} = \\frac{1}{R} \\approx 912\\text{ \\AA}",
+      "analogy": "All waterfalls plunging straight down to base camp ground floor.",
+      "takeaway": "Trainer Note: Series limit (shortest λ) occurs when n₂ = ∞, giving λ = 912 Å."
+    },
+    {
+      "id": 18,
+      "type": "formula_xray",
+      "topic": "Balmer Spectral Series",
+      "title": "Balmer Series (Visible Spectrum)",
+      "latex": "\\frac{1}{\\lambda} = R \\left(\\frac{1}{2^2} - \\frac{1}{n_2^2}\\right) \\quad (n_2 = 3, 4, 5...)",
+      "question": "The red H_α line of the Balmer series corresponds to which transition?",
+      "options": [
+        "n = 3 to n = 2",
+        "n = 4 to n = 2",
+        "n = 2 to n = 1",
+        "n = ∞ to n = 2"
+      ],
+      "correct": 0,
+      "reasoning": "H_α is the very first line of Balmer (longest wavelength, smallest energy jump): n = 3 → 2. λ = 36/(5R) ≈ 6563 Å (vibrant red!)."
+    },
+    {
+      "id": 19,
+      "type": "true_false",
+      "topic": "Spectral Series Regions",
+      "statement": "The Paschen, Brackett, and Pfund spectral series of hydrogen all lie in the Infrared region.",
+      "isTrap": false,
+      "answer": true,
+      "explanation": "True! Lyman = Ultraviolet; Balmer = Visible (with near UV); Paschen (n₁=3), Brackett (n₁=4), and Pfund (n₁=5) all lie in the Infrared (IR) zone."
+    },
+    {
+      "id": 20,
+      "type": "formula_xray",
+      "topic": "Spectral Line Combinations",
+      "title": "Rydberg-Ritz Combination Principle",
+      "latex": "\\nu_{3 \\to 1} = \\nu_{3 \\to 2} + \\nu_{2 \\to 1} \\implies \\frac{1}{\\lambda_{3 \\to 1}} = \\frac{1}{\\lambda_{3 \\to 2}} + \\frac{1}{\\lambda_{2 \\to 1}}",
+      "question": "If λ₁ is the wavelength for 3→2 and λ₂ is for 2→1, the wavelength λ for 3→1 transition is:",
+      "options": [
+        "(λ₁ λ₂) / (λ₁ + λ₂)",
+        "λ₁ + λ₂",
+        "√(λ₁ λ₂)",
+        "(λ₁ + λ₂) / 2"
+      ],
+      "correct": 0,
+      "reasoning": "Since E₃₁ = E₃₂ + E₂₁, frequencies add (ν₃₁ = ν₃₂ + ν₂₁). Therefore 1/λ = 1/λ₁ + 1/λ₂, giving λ = (λ₁ λ₂) / (λ₁ + λ₂)!"
+    },
+    {
+      "id": 21,
+      "type": "spot_error",
+      "topic": "Absorption Spectrum Trap",
+      "title": "Emission vs Absorption Lines at Room Temp",
+      "prompt": "Spot the conceptual flaw regarding hydrogen absorption spectrum at room temperature (300 K):",
+      "steps": [
+        {
+          "line": "\\text{At 300 K, } k_B T \\approx 0.026 \\text{ eV} \\ll 10.2 \\text{ eV (first excitation energy)}",
+          "err": false
+        },
+        {
+          "line": "\\text{Practically all hydrogen atoms sit in ground state } n = 1",
+          "err": false
+        },
+        {
+          "line": "\\text{Hence, absorption spectrum shows both Lyman and Balmer series lines}",
+          "err": true
+        }
+      ],
+      "correction": "Huge NCERT Trap! Since atoms are exclusively in n = 1, absorption transitions can ONLY start from n = 1. Therefore, room temperature absorption exhibits ONLY the Lyman series, NEVER the Balmer series!"
+    },
+    {
+      "id": 22,
+      "type": "definition",
+      "topic": "Bohr's Correspondence Principle",
+      "title": "Classical-Quantum Correspondence",
+      "core": "In the limit of very large quantum numbers (n → ∞), quantum physics predictions must smoothly converge with classical electrodynamics predictions.",
+      "latex": "\\lim_{n \\to \\infty} \\nu_{photon} = \\nu_{orbital} = \\frac{m e^4}{4\\varepsilon_0^2 h^3 n^3}",
+      "analogy": "Zooming out on a digital screen: discrete pixels merge seamlessly into a smooth continuous picture.",
+      "takeaway": "Trainer Note: Frequency of emitted photon ΔE/h for transition n → n-1 equals the orbital revolution frequency f when n is massive."
+    },
+    {
+      "id": 23,
+      "type": "canvas_sim",
+      "topic": "Bohr Quantum Transition",
+      "simType": "bohr_transition",
+      "prompt": "Select initial level n₂ to simulate electron de-excitation and photon emission:",
+      "defaultVal": 3,
+      "min": 2,
+      "max": 5,
+      "unit": "level",
+      "takeaway": "Trainer Visual Insight: Energy released ΔE = 13.6(1/n₁² - 1/n₂²) eV is carried away by an emitted photon packet of wavelength λ = hc/ΔE."
+    },
+    {
+      "id": 24,
+      "type": "formula_xray",
+      "topic": "de Broglie Standing Wave",
+      "title": "Electron Wave in Bohr Orbit",
+      "latex": "2\\pi r_n = n \\lambda_{dB} = n \\left(\\frac{h}{m v_n}\\right)",
+      "question": "How many full de Broglie wavelengths fit along the circumference of the 4th Bohr orbit (n = 4)?",
+      "options": [
+        "4 wavelengths",
+        "2 wavelengths",
+        "8 wavelengths",
+        "16 wavelengths"
+      ],
+      "correct": 0,
+      "reasoning": "Trainer Direct Formula: 2πr_n = n λ. For orbit n, exactly n de Broglie waves form a constructive standing wave! For n = 4, exactly 4 wavelengths fit."
+    },
+    {
+      "id": 25,
+      "type": "true_false",
+      "topic": "Limitations of Bohr Model",
+      "statement": "The Bohr atomic model successfully explains the fine structure splitting of spectral lines and the Zeeman effect.",
+      "isTrap": true,
+      "answer": false,
+      "explanation": "False! Bohr model fails to explain: (1) Fine structure (relativistic splitting), (2) Zeeman effect (splitting in magnetic fields), (3) Stark effect (splitting in electric fields), and (4) relative intensities of spectral lines."
+    },
+    {
+      "id": 26,
+      "type": "formula_xray",
+      "topic": "Hydrogen-like Ions",
+      "title": "Ionized Helium (He⁺)",
+      "latex": "E_n(He^+) = -13.6 \\frac{2^2}{n^2} = -\\frac{54.4}{n^2} \\text{ eV}",
+      "question": "Which state of He⁺ (Z=2) has the same total energy as the ground state (n=1) of Hydrogen (Z=1)?",
+      "options": [
+        "n = 2",
+        "n = 4",
+        "n = 3",
+        "n = 1"
+      ],
+      "correct": 0,
+      "reasoning": "E ∝ -Z²/n². For H: -1²/1² = -1. For He⁺ (Z=2): -2²/n² = -1 ⇒ n² = 4 ⇒ n = 2! Orbit n = 2 of He⁺ has E = -13.6 eV."
+    },
+    {
+      "id": 27,
+      "type": "spot_error",
+      "topic": "Magnetic Field at Nucleus",
+      "title": "Orbital Current & Magnetic Field B",
+      "prompt": "Spot the scaling error for magnetic field B at the nucleus due to orbiting electron:",
+      "steps": [
+        {
+          "line": "I = \\frac{e}{T} = \\frac{e v}{2\\pi r} \\propto \\frac{Z/n}{n^2/Z} = \\frac{Z^2}{n^3}",
+          "err": false
+        },
+        {
+          "line": "B = \\frac{\\mu_0 I}{2 r} \\propto \\frac{I}{r}",
+          "err": false
+        },
+        {
+          "line": "B \\propto \\frac{Z^2 / n^3}{n^2 / Z} = \\frac{Z^3}{n^4}",
+          "err": true
+        }
+      ],
+      "correction": "Exponent blunder! (Z²/n³) / (n²/Z) = (Z² · Z) / (n³ · n²) = Z³ / n⁵! The magnetic field at the nucleus scales as 1/n⁵, NOT 1/n⁴."
+    },
+    {
+      "id": 28,
+      "type": "true_false",
+      "topic": "Franck-Hertz Experiment",
+      "statement": "The Franck-Hertz experiment demonstrates the existence of discrete quantum energy levels in mercury atoms through inelastic electron collisions at 4.9 eV.",
+      "isTrap": false,
+      "answer": true,
+      "explanation": "True! In 1914, Franck and Hertz observed current drops at periodic voltage intervals of 4.9 V in mercury vapor, proving mercury absorbs energy in discrete 4.9 eV quantum packets."
+    },
+    {
+      "id": 29,
+      "type": "formula_xray",
+      "topic": "Lyman Alpha Wavelength",
+      "title": "Lyman-α (n=2 to n=1)",
+      "latex": "\\frac{1}{\\lambda} = R \\left(1 - \\frac{1}{4}\\right) = \\frac{3R}{4} \\implies \\lambda = \\frac{4}{3R}",
+      "question": "The wavelength of Lyman-α in hydrogen is 1216 Å. What is the wavelength of Lyman-α in He⁺ (Z=2)?",
+      "options": [
+        "304 Å",
+        "608 Å",
+        "2432 Å",
+        "1216 Å"
+      ],
+      "correct": 0,
+      "reasoning": "Physics Trainer Law: 1/λ ∝ Z², so λ ∝ 1/Z². For He⁺ (Z=2), Z² = 4. Thus λ = 1216 / 4 = 304 Å!"
+    },
+    {
+      "id": 30,
+      "type": "definition",
+      "topic": "Master Scaling Summary",
+      "title": "The Classical Bohr Scaling Laws",
+      "core": "Master the fundamental quantum scaling exponents: radius r ∝ n²/Z, velocity v ∝ Z/n, time period T ∝ n³/Z², frequency f ∝ Z²/n³, energy E ∝ -Z²/n².",
+      "latex": "r_n \\propto \\frac{n^2}{Z}, \\quad v_n \\propto \\frac{Z}{n}, \\quad T_n \\propto \\frac{n^3}{Z^2}, \\quad E_n \\propto -\\frac{Z^2}{n^2}",
+      "analogy": "The periodic table's microscopic clockwork gear ratios.",
+      "takeaway": "Trainer Note: 90% of all NEET/JEE Modern Physics questions test these exact proportionality powers!"
+    },
+    {
+      "id": 31,
+      "type": "formula_xray",
+      "topic": "Reduced Mass Effect",
+      "title": "Positronium & Finite Nuclear Mass",
+      "latex": "\\mu = \\frac{m_1 m_2}{m_1 + m_2}, \\quad R_{\\mu} = R_\\infty \\left(\\frac{\\mu}{m_e}\\right), \\quad E_n = -13.6 \\left(\\frac{\\mu}{m_e}\\right) \\frac{Z^2}{n^2} \\text{ eV}",
+      "question": "In Positronium (bound electron and positron of equal mass m_e), the ground state binding energy is:",
+      "options": [
+        "6.8 eV",
+        "13.6 eV",
+        "27.2 eV",
+        "3.4 eV"
+      ],
+      "correct": 0,
+      "reasoning": "JEE Advanced Favorite! Both particles orbit their center of mass with reduced mass μ = (m·m)/(m+m) = m/2. Since E ∝ μ, ground state energy is 13.6 × (1/2) = 6.8 eV!"
+    },
+    {
+      "id": 32,
+      "type": "definition",
+      "topic": "Bohr Magneton & Magnetic Dipole",
+      "title": "Orbital Magnetic Dipole Moment (μ_L)",
+      "core": "An electron circulating in orbit acts as a microscopic current loop with orbital magnetic dipole moment proportional to its angular momentum L.",
+      "latex": "\\vec{\\mu}_L = -\\frac{e}{2 m_e} \\vec{L}, \\quad \\mu_B = \\frac{e \\hbar}{2 m_e} = 9.274 \\times 10^{-24} \\text{ J/T (or A}\\cdot\\text{m}^2\\text{)}",
+      "analogy": "A single microscopic compass needle pinned to the electron's orbit.",
+      "takeaway": "Trainer Exam Pointer: Gyromagnetic ratio γ = μ_L / L = e / (2m_e) is universally constant, independent of orbit n and nuclear charge Z!"
+    },
+    {
+      "id": 33,
+      "type": "formula_xray",
+      "topic": "Bohr Magneton Calculation",
+      "title": "Ground State Orbital Dipole",
+      "latex": "\\mu_L = n \\left(\\frac{e \\hbar}{2 m_e}\\right) = n \\mu_B",
+      "question": "The orbital magnetic dipole moment of an electron in the 2nd Bohr orbit (n = 2) is:",
+      "options": [
+        "2 μ_B",
+        "μ_B",
+        "4 μ_B",
+        "0.5 μ_B"
+      ],
+      "correct": 0,
+      "reasoning": "μ_L = (e / 2m_e) L = (e / 2m_e) (n ℏ) = n μ_B. For n = 2, μ_L = 2 μ_B = 2 × 9.27 × 10⁻²⁴ J/T."
+    },
+    {
+      "id": 34,
+      "type": "formula_xray",
+      "topic": "Moseley's Law",
+      "title": "Characteristic X-Rays & Moseley's Law",
+      "latex": "\\sqrt{\\nu} = a (Z - b), \\quad \\nu = c R \\left(\\frac{1}{1^2} - \\frac{1}{2^2}\\right) (Z - 1)^2 \\text{ for } K_\\alpha",
+      "question": "What is the screening constant b for the K_α characteristic X-ray line according to Moseley's Law?",
+      "options": [
+        "b = 1",
+        "b = 7.4",
+        "b = 0",
+        "b = 2"
+      ],
+      "correct": 0,
+      "reasoning": "Trainer High-Yield Rule: In K_α transition (L shell to K shell), one electron already remains in K shell screening the nuclear charge, so b = 1! For L_α, b ≈ 7.4."
+    },
+    {
+      "id": 35,
+      "type": "formula_xray",
+      "topic": "Duane-Hunt Law",
+      "title": "Cutoff Wavelength of Continuous X-Rays",
+      "latex": "\\lambda_{min} = \\frac{h c}{e V} = \\frac{12400}{V \\text{ (in Volts)}} \\text{ \\AA}",
+      "question": "If an X-ray tube operates at an accelerating potential of 50 kV, the minimum cutoff wavelength λ_min is:",
+      "options": [
+        "0.248 Å",
+        "0.496 Å",
+        "1.24 Å",
+        "0.124 Å"
+      ],
+      "correct": 0,
+      "reasoning": "Trainer Shortcut Formula: λ_min = 12400 / 50000 Å = 0.248 Å. Bremsstrahlung radiation converts 100% of electron's maximum KE into a single photon."
+    },
+    {
+      "id": 36,
+      "type": "true_false",
+      "topic": "Continuous vs Characteristic X-Rays",
+      "statement": "The minimum cutoff wavelength λ_min of an X-ray spectrum depends on the target atomic number Z.",
+      "isTrap": true,
+      "answer": false,
+      "explanation": "Trap Alert! λ_min depends solely on accelerating voltage V (λ_min = hc/eV), completely independent of target material Z. Target Z only affects the characteristic peak frequencies and overall intensity!"
+    },
+    {
+      "id": 37,
+      "type": "spot_error",
+      "topic": "Inelastic Atomic Collisions",
+      "title": "Minimum Kinetic Energy for Inelastic Scattering",
+      "prompt": "Spot the conceptual flaw in calculating minimum KE for an incoming hydrogen atom to excite another stationary hydrogen atom:",
+      "steps": [
+        {
+          "line": "\\text{First excitation energy of H-atom is } \\Delta E = 10.2 \\text{ eV}",
+          "err": false
+        },
+        {
+          "line": "\\text{By conservation of energy, the moving atom needs minimum } K_{min} = 10.2 \\text{ eV}",
+          "err": true
+        },
+        {
+          "line": "\\text{Linear momentum must also be conserved in the inelastic collision}",
+          "err": false
+        }
+      ],
+      "correction": "JEE Classic Trap! Due to conservation of linear momentum in equal mass collision, maximum energy convertible to internal excitation is only 50% of initial KE (K_max,loss = K/2). Therefore, K_min = 2 × 10.2 = 20.4 eV!"
+    },
+    {
+      "id": 38,
+      "type": "formula_xray",
+      "topic": "Number of Spectral Lines",
+      "title": "Gas Sample vs Single Isolated Atom",
+      "latex": "N_{sample} = \\frac{n (n - 1)}{2} = \\frac{(n_2 - n_1)(n_2 - n_1 + 1)}{2}, \\quad N_{single\\;atom} \\le n - 1",
+      "question": "If a gas sample of hydrogen atoms is excited to n = 5, what is the maximum number of spectral lines observed?",
+      "options": [
+        "10 lines",
+        "4 lines",
+        "15 lines",
+        "5 lines"
+      ],
+      "correct": 0,
+      "reasoning": "For a gas sample with millions of atoms: N = 5(5 - 1)/2 = 5 × 4 / 2 = 10 lines. (Trap Note: In a SINGLE isolated atom, it can cascade down at most 5 - 1 = 4 transitions!)."
+    },
+    {
+      "id": 39,
+      "type": "definition",
+      "topic": "Lifetime & Natural Line Width",
+      "title": "Excited State Lifetime & Heisenberg Uncertainty",
+      "core": "An electron typically resides in an excited state for ~10⁻⁸ seconds before de-exciting. By Heisenberg's energy-time uncertainty relation, this finite lifetime causes an intrinsic energy spread (natural line width).",
+      "latex": "\\Delta E \\cdot \\Delta t \\ge \\frac{\\hbar}{2} \\implies \\Delta \\nu \\approx \\frac{1}{2\\pi \\Delta t} \\approx 10^7 \\text{ Hz}",
+      "analogy": "Striking a tuning fork: if damped instantly, the sound pitch is fuzzy rather than a razor-sharp frequency.",
+      "takeaway": "Trainer Note: No spectral line is perfectly monochromatic; natural broadening is an immutable quantum reality."
+    },
+    {
+      "id": 40,
+      "type": "formula_xray",
+      "topic": "Electric Field Scaling",
+      "title": "Electric Field Experienced by Electron",
+      "latex": "E_{orbit} = \\frac{1}{4\\pi\\varepsilon_0} \\frac{Z e}{r_n^2} \\propto \\frac{Z}{(n^2/Z)^2} = \\frac{Z^3}{n^4}",
+      "question": "The electric field exerted by the nucleus on an electron in orbit n scales as:",
+      "options": [
+        "Z³ / n⁴",
+        "Z² / n²",
+        "Z / n³",
+        "Z⁴ / n³"
+      ],
+      "correct": 0,
+      "reasoning": "E = k Ze / r². Since r ∝ n²/Z, r² ∝ n⁴/Z². Thus E ∝ Z / (n⁴/Z²) = Z³ / n⁴. Exactly matching centripetal acceleration a_c = v²/r ∝ (Z/n)² / (n²/Z) = Z³/n⁴!"
+    },
+    {
+      "id": 41,
+      "type": "formula_xray",
+      "topic": "Recoil of Emitter Atom",
+      "title": "Momentum Conservation & Recoil Velocity",
+      "latex": "p_{photon} = \\frac{h \\nu}{c} = \\frac{E}{c}, \\quad p_{atom} = M v_{recoil} \\implies v_{recoil} = \\frac{E}{M c}",
+      "question": "When a hydrogen atom (mass M ≈ 1.67 × 10⁻²⁷ kg) emits a Lyman-α photon (E = 10.2 eV), its recoil speed is approximately:",
+      "options": [
+        "3.26 m/s",
+        "0.326 m/s",
+        "32.6 m/s",
+        "326 m/s"
+      ],
+      "correct": 0,
+      "reasoning": "E = 10.2 × 1.6 × 10⁻¹⁹ J = 1.632 × 10⁻¹⁸ J. v = E / (M c) = 1.632 × 10⁻¹⁸ / (1.67 × 10⁻²⁷ × 3 × 10⁸) ≈ 3.26 m/s!"
+    },
+    {
+      "id": 42,
+      "type": "true_false",
+      "topic": "Recoil Energy Loss",
+      "statement": "The energy of the emitted photon in a hydrogen transition is slightly LESS than the transition energy gap ΔE = E₂ - E₁.",
+      "isTrap": false,
+      "answer": true,
+      "explanation": "True! By conservation of energy: ΔE = E_photon + K_recoil. Since the atom recoils with kinetic energy K = p²/(2M) = (ΔE)²/(2Mc²), E_photon = ΔE - (ΔE)²/(2Mc²), which is infinitesimally smaller than ΔE."
+    },
+    {
+      "id": 43,
+      "type": "formula_xray",
+      "topic": "de Broglie Wavelength of Orbiting Electron",
+      "title": "Wavelength Scaling with Quantum Number",
+      "latex": "\\lambda_{dB} = \\frac{h}{m v_n} \\propto \\frac{1}{v_n} \\propto \\frac{n}{Z}",
+      "question": "The de Broglie wavelength of an electron in the n-th Bohr orbit is proportional to:",
+      "options": [
+        "n / Z",
+        "n² / Z",
+        "Z / n",
+        "n² / Z²"
+      ],
+      "correct": 0,
+      "reasoning": "Trainer Direct Relation: λ_dB = h / (m v). Since v ∝ Z/n, λ_dB ∝ 1/v ∝ n/Z! (Check: 2πr = nλ ⇒ λ = 2πr/n ∝ (n²/Z)/n = n/Z. Perfect dimensional consistency!)."
+    },
+    {
+      "id": 44,
+      "type": "definition",
+      "topic": "Laser Action in Atoms",
+      "title": "Stimulated Emission & Population Inversion",
+      "core": "Under normal thermal equilibrium, N₁ > N₂ (Boltzmann distribution). Laser action requires 'Population Inversion' (N₂ > N₁) achieved via optical pumping into a metastable state (~10⁻³ s lifetime), triggering coherent stimulated emission.",
+      "latex": "R_{stimulated} = B_{21} \\cdot \\rho(\\nu) \\cdot N_2, \\quad \\frac{A_{21}}{B_{21}} = \\frac{8\\pi h \\nu^3}{c^3}",
+      "analogy": "A single whisper inducing a stadium crowd to chant in perfect unison and phase.",
+      "takeaway": "Trainer Note: Stimulated photons have identical frequency, direction, polarization, and phase as the incident photon!"
+    },
+    {
+      "id": 45,
+      "type": "formula_xray",
+      "topic": "Dipole Selection Rules",
+      "title": "Allowed vs Forbidden Transitions",
+      "latex": "\\Delta l = \\pm 1, \\quad \\Delta m_l = 0, \\pm 1",
+      "question": "Which of the following atomic transitions is strictly allowed by electric dipole selection rules?",
+      "options": [
+        "3d → 2p",
+        "3s → 2s",
+        "3d → 2s",
+        "4f → 2p"
+      ],
+      "correct": 0,
+      "reasoning": "Trainer Quantum Rule: A single photon carries intrinsic spin angular momentum S = 1 ℏ. Conservation of angular momentum mandates Δl = ±1. For 3d (l=2) to 2p (l=1), Δl = 1 - 2 = -1 (ALLOWED!). 3s to 2s has Δl = 0 (FORBIDDEN!)."
+    },
+    {
+      "id": 46,
+      "type": "spot_error",
+      "topic": "Photon vs Electron Collision",
+      "title": "Excitation by Photons vs Fast Electrons",
+      "prompt": "Spot the conceptual flaw regarding excitation of a ground state H-atom (E₁ = -13.6 eV, E₂ = -3.4 eV, ΔE = 10.2 eV):",
+      "steps": [
+        {
+          "line": "\\text{A photon of energy 11.0 eV strikes the atom: it CANNOT be absorbed}",
+          "err": false
+        },
+        {
+          "line": "\\text{An electron with kinetic energy 11.0 eV collides with the atom: it CAN excite the atom}",
+          "err": false
+        },
+        {
+          "line": "\\text{After inelastic collision, the incident electron is completely absorbed by the nucleus}",
+          "err": true
+        }
+      ],
+      "correction": "Severe misconception! In electron collision, the free electron does NOT get absorbed; it simply loses 10.2 eV to excite the bound electron and scatters away with remaining KE = 11.0 - 10.2 = 0.8 eV!"
+    },
+    {
+      "id": 47,
+      "type": "true_false",
+      "topic": "Continuous Photoionization",
+      "statement": "A photon with energy 15.0 eV can be absorbed by a hydrogen atom in its ground state.",
+      "isTrap": false,
+      "answer": true,
+      "explanation": "True! 15.0 eV > 13.6 eV (ionization threshold). The bound electron absorbs the entire 15.0 eV photon, breaks free into the continuum, and carries away the excess energy as kinetic energy: KE = 15.0 - 13.6 = 1.4 eV!"
+    },
+    {
+      "id": 48,
+      "type": "formula_xray",
+      "topic": "Gravitational Bohr Atom",
+      "title": "Gravitational Bohr Orbit (Thought Experiment)",
+      "latex": "\\frac{G m_e m_p}{r^2} = \\frac{m_e v^2}{r}, \\quad m_e v r = \\frac{h}{2\\pi} \\implies r_1 = \\frac{h^2}{4\\pi^2 G m_e^2 m_p}",
+      "question": "If a hydrogen atom were bound by gravity instead of Coulomb electrostatic force, the radius of the 1st orbit would be approximately:",
+      "options": [
+        "~ 10²⁹ meters (~ 10¹³ light years!)",
+        "~ 1 meter",
+        "~ 10⁻¹⁰ meters",
+        "~ 10¹⁵ meters"
+      ],
+      "correct": 0,
+      "reasoning": "JEE Advanced conceptual mind-bender! Gravity is ~10³⁹ times weaker than electrostatic force. Substituting G into the Bohr formula yields r₁ ≈ 1.2 × 10²⁹ m, larger than the observable universe!"
+    },
+    {
+      "id": 49,
+      "type": "true_false",
+      "topic": "Relativistic Fine Structure",
+      "statement": "Sommerfeld's relativistic extension of the Bohr model introduced elliptical orbits to explain fine structure splitting in hydrogen spectra.",
+      "isTrap": false,
+      "answer": true,
+      "explanation": "True! Sommerfeld accounted for relativistic mass variation (v/c ≈ 1/137) and elliptical orbits, showing energy depends slightly on orbital eccentricity (azimuthal quantum number k or l), breaking the exact degeneracy of Bohr levels."
+    },
+    {
+      "id": 50,
+      "type": "definition",
+      "topic": "Master NEET/JEE Scaling Matrix",
+      "title": "Ultimate Physics Trainer Exponent Grid",
+      "core": "The definitive formula matrix for hydrogen-like atoms (Z, n): r ∝ n²/Z | v ∝ Z/n | T ∝ n³/Z² | f ∝ Z²/n³ | I ∝ Z²/n³ | B ∝ Z³/n⁵ | E ∝ -Z²/n² | a_c ∝ Z³/n⁴ | L ∝ n | λ_dB ∝ n/Z.",
+      "latex": "r_n \\propto \\frac{n^2}{Z}, \\quad v_n \\propto \\frac{Z}{n}, \\quad E_n \\propto -\\frac{Z^2}{n^2}, \\quad B_n \\propto \\frac{Z^3}{n^5}",
+      "analogy": "The Rosetta Stone of Atomic Physics: memorize this grid and solve any NEET/JEE proportional variation question in under 15 seconds.",
+      "takeaway": "Physics Trainer Creed: Understand concepts fundamentally, beware exam traps, and execute with surgical precision!"
+    }
+  ]
+}
+  </script>
+</body>
+</html>

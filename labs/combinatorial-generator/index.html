@@ -1,0 +1,873 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Combinatorial Question Generator Engine | Mazhar's Lab</title>
+  <meta name="description" content="Algorithmic question synthesizer using combinatorial permutation patterns and procedural parameter binding.">
+  <link rel="canonical" href="https://mazhar.in/labs/combinatorial-generator/">
+  <meta name="lab-category" content="Algorithmic Generators & Tools">
+  <meta name="lab-status" content="Playground">
+  <meta name="lab-hook" content="Interactive combinatorial question generator engine with procedural variable synthesis.">
+  <meta name="lab-tech" content="Tailwind, JavaScript, MathJax">
+  <meta name="lab-tags" content="Combinatorics, Question Generator, Procedural, Math">
+  <!-- Open Graph / SEO -->
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Combinatorial Question Generator Engine | Mazhar's Lab">
+  <meta property="og:description" content="Algorithmic question synthesizer using combinatorial permutation patterns and procedural parameter binding.">
+  <meta property="og:url" content="https://mazhar.in/labs/combinatorial-generator/">
+  <!-- Schema.org WebApplication -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "Combinatorial Question Generator Engine | Mazhar's Lab",
+    "description": "Algorithmic question synthesizer using combinatorial permutation patterns and procedural parameter binding.",
+    "url": "https://mazhar.in/labs/combinatorial-generator/",
+    "applicationCategory": "EducationalApplication",
+    "author": {
+      "@type": "Person",
+      "name": "Syed Mazhar Ali",
+      "url": "https://mazhar.in"
+    }
+  }
+  </script>
+
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Combinatorial Question Generator Engine | Mazhar's Lab</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    /* Clean base adjustments */
+    body { font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+    .mono { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; }
+  </style>
+</head>
+<body class="bg-slate-50 text-slate-900 min-h-screen">
+
+  <!-- Top Navigation Bar -->
+  <header class="bg-white border-b border-slate-200 sticky top-0 z-20 shadow-sm">
+    <div class="max-w-7xl mx-auto px-4 py-3 flex flex-wrap items-center justify-between gap-3">
+      <div class="flex items-center gap-3">
+        <div class="bg-indigo-600 text-white w-9 h-9 rounded-lg flex items-center justify-center font-bold text-lg shadow-sm">
+          <i class="fa-solid fa-brain"></i>
+        </div>
+        <div>
+          <h1 class="text-lg font-bold text-slate-800 leading-tight">Combinatorial Question Engine</h1>
+          <p class="text-xs text-slate-500">Autonomous extraction & generation from structured chapter propositions</p>
+        </div>
+      </div>
+      
+      <!-- Quick Action Buttons -->
+      <div class="flex items-center gap-2">
+        <button id="btn-toggle-dataset" onclick="toggleDatasetModal()" class="px-3 py-1.5 text-xs font-semibold rounded border border-slate-300 hover:bg-slate-100 text-slate-700 transition flex items-center gap-1.5">
+          <i class="fa-solid fa-database"></i> Edit Statement Dataset (<span id="statement-count-badge">0</span>)
+        </button>
+        <button onclick="resetDatasetToDefault()" class="px-3 py-1.5 text-xs font-semibold rounded border border-slate-300 hover:bg-slate-100 text-rose-600 transition">
+          Reset Default Data
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Container -->
+  <main class="max-w-7xl mx-auto p-4 sm:p-6 grid grid-cols-1 lg:grid-cols-12 gap-6">
+
+    <!-- Left Controls & Generator Pane -->
+    <div class="lg:col-span-4 space-y-6">
+      
+      <!-- Generation Controls -->
+      <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm space-y-4">
+        <h2 class="text-sm font-bold uppercase tracking-wider text-slate-500 flex items-center gap-2">
+          <i class="fa-solid fa-sliders text-indigo-500"></i> Generation Controller
+        </h2>
+
+        <div class="space-y-2">
+          <label class="block text-xs font-semibold text-slate-700">Select Question Pattern</label>
+          <div class="grid grid-cols-1 gap-2">
+            <button onclick="selectType('statement')" id="tab-statement" class="type-btn text-left px-3.5 py-2.5 rounded-lg border text-sm font-medium transition flex items-center justify-between border-indigo-600 bg-indigo-50 text-indigo-900">
+              <span><i class="fa-solid fa-list-check mr-2 text-indigo-600"></i> Statement Type (I, II, III, IV)</span>
+              <span class="text-xs bg-indigo-200 text-indigo-800 px-1.5 py-0.5 rounded font-mono">Permutative</span>
+            </button>
+            <button onclick="selectType('assertion')" id="tab-assertion" class="type-btn text-left px-3.5 py-2.5 rounded-lg border text-sm font-medium transition flex items-center justify-between border-slate-200 bg-white text-slate-700 hover:bg-slate-50">
+              <span><i class="fa-solid fa-diagram-project mr-2 text-amber-600"></i> Assertion-Reason</span>
+              <span class="text-xs bg-amber-100 text-amber-800 px-1.5 py-0.5 rounded font-mono">Causal Graph</span>
+            </button>
+            <button onclick="selectType('matrix')" id="tab-matrix" class="type-btn text-left px-3.5 py-2.5 rounded-lg border text-sm font-medium transition flex items-center justify-between border-slate-200 bg-white text-slate-700 hover:bg-slate-50">
+              <span><i class="fa-solid fa-table-cells mr-2 text-emerald-600"></i> Matrix Match (Col I & II)</span>
+              <span class="text-xs bg-emerald-100 text-emerald-800 px-1.5 py-0.5 rounded font-mono">Attribute Pivot</span>
+            </button>
+          </div>
+        </div>
+
+        <button onclick="generateQuestion()" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2.5 px-4 rounded-lg shadow-sm transition flex items-center justify-center gap-2 text-sm">
+          <i class="fa-solid fa-dice"></i> Generate New Question
+        </button>
+      </div>
+
+      <!-- Combinatorial Mathematics Summary Card -->
+      <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm space-y-3">
+        <h3 class="text-xs font-bold uppercase tracking-wider text-slate-500 flex items-center gap-2">
+          <i class="fa-solid fa-calculator text-indigo-500"></i> Dataset Combinatorics
+        </h3>
+        <div class="text-xs text-slate-600 space-y-2">
+          <div class="flex justify-between pb-1 border-b border-slate-100">
+            <span>Verified Statements Pool (N):</span>
+            <span id="math-n" class="font-bold text-slate-900 mono">10</span>
+          </div>
+          <div class="flex justify-between pb-1 border-b border-slate-100">
+            <span>Statement (4-item) Combinations:</span>
+            <span id="math-comb" class="font-bold text-slate-900 mono">210</span>
+          </div>
+          <div class="flex justify-between pb-1 border-b border-slate-100">
+            <span>Truth Signatures (2⁴):</span>
+            <span class="font-bold text-slate-900 mono">16 variants / pick</span>
+          </div>
+          <div class="flex justify-between pb-1 border-b border-slate-100">
+            <span>Theoretical Statement Stems:</span>
+            <span id="math-total-stmt" class="font-bold text-indigo-700 mono">3,360</span>
+          </div>
+          <div class="flex justify-between">
+            <span>Causal Grounded Edges:</span>
+            <span id="math-causal-edges" class="font-bold text-amber-700 mono">6</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Underlying Algorithm Explanation -->
+      <div class="bg-slate-100 p-4 rounded-xl border border-slate-200 text-xs text-slate-600 space-y-2">
+        <p class="font-semibold text-slate-800 flex items-center gap-1.5">
+          <i class="fa-solid fa-lightbulb text-amber-500"></i> Mathematical Integrity Rule
+        </p>
+        <p id="algo-hint">
+          <strong>Statement Mode:</strong> Uniform random sample of 4 distinct propositions, randomized truth states (text vs. negation), with deterministic answer key aggregation.
+        </p>
+      </div>
+
+    </div>
+
+    <!-- Right Question Display Stage -->
+    <div class="lg:col-span-8 space-y-6">
+      
+      <div id="question-card" class="bg-white p-6 sm:p-8 rounded-xl border border-slate-200 shadow-sm relative min-h-[460px] flex flex-col justify-between">
+        
+        <!-- Question Content Container -->
+        <div id="question-render-area" class="space-y-6">
+          <!-- Injected via JavaScript -->
+        </div>
+
+        <!-- Question Footer & Verification -->
+        <div class="mt-8 pt-4 border-t border-slate-200 flex flex-wrap items-center justify-between gap-3">
+          <div class="flex items-center gap-2">
+            <button id="btn-check-ans" onclick="evaluateAnswer()" class="bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-semibold px-4 py-2 rounded-lg shadow-sm transition">
+              Verify Answer
+            </button>
+            <button id="btn-show-expl" onclick="toggleExplanation()" class="bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold px-3 py-2 rounded-lg transition">
+              View Derivation / Logic
+            </button>
+          </div>
+          <span id="feedback-badge" class="hidden text-xs font-semibold px-2.5 py-1 rounded"></span>
+        </div>
+
+        <!-- Hidden Explanations Panel -->
+        <div id="explanation-box" class="hidden mt-4 p-4 rounded-lg bg-slate-50 border border-slate-200 text-xs text-slate-700 space-y-2">
+          <!-- Injected explanation -->
+        </div>
+
+      </div>
+
+    </div>
+
+  </main>
+
+  <!-- Edit Dataset Modal -->
+  <div id="dataset-modal" class="fixed inset-0 bg-slate-900/60 z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-xl shadow-2xl max-w-4xl w-full max-h-[90vh] flex flex-col border border-slate-200">
+      
+      <div class="px-6 py-4 border-b border-slate-200 flex items-center justify-between">
+        <h3 class="font-bold text-slate-800 text-base flex items-center gap-2">
+          <i class="fa-solid fa-code text-indigo-600"></i> Statement Dataset (JSON)
+        </h3>
+        <button onclick="toggleDatasetModal()" class="text-slate-400 hover:text-slate-600 text-lg">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+
+      <div class="p-6 flex-1 overflow-auto">
+        <p class="text-xs text-slate-500 mb-2">
+          Modify the propositions, negations, causal links, or attributes below. Format errors will prevent generation.
+        </p>
+        <textarea id="json-editor-textarea" class="w-full h-96 p-3 mono text-xs bg-slate-900 text-emerald-400 rounded-lg border border-slate-700 focus:outline-none focus:ring-2 focus:ring-indigo-500" spellcheck="false"></textarea>
+      </div>
+
+      <div class="px-6 py-3 border-t border-slate-200 bg-slate-50 flex items-center justify-between">
+        <span id="json-error" class="text-xs text-rose-600 font-semibold hidden">Invalid JSON format!</span>
+        <div class="flex gap-2 ml-auto">
+          <button onclick="toggleDatasetModal()" class="px-4 py-1.5 text-xs font-medium text-slate-600 hover:text-slate-800">
+            Cancel
+          </button>
+          <button onclick="saveCustomDataset()" class="px-4 py-1.5 text-xs font-semibold bg-indigo-600 hover:bg-indigo-700 text-white rounded">
+            Save & Recompute Math
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- JavaScript Implementation -->
+  <script>
+    // -------------------------------------------------------------
+    // DEFAULT DATASET: Physics Chapter - Mechanics & Rotation
+    // -------------------------------------------------------------
+    const DEFAULT_STATEMENTS = [
+      {
+        "id": "STMT_001",
+        "concept": "Work Done by Conservative Forces",
+        "subtopic": "Work-Energy Theorem",
+        "statement": "The work done by a conservative force on an object moving along a closed loop is strictly zero.",
+        "negation": "The work done by a conservative force along a closed path depends on the geometry of the loop and is non-zero.",
+        "causal_links": {
+          "explained_by_ids": [],
+          "explains_ids": ["STMT_002"]
+        },
+        "attributes": {
+          "entity": "Conservative Force Field",
+          "si_unit": "Joule (J)",
+          "dimension": "[M L^2 T^-2]",
+          "nature": "Path-independent"
+        }
+      },
+      {
+        "id": "STMT_002",
+        "concept": "Mechanical Energy Conservation",
+        "subtopic": "Work-Energy Theorem",
+        "statement": "Mechanical energy of a system is conserved if the internal forces acting within the system are exclusively conservative.",
+        "negation": "Mechanical energy of a system is conserved even in the presence of internal non-conservative dissipative forces.",
+        "causal_links": {
+          "explained_by_ids": ["STMT_001"],
+          "explains_ids": []
+        },
+        "attributes": {
+          "entity": "Mechanical Energy",
+          "si_unit": "Joule (J)",
+          "dimension": "[M L^2 T^-2]",
+          "nature": "Scalar state function"
+        }
+      },
+      {
+        "id": "STMT_003",
+        "concept": "Moment of Inertia Dependency",
+        "subtopic": "Rotational Dynamics",
+        "statement": "The moment of inertia of a rigid body depends on the location and orientation of the chosen axis of rotation.",
+        "negation": "The moment of inertia is an intrinsic invariant constant of a rigid body, invariant of axis orientation.",
+        "causal_links": {
+          "explained_by_ids": [],
+          "explains_ids": ["STMT_004", "STMT_005"]
+        },
+        "attributes": {
+          "entity": "Moment of Inertia",
+          "si_unit": "kg m^2",
+          "dimension": "[M L^2 T^0]",
+          "nature": "Second-rank Tensor"
+        }
+      },
+      {
+        "id": "STMT_004",
+        "concept": "Parallel Axis Theorem",
+        "subtopic": "Rotational Dynamics",
+        "statement": "The moment of inertia about any arbitrary parallel axis is always strictly greater than that about the centroidal parallel axis.",
+        "negation": "The moment of inertia about any arbitrary parallel axis is always less than that about the centroidal parallel axis.",
+        "causal_links": {
+          "explained_by_ids": ["STMT_003"],
+          "explains_ids": []
+        },
+        "attributes": {
+          "entity": "Parallel Axis Theorem",
+          "si_unit": "kg m^2",
+          "dimension": "[M L^2 T^0]",
+          "nature": "Formula: I = I_cm + M d^2"
+        }
+      },
+      {
+        "id": "STMT_005",
+        "concept": "Torque and Angular Acceleration",
+        "subtopic": "Rotational Dynamics",
+        "statement": "Net external torque acting on a rigid body about a fixed axis equals the product of its moment of inertia and angular acceleration.",
+        "negation": "Net external torque on a rigid body equals its total rotational kinetic energy multiplied by its angular velocity.",
+        "causal_links": {
+          "explained_by_ids": ["STMT_003"],
+          "explains_ids": ["STMT_006"]
+        },
+        "attributes": {
+          "entity": "Torque",
+          "si_unit": "N m",
+          "dimension": "[M L^2 T^-2]",
+          "nature": "Axial Vector (Pseudovector)"
+        }
+      },
+      {
+        "id": "STMT_006",
+        "concept": "Conservation of Angular Momentum",
+        "subtopic": "Rotational Dynamics",
+        "statement": "The total angular momentum of a rigid system remains constant whenever the net external torque on the system is zero.",
+        "negation": "The total angular momentum of a system is conserved whenever the net external linear force acting on the system is zero.",
+        "causal_links": {
+          "explained_by_ids": ["STMT_005"],
+          "explains_ids": []
+        },
+        "attributes": {
+          "entity": "Angular Momentum",
+          "si_unit": "kg m^2 s^-1",
+          "dimension": "[M L^2 T^-1]",
+          "nature": "Axial Vector (Pseudovector)"
+        }
+      },
+      {
+        "id": "STMT_007",
+        "concept": "Static Friction Boundary",
+        "subtopic": "Friction and Contact Dynamics",
+        "statement": "The magnitude of static friction is self-adjusting and matches the applied tangential force up to its limiting threshold.",
+        "negation": "Static friction possesses a constant fixed magnitude equal to the product of coefficient of friction and normal reaction.",
+        "causal_links": {
+          "explained_by_ids": [],
+          "explains_ids": ["STMT_008"]
+        },
+        "attributes": {
+          "entity": "Static Friction Force",
+          "si_unit": "Newton (N)",
+          "dimension": "[M L T^-2]",
+          "nature": "Self-adjusting Contact Vector"
+        }
+      },
+      {
+        "id": "STMT_008",
+        "concept": "Work Done by Static Friction",
+        "subtopic": "Friction and Contact Dynamics",
+        "statement": "Work done by static friction on a single body can be positive, negative, or zero depending on the frame of reference.",
+        "negation": "Work done by static friction is fundamentally zero across all possible inertial and non-inertial reference frames.",
+        "causal_links": {
+          "explained_by_ids": ["STMT_007"],
+          "explains_ids": []
+        },
+        "attributes": {
+          "entity": "Work Done by Friction",
+          "si_unit": "Joule (J)",
+          "dimension": "[M L^2 T^-2]",
+          "nature": "Frame-dependent scalar"
+        }
+      },
+      {
+        "id": "STMT_009",
+        "concept": "Radius of Gyration",
+        "subtopic": "Rotational Dynamics",
+        "statement": "Radius of gyration depends on the shape and size of the body and the position of the axis, but is independent of total mass.",
+        "negation": "Radius of gyration is directly proportional to the total mass of the rotating rigid body.",
+        "causal_links": {
+          "explained_by_ids": ["STMT_003"],
+          "explains_ids": []
+        },
+        "attributes": {
+          "entity": "Radius of Gyration",
+          "si_unit": "meter (m)",
+          "dimension": "[M^0 L T^0]",
+          "nature": "Geometrical scalar"
+        }
+      },
+      {
+        "id": "STMT_010",
+        "concept": "Pure Rolling Condition",
+        "subtopic": "Rolling Dynamics",
+        "statement": "For a circular body rolling without slipping on a stationary surface, the instantaneous linear velocity of the contact point is zero.",
+        "negation": "For a body rolling without slipping, the instantaneous linear velocity of the contact point equals its center of mass velocity.",
+        "causal_links": {
+          "explained_by_ids": [],
+          "explains_ids": []
+        },
+        "attributes": {
+          "entity": "Point of Contact (Pure Rolling)",
+          "si_unit": "m s^-1",
+          "dimension": "[M^0 L T^-1]",
+          "nature": "Instantaneous rest state"
+        }
+      }
+    ];
+
+    // State Variables
+    let statements = JSON.parse(JSON.stringify(DEFAULT_STATEMENTS));
+    let currentQuestionType = 'statement';
+    let currentQuestion = null;
+    let selectedOptionIndex = null;
+
+    // Helper: Combinations nCr
+    function combinations(n, r) {
+      if (r < 0 || r > n) return 0;
+      if (r === 0 || r === n) return 1;
+      let c = 1;
+      for (let i = 1; i <= r; i++) {
+        c = (c * (n - (r - i))) / i;
+      }
+      return Math.round(c);
+    }
+
+    // Update Math Dashboard
+    function updateMathDashboard() {
+      const N = statements.length;
+      const nCr = combinations(N, 4);
+      const totalStmtQuestions = nCr * 16;
+      
+      let edges = 0;
+      statements.forEach(s => {
+        if (s.causal_links && s.causal_links.explains_ids) {
+          edges += s.causal_links.explains_ids.length;
+        }
+      });
+
+      document.getElementById('statement-count-badge').textContent = N;
+      document.getElementById('math-n').textContent = N;
+      document.getElementById('math-comb').textContent = nCr.toLocaleString();
+      document.getElementById('math-total-stmt').textContent = totalStmtQuestions.toLocaleString();
+      document.getElementById('math-causal-edges').textContent = edges;
+    }
+
+    // Switch Pattern
+    function selectType(type) {
+      currentQuestionType = type;
+      document.querySelectorAll('.type-btn').forEach(btn => {
+        btn.classList.remove('border-indigo-600', 'bg-indigo-50', 'text-indigo-900');
+        btn.classList.add('border-slate-200', 'bg-white', 'text-slate-700');
+      });
+
+      const activeBtn = document.getElementById(`tab-${type}`);
+      activeBtn.classList.remove('border-slate-200', 'bg-white', 'text-slate-700');
+      activeBtn.classList.add('border-indigo-600', 'bg-indigo-50', 'text-indigo-900');
+
+      const hints = {
+        statement: "<strong>Statement Mode:</strong> Uniform random sample of 4 distinct propositions, randomized truth states (text vs. negation), with deterministic answer key aggregation.",
+        assertion: "<strong>Assertion-Reason:</strong> Traverses causal graph edges for Case A (explains), unlinked true statements for Case B, and negated nodes for Cases C & D.",
+        matrix: "<strong>Matrix Match:</strong> Attribute pivot query pairing 4 physical concepts against randomized units, dimensions, or tensor properties."
+      };
+      document.getElementById('algo-hint').innerHTML = hints[type];
+      generateQuestion();
+    }
+
+    // Utility: Shuffle
+    function shuffle(array) {
+      const arr = [...array];
+      for (let i = arr.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+      }
+      return arr;
+    }
+
+    // -------------------------------------------------------------
+    // GENERATOR: 1. Statement Type (I, II, III, IV)
+    // -------------------------------------------------------------
+    function generateStatementQuestion() {
+      if (statements.length < 4) {
+        alert("At least 4 statements are required in the dataset.");
+        return null;
+      }
+      const sampled = shuffle(statements).slice(0, 4);
+      const chosenItems = [];
+      const trueIndices = [];
+
+      sampled.forEach((item, idx) => {
+        const isTrue = Math.random() > 0.45; // 55% true, 45% negation
+        if (isTrue) {
+          chosenItems.push({ text: item.statement, isCorrect: true, origin: item });
+          trueIndices.push(idx + 1); // 1-based index (I, II, III, IV)
+        } else {
+          chosenItems.push({ text: item.negation, isCorrect: false, origin: item });
+        }
+      });
+
+      // Target question goal: "Which of the above are TRUE?"
+      const roman = ['I', 'II', 'III', 'IV'];
+      const correctOptionString = trueIndices.length > 0 
+        ? trueIndices.map(i => roman[i - 1]).join(' and ') 
+        : 'None of the above';
+
+      // Generate 4 distinct MCQ options
+      const optionsSet = new Set();
+      optionsSet.add(correctOptionString);
+
+      const allSubsets = [
+        'I only', 'II only', 'III only', 'I and II', 'II and IV', 
+        'I and III', 'II and III', 'I, II and IV', 'I, III and IV', 
+        'II, III and IV', 'I, II, III and IV', 'None of the above'
+      ];
+
+      const shuffledSubsets = shuffle(allSubsets);
+      for (const opt of shuffledSubsets) {
+        if (optionsSet.size >= 4) break;
+        optionsSet.add(opt);
+      }
+
+      const options = shuffle(Array.from(optionsSet));
+      const correctIndex = options.indexOf(correctOptionString);
+
+      return {
+        type: 'statement',
+        title: 'Multi-Statement Analysis',
+        stem: 'Examine the validity of the following statements regarding mechanics and rotational dynamics:',
+        items: chosenItems.map((c, i) => ({ label: roman[i], text: c.text, isCorrect: c.isCorrect, concept: c.origin.concept })),
+        options: options,
+        correctIndex: correctIndex,
+        explanation: `Detailed Truth Assessment:\n` + chosenItems.map((c, i) => 
+          `• Statement ${roman[i]} is ${c.isCorrect ? 'CORRECT' : 'INCORRECT'}. (Concept: ${c.origin.concept})`
+        ).join('\n')
+      };
+    }
+
+    // -------------------------------------------------------------
+    // GENERATOR: 2. Assertion-Reason Type
+    // -------------------------------------------------------------
+    function generateAssertionReasonQuestion() {
+      // Find causal pairs
+      const causalPairs = [];
+      statements.forEach(cause => {
+        if (cause.causal_links && cause.causal_links.explains_ids) {
+          cause.causal_links.explains_ids.forEach(effectId => {
+            const effect = statements.find(s => s.id === effectId);
+            if (effect) causalPairs.push({ cause, effect });
+          });
+        }
+      });
+
+      // Randomly pick which Case to generate:
+      // A: Both True, R is correct explanation
+      // B: Both True, R is NOT correct explanation
+      // C: A is True, R is False
+      // D: A is False, R is True
+      const targetCase = ['A', 'B', 'C', 'D'][Math.floor(Math.random() * 4)];
+      let assertionText = "", reasonText = "", explanationText = "";
+
+      if (targetCase === 'A' && causalPairs.length > 0) {
+        const pair = causalPairs[Math.floor(Math.random() * causalPairs.length)];
+        assertionText = pair.effect.statement;
+        reasonText = pair.cause.statement;
+        explanationText = `Assertion is True and Reason is True. Statement '${pair.cause.concept}' causally grounds and explains '${pair.effect.concept}'.`;
+      } else if (targetCase === 'B' || causalPairs.length === 0) {
+        // Pick two independent true statements
+        const pair = shuffle(statements).slice(0, 2);
+        assertionText = pair[0].statement;
+        reasonText = pair[1].statement;
+        explanationText = `Both statements are factually TRUE, but Reason does not provide the causal mechanism or explanation for Assertion.`;
+      } else if (targetCase === 'C') {
+        const pair = shuffle(statements).slice(0, 2);
+        assertionText = pair[0].statement; // True
+        reasonText = pair[1].negation;     // False
+        explanationText = `Assertion is factually TRUE, but Reason is an INCORRECT assertion (${pair[1].concept}).`;
+      } else { // 'D'
+        const pair = shuffle(statements).slice(0, 2);
+        assertionText = pair[0].negation;  // False
+        reasonText = pair[1].statement;    // True
+        explanationText = `Assertion is INCORRECT (${pair[0].concept}), whereas Reason is a valid physical law.`;
+      }
+
+      const standardOptions = [
+        "Both Assertion (A) and Reason (R) are true, and (R) is the correct explanation of (A).",
+        "Both Assertion (A) and Reason (R) are true, but (R) is NOT the correct explanation of (A).",
+        "Assertion (A) is true, but Reason (R) is false.",
+        "Assertion (A) is false, but Reason (R) is true."
+      ];
+
+      const correctMapping = { 'A': 0, 'B': 1, 'C': 2, 'D': 3 };
+
+      return {
+        type: 'assertion',
+        title: 'Assertion & Reasoning',
+        stem: 'Given below are two statements labeled as Assertion (A) and Reason (R):',
+        assertion: assertionText,
+        reason: reasonText,
+        options: standardOptions,
+        correctIndex: correctMapping[targetCase],
+        explanation: explanationText
+      };
+    }
+
+    // -------------------------------------------------------------
+    // GENERATOR: 3. Matrix Match Type
+    // -------------------------------------------------------------
+    function generateMatrixMatchQuestion() {
+      // Pick 4 statements having rich attributes
+      const filtered = statements.filter(s => s.attributes && s.attributes.entity && (s.attributes.si_unit || s.attributes.nature));
+      if (filtered.length < 4) {
+        alert("Need at least 4 items with valid attributes for Matrix match.");
+        return null;
+      }
+
+      const selected = shuffle(filtered).slice(0, 4);
+      // Pick an attribute dimension to match: either 'si_unit' or 'nature'
+      const dimensionChoice = Math.random() > 0.5 ? 'si_unit' : 'nature';
+      const dimensionLabel = dimensionChoice === 'si_unit' ? 'SI Unit / Dimension' : 'Nature / Physical Property';
+
+      const col1 = selected.map((s, idx) => ({ key: String.fromCharCode(65 + idx), entity: s.attributes.entity, origin: s }));
+      const correctMatches = {}; // e.g., 'A': 'p'
+      
+      const col2Raw = selected.map((s, idx) => {
+        return { val: s.attributes[dimensionChoice], originalIdx: idx };
+      });
+
+      const shuffledCol2 = shuffle(col2Raw);
+      const col2Labels = ['p', 'q', 'r', 's'];
+      
+      const col2 = shuffledCol2.map((item, idx) => {
+        return { label: col2Labels[idx], val: item.val, originalIdx: item.originalIdx };
+      });
+
+      // Map Column 1 letters to Column 2 letters
+      col1.forEach((c1, i) => {
+        const found = col2.find(c2 => c2.originalIdx === i);
+        correctMatches[c1.key] = found.label;
+      });
+
+      // Construct code like: A->p, B->r, C->q, D->s
+      function formatCode(matches) {
+        return `A-${matches['A']}, B-${matches['B']}, C-${matches['C']}, D-${matches['D']}`;
+      }
+
+      const correctCode = formatCode(correctMatches);
+      const optionsSet = new Set();
+      optionsSet.add(correctCode);
+
+      // Create realistic permutated distractors
+      while (optionsSet.size < 4) {
+        const randomPerm = shuffle([...col2Labels]);
+        const distractorMatches = {
+          'A': randomPerm[0],
+          'B': randomPerm[1],
+          'C': randomPerm[2],
+          'D': randomPerm[3]
+        };
+        optionsSet.add(formatCode(distractorMatches));
+      }
+
+      const options = shuffle(Array.from(optionsSet));
+      const correctIndex = options.indexOf(correctCode);
+
+      return {
+        type: 'matrix',
+        title: 'Matrix Matching (Column I vs Column II)',
+        stem: `Match the physical entities in Column I with their corresponding ${dimensionLabel} in Column II:`,
+        col1: col1,
+        col2: col2,
+        options: options,
+        correctIndex: correctIndex,
+        explanation: `Correct Correspondence:\n` + col1.map(c1 => 
+          `• (${c1.key}) ${c1.entity} → (${correctMatches[c1.key]}) ${c1.origin.attributes[dimensionChoice]}`
+        ).join('\n')
+      };
+    }
+
+    // -------------------------------------------------------------
+    // RENDER DISPATCHER
+    // -------------------------------------------------------------
+    function generateQuestion() {
+      selectedOptionIndex = null;
+      hideFeedback();
+
+      if (currentQuestionType === 'statement') {
+        currentQuestion = generateStatementQuestion();
+      } else if (currentQuestionType === 'assertion') {
+        currentQuestion = generateAssertionReasonQuestion();
+      } else if (currentQuestionType === 'matrix') {
+        currentQuestion = generateMatrixMatchQuestion();
+      }
+
+      if (!currentQuestion) return;
+      renderCurrentQuestion();
+    }
+
+    function renderCurrentQuestion() {
+      const container = document.getElementById('question-render-area');
+      const q = currentQuestion;
+
+      let html = `
+        <div>
+          <div class="flex items-center gap-2 mb-2">
+            <span class="text-xs font-bold uppercase tracking-wider px-2 py-0.5 rounded bg-slate-100 text-slate-600 border border-slate-200">${q.title}</span>
+            <span class="text-xs text-slate-400">Single Correct Choice</span>
+          </div>
+          <p class="text-sm font-semibold text-slate-800 leading-relaxed">${q.stem}</p>
+        </div>
+      `;
+
+      // Body based on question type
+      if (q.type === 'statement') {
+        html += `<div class="space-y-2.5 my-4 bg-slate-50 p-4 rounded-lg border border-slate-200">`;
+        q.items.forEach(item => {
+          html += `
+            <div class="text-xs text-slate-800 leading-relaxed flex gap-2">
+              <span class="font-bold text-slate-500 w-6 shrink-0">${item.label}.</span>
+              <span>${item.text}</span>
+            </div>
+          `;
+        });
+        html += `</div>`;
+      } else if (q.type === 'assertion') {
+        html += `
+          <div class="space-y-3 my-4 bg-amber-50/60 p-4 rounded-lg border border-amber-200/80">
+            <div class="text-xs leading-relaxed">
+              <strong class="text-amber-900 font-bold">Assertion (A):</strong>
+              <span class="text-slate-800 ml-1">${q.assertion}</span>
+            </div>
+            <div class="text-xs leading-relaxed">
+              <strong class="text-amber-900 font-bold">Reason (R):</strong>
+              <span class="text-slate-800 ml-1">${q.reason}</span>
+            </div>
+          </div>
+        `;
+      } else if (q.type === 'matrix') {
+        html += `
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 my-4">
+            <div class="border border-slate-200 rounded-lg p-3 bg-slate-50">
+              <h4 class="text-xs font-bold text-slate-700 uppercase mb-2 border-b pb-1">Column I (Entity)</h4>
+              <div class="space-y-2 text-xs">
+                ${q.col1.map(item => `<div><strong class="text-slate-600">(${item.key})</strong> ${item.entity}</div>`).join('')}
+              </div>
+            </div>
+            <div class="border border-slate-200 rounded-lg p-3 bg-slate-50">
+              <h4 class="text-xs font-bold text-slate-700 uppercase mb-2 border-b pb-1">Column II (Property)</h4>
+              <div class="space-y-2 text-xs">
+                ${q.col2.map(item => `<div><strong class="text-slate-600">(${item.label})</strong> ${item.val}</div>`).join('')}
+              </div>
+            </div>
+          </div>
+        `;
+      }
+
+      // Render Options (A, B, C, D)
+      const letters = ['A', 'B', 'C', 'D'];
+      html += `
+        <div class="space-y-2 pt-2">
+          <label class="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-1">Choose the correct alternative:</label>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+      `;
+
+      q.options.forEach((opt, idx) => {
+        html += `
+          <button onclick="pickOption(${idx})" id="opt-btn-${idx}" class="opt-btn text-left p-3 rounded-lg border border-slate-200 hover:border-slate-300 hover:bg-slate-50 text-xs font-medium transition flex items-start gap-2.5">
+            <span class="w-5 h-5 rounded-full border border-slate-300 flex items-center justify-center text-[10px] font-bold text-slate-600 shrink-0 mt-0.5">${letters[idx]}</span>
+            <span class="text-slate-800">${opt}</span>
+          </button>
+        `;
+      });
+
+      html += `</div></div>`;
+      container.innerHTML = html;
+
+      // Reset explanation container
+      document.getElementById('explanation-box').innerHTML = `
+        <div class="font-bold text-slate-800 mb-1">Theoretical Derivation:</div>
+        <pre class="whitespace-pre-wrap font-sans text-xs leading-relaxed text-slate-700">${q.explanation}</pre>
+      `;
+      document.getElementById('explanation-box').classList.add('hidden');
+    }
+
+    function pickOption(idx) {
+      selectedOptionIndex = idx;
+      document.querySelectorAll('.opt-btn').forEach((btn, i) => {
+        btn.classList.remove('border-indigo-600', 'bg-indigo-50/70', 'ring-1', 'ring-indigo-500');
+        if (i === idx) {
+          btn.classList.add('border-indigo-600', 'bg-indigo-50/70', 'ring-1', 'ring-indigo-500');
+        }
+      });
+      hideFeedback();
+    }
+
+    function evaluateAnswer() {
+      if (selectedOptionIndex === null) {
+        showFeedback(false, "Please select an option before checking!");
+        return;
+      }
+
+      const isCorrect = selectedOptionIndex === currentQuestion.correctIndex;
+      const letters = ['A', 'B', 'C', 'D'];
+      const correctLetter = letters[currentQuestion.correctIndex];
+
+      // Highlight options
+      document.querySelectorAll('.opt-btn').forEach((btn, idx) => {
+        btn.classList.remove('border-emerald-600', 'bg-emerald-50', 'border-rose-600', 'bg-rose-50');
+        if (idx === currentQuestion.correctIndex) {
+          btn.classList.add('border-emerald-600', 'bg-emerald-50');
+        } else if (idx === selectedOptionIndex && !isCorrect) {
+          btn.classList.add('border-rose-600', 'bg-rose-50');
+        }
+      });
+
+      if (isCorrect) {
+        showFeedback(true, `Correct! Option (${correctLetter}) is the valid choice.`);
+      } else {
+        showFeedback(false, `Incorrect. The correct answer is Option (${correctLetter}).`);
+      }
+    }
+
+    function showFeedback(success, text) {
+      const badge = document.getElementById('feedback-badge');
+      badge.textContent = text;
+      badge.classList.remove('hidden', 'bg-emerald-100', 'text-emerald-800', 'bg-rose-100', 'text-rose-800', 'bg-amber-100', 'text-amber-800');
+      if (success) {
+        badge.classList.add('bg-emerald-100', 'text-emerald-800');
+      } else {
+        badge.classList.add('bg-rose-100', 'text-rose-800');
+      }
+    }
+
+    function hideFeedback() {
+      document.getElementById('feedback-badge').classList.add('hidden');
+    }
+
+    function toggleExplanation() {
+      const box = document.getElementById('explanation-box');
+      box.classList.toggle('hidden');
+    }
+
+    // -------------------------------------------------------------
+    // DATASET MODAL & EDITOR
+    // -------------------------------------------------------------
+    function toggleDatasetModal() {
+      const modal = document.getElementById('dataset-modal');
+      const isHidden = modal.classList.contains('hidden');
+      if (isHidden) {
+        document.getElementById('json-editor-textarea').value = JSON.stringify(statements, null, 2);
+        document.getElementById('json-error').classList.add('hidden');
+        modal.classList.remove('hidden');
+      } else {
+        modal.classList.add('hidden');
+      }
+    }
+
+    function saveCustomDataset() {
+      const raw = document.getElementById('json-editor-textarea').value;
+      try {
+        const parsed = JSON.parse(raw);
+        if (!Array.isArray(parsed) || parsed.length === 0) {
+          throw new Error("Must be a non-empty array of statement objects.");
+        }
+        statements = parsed;
+        updateMathDashboard();
+        toggleDatasetModal();
+        generateQuestion();
+      } catch (err) {
+        const errEl = document.getElementById('json-error');
+        errEl.textContent = "Error: " + err.message;
+        errEl.classList.remove('hidden');
+      }
+    }
+
+    function resetDatasetToDefault() {
+      statements = JSON.parse(JSON.stringify(DEFAULT_STATEMENTS));
+      updateMathDashboard();
+      generateQuestion();
+    }
+
+    // Initialize application on load
+    window.onload = function() {
+      updateMathDashboard();
+      generateQuestion();
+    };
+  </script>
+</body>
+</html>

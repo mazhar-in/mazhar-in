@@ -1,0 +1,26 @@
+[
+  {
+    "id": "lockinrank",
+    "title": "LockInRank CBT Platform",
+    "hook": "Full-scale NTA-pattern Computer-Based Test engine with synchronized OMR, instant percentiles, and mistake analytics.",
+    "category": "EdTech Utilities & CBT",
+    "status": "graduated",
+    "live_url": "https://lockinrank.com",
+    "is_external": true,
+    "origin_story": "Started as a 50-line JavaScript countdown timer and question-state toggle to test how quickly students could respond to randomized numerical questions.",
+    "tech": ["CBT Engine", "Web Workers", "KaTeX AST", "IndexedDB", "Vanilla JS"],
+    "tags": ["CBT", "NTA Simulator", "Mock Testing", "EdTech", "Graduated"]
+  },
+  {
+    "id": "sma-virtual-physics-lab",
+    "title": "SMA Virtual Physics Lab Suite",
+    "hook": "Zero-lag browser apparatus replicating 12+ Class 11 & 12 CBSE practicals with real-time procedural measurement.",
+    "category": "Virtual Labs",
+    "status": "graduated",
+    "live_url": "https://physics-virtual-lab.smaphysics.com/",
+    "is_external": true,
+    "origin_story": "Began as a single canvas experiment measuring vernier caliper screw pitch errors before expanding into a full virtual experiment workbench.",
+    "tech": ["Canvas API", "Procedural Math", "Interactive SVG", "Vanilla JS"],
+    "tags": ["Virtual Labs", "Practicals", "Simulations", "CBSE", "Graduated"]
+  }
+]

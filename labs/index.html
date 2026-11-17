@@ -1,0 +1,653 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>The Experimental Workbench — Mazhar's Lab</title>
+  <meta name="description" content="Where code, thought experiments, mechanics, and interactive toys collide. Unfinished, curious, alive. A tactile personal laboratory for visual mathematics, reflex physics, and algorithmic curiosities by Syed Mazhar Ali.">
+  <link rel="canonical" href="https://mazhar.in/labs/">
+  
+  <!-- Open Graph / SEO -->
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="The Experimental Workbench — Mazhar's Lab">
+  <meta property="og:description" content="Where code, thought experiments, mechanics, and interactive toys collide. Unfinished, curious, alive.">
+  <meta property="og:url" content="https://mazhar.in/labs/">
+  <meta property="og:site_name" content="Syed Mazhar Ali">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="The Experimental Workbench — Mazhar's Lab">
+  <meta name="twitter:description" content="Where code, thought experiments, mechanics, and interactive toys collide. Unfinished, curious, alive.">
+
+  <!-- Schema.org CollectionPage -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "CollectionPage",
+    "name": "The Experimental Workbench — Mazhar's Lab",
+    "description": "A tactile personal laboratory for visual mathematics, reflex physics, and algorithmic curiosities.",
+    "url": "https://mazhar.in/labs/",
+    "author": {
+      "@type": "Person",
+      "name": "Syed Mazhar Ali",
+      "url": "https://mazhar.in"
+    }
+  }
+  </script>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="../assets/css/style.css">
+</head>
+<body>
+
+  <!-- Site Navigation Header -->
+  <header class="site-header">
+    <div class="container header-inner">
+      <a href="../index.html" class="site-logo">
+        <span class="logo-badge">M</span>
+        <span>mazhar<span style="color: var(--accent-cyan)">.in</span></span>
+      </a>
+
+      <nav>
+        <ul class="nav-menu">
+          <li><a href="../index.html#about" class="nav-link">About</a></li>
+          <li><a href="../index.html#focus" class="nav-link">Dual Core</a></li>
+          <li><a href="../projects/index.html" class="nav-link">Projects</a></li>
+          <li><a href="index.html" class="nav-link active">Labs</a></li>
+          <li><a href="../blog/index.html" class="nav-link">Blog</a></li>
+          <li><a href="../index.html#contact" class="nav-link">Contact</a></li>
+          <li class="mobile-nav-cta"><a href="../projects/index.html" class="btn-cta">Explore Projects &rarr;</a></li>
+        </ul>
+      </nav>
+
+      <div class="header-actions">
+        <button class="theme-toggle-btn" id="themeToggleBtn" aria-label="Toggle dark/light theme">
+          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+        </button>
+        <a href="../projects/index.html" class="btn-cta">
+          <span>Explore Projects</span>
+          <span style="font-size: 1.1em">&rarr;</span>
+        </a>
+        <button class="mobile-nav-toggle" aria-label="Toggle Navigation Menu" aria-expanded="false">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Workbench View -->
+  <main class="container" style="padding-top: 3.5rem; padding-bottom: 6rem;">
+
+    <!-- Manifesto Hero Section -->
+    <div style="margin-bottom: 2.75rem;">
+      <div style="display: inline-flex; align-items: center; gap: 0.5rem; font-family: var(--font-mono); font-size: 0.78rem; font-weight: 600; color: var(--accent-cyan); margin-bottom: 0.75rem; letter-spacing: 0.08em; text-transform: uppercase;">
+        <span>// MAZHAR'S LAB &bull; EXPERIMENTAL WORKBENCH</span>
+      </div>
+      <h1 style="font-size: clamp(2rem, 4vw, 3rem); font-weight: 800; line-height: 1.15; margin-bottom: 1rem; color: var(--text-primary); letter-spacing: -0.02em;">
+        Where code, thought experiments, mechanics, and interactive toys collide.
+      </h1>
+      <p style="font-size: 1.08rem; color: var(--text-secondary); max-width: 820px; line-height: 1.65; margin: 0 0 0.65rem 0;">
+        Unfinished, curious, alive. A tactile digital laboratory for visual mathematics, reflex physics, and algorithmic curiosities.
+      </p>
+      <p style="font-family: var(--font-mono); font-size: 0.88rem; color: var(--accent-cyan); line-height: 1.6; margin: 0;">
+        Home to raw kinetic prototypes, exploratory math tools, and experiments that grew up into full production platforms.
+      </p>
+    </div>
+
+    <!-- Search & Thematic Shelf Jump Bar -->
+    <div style="max-width: 900px; margin-bottom: 3rem;">
+      <!-- Search Input -->
+      <div class="labs-search-wrap">
+        <svg class="labs-search-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="11" cy="11" r="8"></circle>
+          <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+        </svg>
+        <input type="text" id="labSearchInput" class="labs-search-input" placeholder="Search experiments by mechanic, phenomenon, or tech (e.g. vector, integral, dpp, canvas)..." aria-label="Search workbench experiments">
+        <span style="font-family: var(--font-mono); font-size: 0.72rem; color: var(--text-muted); background: var(--bg-tertiary); border: 1px solid var(--border-subtle); padding: 0.15rem 0.45rem; border-radius: 4px; pointer-events: none;">/</span>
+      </div>
+
+      <!-- Thematic Shelves Filter Pills -->
+      <div class="labs-filter-pills" id="shelfPillsContainer">
+        <button class="filter-pill active" data-shelf="All">All Shelves</button>
+        <button class="filter-pill filter-pill-graduated" data-shelf="Graduated">🚀 Graduated (2)</button>
+        <button class="filter-pill" data-shelf="Kinetic Toys & Reflex Mechanics">01 Kinetic Toys</button>
+        <button class="filter-pill" data-shelf="Calculus & Math Machines">02 Calculus Machines</button>
+        <button class="filter-pill" data-shelf="Eduscrolling & Micro-Feeds">03 Eduscrolling</button>
+        <button class="filter-pill" data-shelf="Algorithmic Generators & Tools">04 Algorithmic Generators</button>
+        <button class="filter-pill" data-shelf="Oddities & Uncategorized">05 Oddities</button>
+      </div>
+    </div>
+
+    <!-- Thematic Shelves Container (Pre-rendered for Google SEO by scripts/update_labs.py) -->
+    <div id="workbenchShelvesContainer">
+      <!-- LABS_WORKBENCH_START -->
+    <section class="workbench-shelf" id="shelf-graduated" data-shelf="Graduated">
+      <div class="shelf-header">
+        <div class="shelf-title-wrap">
+          <span class="shelf-num" style="color: var(--accent-emerald);">00 //</span>
+          <h2 class="shelf-name">Graduated to Production</h2>
+        </div>
+        <p class="shelf-desc">Experiments that began as raw laboratory sparks and grew up into full-scale production platforms</p>
+      </div>
+      <div class="workbench-rows">
+        <article class="workbench-row workbench-row-graduated" data-category="EdTech Utilities &amp; CBT" data-status="graduated" data-tags="CBT, NTA Simulator, Mock Testing, EdTech, Graduated" data-tech="CBT Engine, Web Workers, KaTeX AST, IndexedDB, Vanilla JS">
+          <div class="workbench-row-meta">
+            <span class="workbench-index">00.01</span>
+            <span class="status-badge status-graduated"><span class="pulse-dot"></span><span>🚀 Graduated to Production</span></span>
+          </div>
+          <div class="workbench-row-info">
+            <div class="workbench-row-title-wrap">
+              <h3 class="workbench-row-title"><a href="https://lockinrank.com" target="_blank" rel="noopener noreferrer">LockInRank CBT Platform</a></h3>
+            </div>
+            <p class="workbench-row-hook">Full-scale NTA-pattern Computer-Based Test engine with synchronized OMR, instant percentiles, and mistake analytics.</p>
+            <div class="workbench-origin-story">
+              <span class="workbench-origin-label">PROTOTYPE SPARK //</span>
+              <span>Started as a 50-line JavaScript countdown timer and question-state toggle to test how quickly students could respond to randomized numerical questions.</span>
+            </div>
+            <div class="workbench-row-tech">
+              <span class="tech-pill">CBT Engine</span><span class="tech-pill">Web Workers</span><span class="tech-pill">KaTeX AST</span><span class="tech-pill">IndexedDB</span><span class="tech-pill">Vanilla JS</span>
+            </div>
+          </div>
+          <div class="workbench-row-action">
+            <a href="https://lockinrank.com" target="_blank" rel="noopener noreferrer" class="workbench-run-btn btn-graduated">
+              <span>Launch Live Platform</span>
+              <span style="font-size: 1.1em;">&nearr;</span>
+            </a>
+          </div>
+        </article>
+        <article class="workbench-row workbench-row-graduated" data-category="Virtual Labs" data-status="graduated" data-tags="Virtual Labs, Practicals, Simulations, CBSE, Graduated" data-tech="Canvas API, Procedural Math, Interactive SVG, Vanilla JS">
+          <div class="workbench-row-meta">
+            <span class="workbench-index">00.02</span>
+            <span class="status-badge status-graduated"><span class="pulse-dot"></span><span>🚀 Graduated to Production</span></span>
+          </div>
+          <div class="workbench-row-info">
+            <div class="workbench-row-title-wrap">
+              <h3 class="workbench-row-title"><a href="https://physics-virtual-lab.smaphysics.com/" target="_blank" rel="noopener noreferrer">SMA Virtual Physics Lab Suite</a></h3>
+            </div>
+            <p class="workbench-row-hook">Zero-lag browser apparatus replicating 12+ Class 11 &amp; 12 CBSE practicals with real-time procedural measurement.</p>
+            <div class="workbench-origin-story">
+              <span class="workbench-origin-label">PROTOTYPE SPARK //</span>
+              <span>Began as a single canvas experiment measuring vernier caliper screw pitch errors before expanding into a full virtual experiment workbench.</span>
+            </div>
+            <div class="workbench-row-tech">
+              <span class="tech-pill">Canvas API</span><span class="tech-pill">Procedural Math</span><span class="tech-pill">Interactive SVG</span><span class="tech-pill">Vanilla JS</span>
+            </div>
+          </div>
+          <div class="workbench-row-action">
+            <a href="https://physics-virtual-lab.smaphysics.com/" target="_blank" rel="noopener noreferrer" class="workbench-run-btn btn-graduated">
+              <span>Launch Live Platform</span>
+              <span style="font-size: 1.1em;">&nearr;</span>
+            </a>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section class="workbench-shelf" id="shelf-kinetic-toys" data-shelf="Kinetic Toys &amp; Reflex Mechanics">
+      <div class="shelf-header">
+        <div class="shelf-title-wrap">
+          <span class="shelf-num">01 //</span>
+          <h2 class="shelf-name">Kinetic Toys &amp; Reflex Mechanics</h2>
+        </div>
+        <p class="shelf-desc">Interactive physics sandboxes, game loops, tactile simulations</p>
+      </div>
+      <div class="workbench-rows">
+        <article class="workbench-row" data-category="Kinetic Toys &amp; Reflex Mechanics" data-status="experimental" data-tags="Flux, Vector Fields, Differential, Physics Sandbox" data-tech="Canvas, KaTeX, Audio / TTS">
+          <div class="workbench-row-meta">
+            <span class="workbench-index">01.01</span>
+            <span class="status-badge status-machine"><span class="pulse-dot"></span><span>⚡ Finished Machine</span></span>
+          </div>
+          <div class="workbench-row-info">
+            <div class="workbench-row-title-wrap">
+              <h3 class="workbench-row-title"><a href="kineticflux/index.html">KineticFlux: The Differential Physics Engine</a></h3>
+            </div>
+            <p class="workbench-row-hook">Differential physics engine exploring real-time vector fields and particle flux.</p>
+
+            <div class="workbench-row-tech">
+              <span class="tech-pill">Canvas</span><span class="tech-pill">KaTeX</span><span class="tech-pill">Audio / TTS</span>
+            </div>
+          </div>
+          <div class="workbench-row-action">
+            <a href="kineticflux/index.html" class="workbench-run-btn">
+              <span>Tinker in Lab</span>
+              <span style="font-size: 1.1em;">&rarr;</span>
+            </a>
+          </div>
+        </article>
+        <article class="workbench-row" data-category="Kinetic Toys &amp; Reflex Mechanics" data-status="experimental" data-tags="Kinematics, Vectors, Mechanics, Simulation" data-tech="Canvas, KaTeX, Vanilla JS">
+          <div class="workbench-row-meta">
+            <span class="workbench-index">01.02</span>
+            <span class="status-badge status-machine"><span class="pulse-dot"></span><span>⚡ Finished Machine</span></span>
+          </div>
+          <div class="workbench-row-info">
+            <div class="workbench-row-title-wrap">
+              <h3 class="workbench-row-title"><a href="projectile-motion/index.html">2D Projectile Motion Vector Simulator</a></h3>
+            </div>
+            <p class="workbench-row-hook">2D vector launch trajectory engine with live kinematics telemetry and real-time velocity components.</p>
+
+            <div class="workbench-row-tech">
+              <span class="tech-pill">Canvas</span><span class="tech-pill">KaTeX</span><span class="tech-pill">Vanilla JS</span>
+            </div>
+          </div>
+          <div class="workbench-row-action">
+            <a href="projectile-motion/index.html" class="workbench-run-btn">
+              <span>Tinker in Lab</span>
+              <span style="font-size: 1.1em;">&rarr;</span>
+            </a>
+          </div>
+        </article>
+        <article class="workbench-row" data-category="Kinetic Toys &amp; Reflex Mechanics" data-status="experimental" data-tags="Vectors, Game Loop, Combat, Physics" data-tech="Canvas, SVG, Audio / TTS">
+          <div class="workbench-row-meta">
+            <span class="workbench-index">01.03</span>
+            <span class="status-badge status-playground"><span class="pulse-dot"></span><span>⚡ Playground</span></span>
+          </div>
+          <div class="workbench-row-info">
+            <div class="workbench-row-title-wrap">
+              <h3 class="workbench-row-title"><a href="vector-arena/index.html">Vector Arena: Directional Combat Engine</a></h3>
+            </div>
+            <p class="workbench-row-hook">Exploring the physical weight of vectors through directional combat.</p>
+
+            <div class="workbench-row-tech">
+              <span class="tech-pill">Canvas</span><span class="tech-pill">SVG</span><span class="tech-pill">Audio / TTS</span>
+            </div>
+          </div>
+          <div class="workbench-row-action">
+            <a href="vector-arena/index.html" class="workbench-run-btn">
+              <span>Tinker in Lab</span>
+              <span style="font-size: 1.1em;">&rarr;</span>
+            </a>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section class="workbench-shelf" id="shelf-calculus-machines" data-shelf="Calculus &amp; Math Machines">
+      <div class="shelf-header">
+        <div class="shelf-title-wrap">
+          <span class="shelf-num">02 //</span>
+          <h2 class="shelf-name">Calculus &amp; Math Machines</h2>
+        </div>
+        <p class="shelf-desc">Visual accumulation engines, dynamic derivatives, geometric curiosities</p>
+      </div>
+      <div class="workbench-rows">
+        <article class="workbench-row" data-category="Calculus &amp; Math Machines" data-status="experimental" data-tags="Calculus, Riemann Sums, Area Under Curve, Math Visualization" data-tech="Canvas, KaTeX, Audio / TTS">
+          <div class="workbench-row-meta">
+            <span class="workbench-index">02.01</span>
+            <span class="status-badge status-playground"><span class="pulse-dot"></span><span>⚡ Playground</span></span>
+          </div>
+          <div class="workbench-row-info">
+            <div class="workbench-row-title-wrap">
+              <h3 class="workbench-row-title"><a href="integralforge/index.html">IntegralForge: The Accumulation Engine</a></h3>
+            </div>
+            <p class="workbench-row-hook">The accumulation engine: visual Riemann sums, area transformations, and continuous calculus.</p>
+
+            <div class="workbench-row-tech">
+              <span class="tech-pill">Canvas</span><span class="tech-pill">KaTeX</span><span class="tech-pill">Audio / TTS</span>
+            </div>
+          </div>
+          <div class="workbench-row-action">
+            <a href="integralforge/index.html" class="workbench-run-btn">
+              <span>Tinker in Lab</span>
+              <span style="font-size: 1.1em;">&rarr;</span>
+            </a>
+          </div>
+        </article>
+        <article class="workbench-row" data-category="Calculus &amp; Math Machines" data-status="experimental" data-tags="Calculus, Derivatives, Power Rule, Math Game" data-tech="Canvas, KaTeX, Audio / TTS">
+          <div class="workbench-row-meta">
+            <span class="workbench-index">02.02</span>
+            <span class="status-badge status-prototype"><span class="pulse-dot"></span><span>⚡ Living Prototype</span></span>
+          </div>
+          <div class="workbench-row-info">
+            <div class="workbench-row-title-wrap">
+              <h3 class="workbench-row-title"><a href="powercraft/index.html">PowerCraft: The Power Rule Crucible</a></h3>
+            </div>
+            <p class="workbench-row-hook">The power rule crucible: rapid differential calculus game loop and polynomial crafting.</p>
+
+            <div class="workbench-row-tech">
+              <span class="tech-pill">Canvas</span><span class="tech-pill">KaTeX</span><span class="tech-pill">Audio / TTS</span>
+            </div>
+          </div>
+          <div class="workbench-row-action">
+            <a href="powercraft/index.html" class="workbench-run-btn">
+              <span>Tinker in Lab</span>
+              <span style="font-size: 1.1em;">&rarr;</span>
+            </a>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section class="workbench-shelf" id="shelf-eduscrolling" data-shelf="Eduscrolling &amp; Micro-Feeds">
+      <div class="shelf-header">
+        <div class="shelf-title-wrap">
+          <span class="shelf-num">03 //</span>
+          <h2 class="shelf-name">Eduscrolling &amp; Micro-Feeds</h2>
+        </div>
+        <p class="shelf-desc">Vertical bite-sized feeds, card swipers, fast-paced cognitive experiments</p>
+      </div>
+      <div class="workbench-rows">
+        <article class="workbench-row" data-category="Eduscrolling &amp; Micro-Feeds" data-status="experimental" data-tags="Eduscrolling, Atomic Physics, Micro Cards, Modern Physics" data-tech="Canvas, KaTeX, Tailwind, Audio / TTS">
+          <div class="workbench-row-meta">
+            <span class="workbench-index">03.01</span>
+            <span class="status-badge status-playground"><span class="pulse-dot"></span><span>⚡ Playground</span></span>
+          </div>
+          <div class="workbench-row-info">
+            <div class="workbench-row-title-wrap">
+              <h3 class="workbench-row-title"><a href="eduscroll-atoms/index.html">Eduscroll: Atomic Structure Feed</a></h3>
+            </div>
+            <p class="workbench-row-hook">High-density atomic structure rapid swiper feed and cognitive flashcards.</p>
+
+            <div class="workbench-row-tech">
+              <span class="tech-pill">Canvas</span><span class="tech-pill">KaTeX</span><span class="tech-pill">Tailwind</span><span class="tech-pill">Audio / TTS</span>
+            </div>
+          </div>
+          <div class="workbench-row-action">
+            <a href="eduscroll-atoms/index.html" class="workbench-run-btn">
+              <span>Tinker in Lab</span>
+              <span style="font-size: 1.1em;">&rarr;</span>
+            </a>
+          </div>
+        </article>
+        <article class="workbench-row" data-category="Eduscrolling &amp; Micro-Feeds" data-status="experimental" data-tags="Eduscrolling, Vectors, Micro Feed, Interactive" data-tech="Canvas, SVG, Tailwind, Audio / TTS">
+          <div class="workbench-row-meta">
+            <span class="workbench-index">03.02</span>
+            <span class="status-badge status-prototype"><span class="pulse-dot"></span><span>⚡ Living Prototype</span></span>
+          </div>
+          <div class="workbench-row-info">
+            <div class="workbench-row-title-wrap">
+              <h3 class="workbench-row-title"><a href="vectoreels/index.html">VectoReels: Physics in a Scroll</a></h3>
+            </div>
+            <p class="workbench-row-hook">Vertical kinetic micro-feed turning vector mechanics into bite-sized tactile cards.</p>
+
+            <div class="workbench-row-tech">
+              <span class="tech-pill">Canvas</span><span class="tech-pill">SVG</span><span class="tech-pill">Tailwind</span><span class="tech-pill">Audio / TTS</span>
+            </div>
+          </div>
+          <div class="workbench-row-action">
+            <a href="vectoreels/index.html" class="workbench-run-btn">
+              <span>Tinker in Lab</span>
+              <span style="font-size: 1.1em;">&rarr;</span>
+            </a>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section class="workbench-shelf" id="shelf-algorithmic-generators" data-shelf="Algorithmic Generators &amp; Tools">
+      <div class="shelf-header">
+        <div class="shelf-title-wrap">
+          <span class="shelf-num">04 //</span>
+          <h2 class="shelf-name">Algorithmic Generators &amp; Tools</h2>
+        </div>
+        <p class="shelf-desc">Combinatorial question engines, procedural builders, academic DPP engines</p>
+      </div>
+      <div class="workbench-rows">
+        <article class="workbench-row" data-category="Algorithmic Generators &amp; Tools" data-status="experimental" data-tags="Combinatorics, Question Generator, Procedural, Math" data-tech="Tailwind, JavaScript, MathJax">
+          <div class="workbench-row-meta">
+            <span class="workbench-index">04.01</span>
+            <span class="status-badge status-playground"><span class="pulse-dot"></span><span>⚡ Playground</span></span>
+          </div>
+          <div class="workbench-row-info">
+            <div class="workbench-row-title-wrap">
+              <h3 class="workbench-row-title"><a href="combinatorial-generator/index.html">Combinatorial Question Generator Engine</a></h3>
+            </div>
+            <p class="workbench-row-hook">Interactive combinatorial question generator engine with procedural variable synthesis.</p>
+
+            <div class="workbench-row-tech">
+              <span class="tech-pill">Tailwind</span><span class="tech-pill">JavaScript</span><span class="tech-pill">MathJax</span>
+            </div>
+          </div>
+          <div class="workbench-row-action">
+            <a href="combinatorial-generator/index.html" class="workbench-run-btn">
+              <span>Tinker in Lab</span>
+              <span style="font-size: 1.1em;">&rarr;</span>
+            </a>
+          </div>
+        </article>
+        <article class="workbench-row" data-category="Algorithmic Generators &amp; Tools" data-status="experimental" data-tags="DPP Generator, Fluid Mechanics, Hydrostatics, Algorithmic" data-tech="SVG, KaTeX, Tailwind, JavaScript">
+          <div class="workbench-row-meta">
+            <span class="workbench-index">04.02</span>
+            <span class="status-badge status-machine"><span class="pulse-dot"></span><span>⚡ Finished Machine</span></span>
+          </div>
+          <div class="workbench-row-info">
+            <div class="workbench-row-title-wrap">
+              <h3 class="workbench-row-title"><a href="fluids-dpp-generator/index.html">Fluids Master DPP Generator &amp; Problem Engine</a></h3>
+            </div>
+            <p class="workbench-row-hook">Master DPP &amp; question generator with dynamic KaTeX equations and SVG hydrostatic diagrams.</p>
+
+            <div class="workbench-row-tech">
+              <span class="tech-pill">SVG</span><span class="tech-pill">KaTeX</span><span class="tech-pill">Tailwind</span><span class="tech-pill">JavaScript</span>
+            </div>
+          </div>
+          <div class="workbench-row-action">
+            <a href="fluids-dpp-generator/index.html" class="workbench-run-btn">
+              <span>Tinker in Lab</span>
+              <span style="font-size: 1.1em;">&rarr;</span>
+            </a>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section class="workbench-shelf" id="shelf-oddities" data-shelf="Oddities &amp; Uncategorized">
+      <div class="shelf-header">
+        <div class="shelf-title-wrap">
+          <span class="shelf-num">05 //</span>
+          <h2 class="shelf-name">Oddities &amp; Uncategorized</h2>
+        </div>
+        <p class="shelf-desc">Unconventional scripts, visual widgets, and random interactive sketches</p>
+      </div>
+      <div class="workbench-rows">
+        <article class="workbench-row" data-category="Oddities &amp; Uncategorized" data-status="experimental" data-tags="Viewport, Device Simulator, Dev Tool, Responsive" data-tech="SVG, Tailwind, JavaScript">
+          <div class="workbench-row-meta">
+            <span class="workbench-index">05.01</span>
+            <span class="status-badge status-prototype"><span class="pulse-dot"></span><span>⚡ Living Prototype</span></span>
+          </div>
+          <div class="workbench-row-info">
+            <div class="workbench-row-title-wrap">
+              <h3 class="workbench-row-title"><a href="device-workbench/index.html">Multi-Viewport Device Simulator &amp; Layout Workbench</a></h3>
+            </div>
+            <p class="workbench-row-hook">LockInRank layout preview &amp; multi-viewport responsive device simulator.</p>
+
+            <div class="workbench-row-tech">
+              <span class="tech-pill">SVG</span><span class="tech-pill">Tailwind</span><span class="tech-pill">JavaScript</span>
+            </div>
+          </div>
+          <div class="workbench-row-action">
+            <a href="device-workbench/index.html" class="workbench-run-btn">
+              <span>Tinker in Lab</span>
+              <span style="font-size: 1.1em;">&rarr;</span>
+            </a>
+          </div>
+        </article>
+        <article class="workbench-row" data-category="Oddities &amp; Uncategorized" data-status="experimental" data-tags="Trigonometry, Game Loop, Math Reflex, Speed Drill" data-tech="SVG, KaTeX, Tailwind, Audio / TTS">
+          <div class="workbench-row-meta">
+            <span class="workbench-index">05.02</span>
+            <span class="status-badge status-playground"><span class="pulse-dot"></span><span>⚡ Playground</span></span>
+          </div>
+          <div class="workbench-row-info">
+            <div class="workbench-row-title-wrap">
+              <h3 class="workbench-row-title"><a href="trigmaster-blitz/index.html">TrigMaster Blitz: Competitive Trigonometry Arena</a></h3>
+            </div>
+            <p class="workbench-row-hook">Fast-paced competitive trigonometry arena with instant evaluation and streak scoring.</p>
+
+            <div class="workbench-row-tech">
+              <span class="tech-pill">SVG</span><span class="tech-pill">KaTeX</span><span class="tech-pill">Tailwind</span><span class="tech-pill">Audio / TTS</span>
+            </div>
+          </div>
+          <div class="workbench-row-action">
+            <a href="trigmaster-blitz/index.html" class="workbench-run-btn">
+              <span>Tinker in Lab</span>
+              <span style="font-size: 1.1em;">&rarr;</span>
+            </a>
+          </div>
+        </article>
+      </div>
+    </section>
+    <!-- LABS_WORKBENCH_END -->
+    </div>
+
+    <!-- No results fallback message -->
+    <div id="noResultsMsg" style="display: none; padding: 4.5rem 1rem; text-align: center; color: var(--text-muted); font-family: var(--font-mono); font-size: 0.95rem; border: 1px dashed var(--border-subtle); border-radius: var(--radius-md);">
+      [ 0 experiments match your search criteria. Press Esc to clear. ]
+    </div>
+
+  </main>
+
+  <!-- Footer -->
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <h4>mazhar<span style="color: var(--accent-cyan)">.in</span></h4>
+          <p>Syed Mazhar Ali — Senior Physics Trainer &amp; Education Tools Developer. Deconstructing mechanics &amp; electrodynamics for competitive aspirants; engineering high-speed testing engines and software.</p>
+        </div>
+        <div class="footer-links-col">
+          <h5>Running Projects</h5>
+          <ul>
+            <li><a href="https://tests.smaphysics.com/" target="_blank" rel="noopener noreferrer">SMA Test Portal ↗</a></li>
+            <li><a href="https://daily-practice-sheets-dpps.smaphysics.com/" target="_blank" rel="noopener noreferrer">Physics Worksheet Vault ↗</a></li>
+            <li><a href="https://anokhiada.com/" target="_blank" rel="noopener noreferrer">Anokhi Ada Store ↗</a></li>
+            <li><a href="../projects/index.html">All Projects Archive</a></li>
+            <li><a href="../blog/index.html">Technical Blog Archive</a></li>
+          </ul>
+        </div>
+        <div class="footer-links-col">
+          <h5>Connect</h5>
+          <ul>
+            <li><a href="https://github.com/mazhar-in" target="_blank" rel="noopener noreferrer">GitHub (@mazhar-in)</a></li>
+            <li><a href="https://x.com/mazharin" target="_blank" rel="noopener noreferrer">X / Twitter (@mazharin)</a></li>
+            <li><a href="https://www.youtube.com/syedmazharali" target="_blank" rel="noopener noreferrer">YouTube (@syedmazharali)</a></li>
+            <li><a href="https://instagram.com/mazharin" target="_blank" rel="noopener noreferrer">Instagram (@mazharin)</a></li>
+            <li><a href="mailto:contact@mazhar.in">contact@mazhar.in</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <span>Designed &amp; Engineered by Syed Mazhar Ali</span>
+        <span>© 2026 mazhar.in • Pure Static Architecture</span>
+      </div>
+    </div>
+  </footer>
+
+  <script src="../assets/js/main.js"></script>
+
+  <!-- Theme Toggle & Instant Workbench Filtering Script -->
+  <script>
+    // Theme Toggle Logic
+    const themeBtn = document.getElementById('themeToggleBtn');
+    const htmlEl = document.documentElement;
+
+    const savedTheme = localStorage.getItem('mazhar_theme') || 'dark';
+    htmlEl.setAttribute('data-theme', savedTheme);
+
+    if (themeBtn) {
+      themeBtn.addEventListener('click', () => {
+        const curTheme = htmlEl.getAttribute('data-theme');
+        const nextTheme = curTheme === 'dark' ? 'light' : 'dark';
+        htmlEl.setAttribute('data-theme', nextTheme);
+        localStorage.setItem('mazhar_theme', nextTheme);
+      });
+    }
+
+    // Keyboard shortcut '/' to focus search
+    window.addEventListener('keydown', (e) => {
+      const searchInput = document.getElementById('labSearchInput');
+      if (e.key === '/' && document.activeElement !== searchInput) {
+        e.preventDefault();
+        searchInput?.focus();
+      } else if (e.key === 'Escape' && document.activeElement === searchInput) {
+        searchInput.value = '';
+        searchInput.dispatchEvent(new Event('input'));
+        searchInput.blur();
+      }
+    });
+
+    // Instant Filter & Monospace Search Engine
+    document.addEventListener('DOMContentLoaded', () => {
+      const searchInput = document.getElementById('labSearchInput');
+      const filterPills = document.querySelectorAll('.filter-pill');
+      const shelves = document.querySelectorAll('.workbench-shelf');
+      const noResultsMsg = document.getElementById('noResultsMsg');
+
+      let currentShelf = 'All';
+
+      function applyFilters() {
+        const query = (searchInput?.value || '').trim().toLowerCase();
+        let totalVisible = 0;
+
+        shelves.forEach(shelf => {
+          const shelfName = shelf.getAttribute('data-shelf') || '';
+          const isGradShelf = shelfName.toLowerCase().includes('graduated');
+          const matchesShelfFilter = (currentShelf === 'All') ||
+            (currentShelf === 'Graduated' && isGradShelf) ||
+            (currentShelf !== 'Graduated' && !isGradShelf && (shelfName.toLowerCase().includes(currentShelf.toLowerCase()) || currentShelf.toLowerCase().includes(shelfName.toLowerCase())));
+
+          const rows = shelf.querySelectorAll('.workbench-row');
+          let visibleRowsInShelf = 0;
+
+          rows.forEach(row => {
+            const title = (row.querySelector('.workbench-row-title')?.textContent || '').toLowerCase();
+            const hook = (row.querySelector('.workbench-row-hook')?.textContent || '').toLowerCase();
+            const origin = (row.querySelector('.workbench-origin-story')?.textContent || '').toLowerCase();
+            const tags = (row.getAttribute('data-tags') || '').toLowerCase();
+            const tech = (row.getAttribute('data-tech') || '').toLowerCase();
+            const category = (row.getAttribute('data-category') || '').toLowerCase();
+            const status = (row.getAttribute('data-status') || '').toLowerCase();
+
+            const matchesStatusFilter = (currentShelf === 'All') ||
+              (currentShelf === 'Graduated' && status === 'graduated') ||
+              (currentShelf !== 'Graduated' && status !== 'graduated');
+
+            const matchesQuery = !query ||
+              title.includes(query) ||
+              hook.includes(query) ||
+              origin.includes(query) ||
+              tags.includes(query) ||
+              tech.includes(query) ||
+              category.includes(query);
+
+            if (matchesShelfFilter && matchesStatusFilter && matchesQuery) {
+              row.style.display = 'grid';
+              visibleRowsInShelf++;
+              totalVisible++;
+            } else {
+              row.style.display = 'none';
+            }
+          });
+
+          // Collapse shelf header if no rows inside match
+          if (visibleRowsInShelf > 0) {
+            shelf.style.display = 'block';
+          } else {
+            shelf.style.display = 'none';
+          }
+        });
+
+        if (noResultsMsg) {
+          noResultsMsg.style.display = totalVisible === 0 ? 'block' : 'none';
+        }
+      }
+
+      // Filter Pill Clicks
+      filterPills.forEach(pill => {
+        pill.addEventListener('click', () => {
+          filterPills.forEach(p => p.classList.remove('active'));
+          pill.classList.add('active');
+          currentShelf = pill.getAttribute('data-shelf') || 'All';
+          applyFilters();
+        });
+      });
+
+      // Live search input
+      if (searchInput) {
+        searchInput.addEventListener('input', applyFilters);
+      }
+    });
+  </script>
+
+</body>
+</html>
